@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 25.1: Mutex When It Counts!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A packhouse prepares harvested fruit for shipping. Its weighbridge weighs each bin and adds its mass to one running total. At Riwaka, several pickers can place bins on the scale at the same time. No bin may disappear from the total.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/sync#Mutex">sync.Mutex</a>. Read the complete type documentation. What state does a zero-value <code>Mutex</code> have? What must never happen to a <code>Mutex</code> after first use?</li><li><a href="https://pkg.go.dev/sync#Mutex.Lock">Mutex.Lock</a>. What happens if a goroutine calls <code>Lock</code> while another goroutine holds the lock?</li><li><a href="https://pkg.go.dev/sync#Mutex.Unlock">Mutex.Unlock</a>. Read all four sentences. Which <code>Unlock</code> call causes a run-time error? Must the unlocking goroutine also have locked it?</li></ul></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>sync.Mutex</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Adding to a total is three steps, read the old number, add the bin, then write the new number. When two goroutines run those steps at once, both read the same old number and one bin goes missing.</li><li>A lock lets one goroutine at a time into the lines that touch the total and makes the others wait. Both <code>Add</code> and <code>Total</code> need the lock. The <code>Mutex</code> page names the two methods that take the lock and give it back.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>34</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "sync"
+
+type Scale struct {
+	// TODO: the lock, and the running total in kilos.
+}
+
+func (s *Scale) Add(kilos int) {
+	// TODO
+}
+
+func (s *Scale) Total() int {
+	// TODO
+}
+
+func weigh(bins []int) int {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "sync"
+
+type Scale struct {
+	mu    sync.Mutex
+	total int
+}
+
+func (s *Scale) Add(kilos int) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.total += kilos
+}
+
+func (s *Scale) Total() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.total
+}
+
+func weigh(bins []int) int {
+	var s Scale
+	var wg sync.WaitGroup
+	for _, kilos := range bins {
+		wg.Go(func() {
+			s.Add(kilos)
+		})
+	}
+	wg.Wait()
+	return s.Total()
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "sync.Mutex"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(weigh([]int{18, 22, 15}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>55</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(weigh([]int{5, 5, 5, 5}), weigh([]int{20}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>20 20</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var s Scale
+fmt.Println(s.Total())
+s.Add(7)
+s.Add(3)
+fmt.Println(s.Total())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0
+10</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[bins := make([]int, 2000)
+for i := range bins {
+	bins[i] = 1
+}
+total := 0
+for range 50 {
+	total += weigh(bins)
+}
+fmt.Println(total, weigh(nil), weigh([]int{}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>100000 0 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 25.2: Carry the Context!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A sailing clearance tells a skipper whether a boat may still leave port. The Port Taranaki harbourmaster can recall it at any time, and it expires automatically when its curfew passes.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/context">context</a>. Read the <code>Context</code> interface and its <code>Err</code> documentation. When does <code>Err</code> return nil? Which two named errors can it return? Can a later call to <code>Err</code> return a different error?</li><li><a href="https://pkg.go.dev/context#WithDeadline">context.WithDeadline</a>. Read the complete documentation. What does each return value do? What should you do with the second return value? What is the type of the second parameter? Which function on that type gives the current time?</li><li><a href="https://pkg.go.dev/context#CancelFunc">context.CancelFunc</a>. Read all four lines. What does calling a <code>CancelFunc</code> do? What happens on the second call?</li></ul></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>context.WithDeadline</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>A context tree starts at a root that nothing cancels. Find the function that returns such a root. Where does its documentation say the root belongs?</li><li>Two of the constructors on that page return a pair, the new context and a function that ends it. One of the two takes a moment in time, and nothing in the doc says that moment must be in the future. To tell the two endings apart, use <code>errors.Is</code> against the package's two named error values.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>30</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	"context"
+	// TODO: the packages the rest of the file needs
+)
+
+func harbour() (context.Context, context.CancelFunc) {
+	// TODO
+}
+
+func curfew() (context.Context, context.CancelFunc) {
+	// TODO
+}
+
+func clearance(ctx context.Context) string {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"context"
+	"errors"
+	"time"
+)
+
+func harbour() (context.Context, context.CancelFunc) {
+	return context.WithCancel(context.Background())
+}
+
+func curfew() (context.Context, context.CancelFunc) {
+	return context.WithDeadline(context.Background(), time.Now().Add(-time.Hour))
+}
+
+func clearance(ctx context.Context) string {
+	err := ctx.Err()
+	if err == nil {
+		return "sail"
+	}
+	if errors.Is(err, context.DeadlineExceeded) {
+		return "expired"
+	}
+	return "recalled"
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "context.WithDeadline"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ctx, cancel := harbour()
+fmt.Println(clearance(ctx))
+cancel()
+fmt.Println(clearance(ctx))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>sail
+recalled</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ctx, cancel := curfew()
+defer cancel()
+fmt.Println(clearance(ctx))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>expired</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ctx, cancel := curfew()
+fmt.Println(clearance(ctx))
+cancel()
+fmt.Println(clearance(ctx))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>expired
+expired</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[one, cancelOne := harbour()
+two, cancelTwo := harbour()
+defer cancelTwo()
+cancelOne()
+cancelOne()
+fmt.Println(clearance(one), clearance(two))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>recalled sail</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 25.3: Cancel Culture!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A depot dispatches one driver and sends each new stop over the radio. When the shift ends, the driver must return and no depot worker may remain waiting to send another stop. When the radio closes, <code>rounds</code> returns the stops reached in radio order and a nil error. When the shift ends first, <code>rounds</code> returns the stops reached so far and the context's own error, unchanged. <code>dispatch</code> passes back whatever <code>rounds</code> returned. If the shift is already over when the driver sets off, <code>rounds</code> returns at once and takes nothing off the radio.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/context">Go Concurrency Patterns: Context</a>. Read Context and Derived contexts. Which method returns a channel? What happens to that channel? Which function returns a pair whose second value stops the work?</li><li><a href="https://pkg.go.dev/context#Context">context.Context</a>. Read the full <code>Err</code> documentation. What does <code>Err</code> return before the channel closes? Can <code>Err</code> return a different value after closure?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>A <code>select</code> with two receive cases waits until one of them can go ahead, then takes that one. Put the radio on one case and the context's channel on the other, so the driver stops waiting when the shift ends. Ask the context outright before the loop as well, because a shift can be over before the driver sets off.</li><li>A send on a channel with no capacity waits for a receiver, so the goroutine calling the stops has to watch the context too. A goroutine that ignores the context waits for ever when the round is cut short, and <code>dispatch</code> can never wait for it.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>44</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	"context"
+	// TODO: the packages the rest of the file needs
+)
+
+func shift() (context.Context, context.CancelFunc) {
+	// TODO
+}
+
+func rounds(ctx context.Context, radio <-chan string) ([]string, error) {
+	// TODO
+}
+
+func dispatch(ctx context.Context, stops []string) ([]string, error) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"context"
+	"sync"
+)
+
+func shift() (context.Context, context.CancelFunc) {
+	return context.WithCancel(context.Background())
+}
+
+func rounds(ctx context.Context, radio <-chan string) ([]string, error) {
+	var reached []string
+	for {
+		if err := ctx.Err(); err != nil {
+			return reached, err
+		}
+		select {
+		case stop, ok := <-radio:
+			if !ok {
+				return reached, nil
+			}
+			reached = append(reached, stop)
+		case <-ctx.Done():
+			return reached, ctx.Err()
+		}
+	}
+}
+
+func dispatch(ctx context.Context, stops []string) ([]string, error) {
+	radio := make(chan string)
+	var wg sync.WaitGroup
+	wg.Go(func() {
+		defer close(radio)
+		for _, stop := range stops {
+			select {
+			case radio <- stop:
+			case <-ctx.Done():
+				return
+			}
+		}
+	})
+	reached, err := rounds(ctx, radio)
+	wg.Wait()
+	return reached, err
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ctx, cancel := shift()
+defer cancel()
+got, err := dispatch(ctx, []string{"wharf", "yard", "gate"})
+fmt.Printf("%q %v\n", got, err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>["wharf" "yard" "gate"] true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ctx, cancel := shift()
+defer cancel()
+radio := make(chan string)
+go func() {
+	radio <- "wharf"
+	close(radio)
+}()
+got, err := rounds(ctx, radio)
+fmt.Printf("%q %v\n", got, err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>["wharf"] true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ctx, cancel := shift()
+radio := make(chan string)
+go func() {
+	radio <- "wharf"
+	radio <- "yard"
+	cancel()
+}()
+got, err := rounds(ctx, radio)
+fmt.Printf("%q %v\n", got, err)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>["wharf" "yard"] context canceled</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ctx, cancel := shift()
+cancel()
+early := 0
+var earlyErr error
+for range 200 {
+	waiting := make(chan string, 1)
+	waiting <- "wharf"
+	got, err := rounds(ctx, waiting)
+	early += len(got)
+	earlyErr = err
+}
+late := 0
+var lateErr error
+for range 200 {
+	got, err := dispatch(ctx, []string{"wharf", "yard"})
+	late += len(got)
+	lateErr = err
+}
+fmt.Println(early, earlyErr)
+fmt.Println(late, lateErr)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 context canceled
+0 context canceled</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

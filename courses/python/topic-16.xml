@@ -1,0 +1,903 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 16.1: Parentheses Not Included!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write five short functions that hand a function around as a plain value and sort a list with a key function.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>A Java method is not a value. Write a method's name on its own and the compiler rejects it, because a
+bare name is not an expression there.</p>
+<pre>String shout(String text) {
+    return text.toUpperCase() + "!";
+}
+
+shout;                                     // not an expression, will not compile
+Function&lt;String, String&gt; f = this::shout;  // a method reference, wrapped in a functional interface</pre>
+<p>Java gives you three wrappers for moving behaviour around. A <b>functional interface</b> such as
+<code>Function</code> or <code>Comparator</code>, a lambda that implements one, and a method reference
+such as <code>this::shout</code>. The method always travels inside something else.</p>
+<p>Python has none of that machinery, because a function already is a value. A <code>def</code>
+statement binds a name to a function object in exactly the way <code>x = 5</code> binds a name to an
+integer.</p>
+<pre>def shout(text: str) -&gt; str:
+    return text.upper() + "!"</pre>
+<p>Once that statement has run, <code>shout</code> is a name holding an object, and the object happens
+to be callable. There is no interface to declare and nothing to wrap.</p>
+<p>Two characters decide everything.</p>
+<pre>shout        # the function itself
+shout("hi")  # the string 'HI!', which is what the function produced</pre>
+<p>Confusing those two is the first mistake a Java developer makes here, because in Java the
+parentheses are the only way to mention a method at all. Type them where a function belongs and you
+hand over the <b>result</b> rather than the function.</p>
+<p>A result is usually not callable, so nothing complains at the point of the mistake. The failure
+arrives later, when something finally tries to call what you handed over, and it reads
+<code>'str' object is not callable</code>.</p>
+<p>A name holding a function behaves like any other name. Bind it to a second name, put it in a list,
+pass it to something, hand it back out.</p>
+<pre>same = shout
+same("valve open")    # 'VALVE OPEN!'</pre>
+<p>Passing one needs no special grammar at the call site and no wrapper around the function.</p>
+<pre>from collections.abc import Callable
+
+
+def apply_twice(transform: Callable[[str], str], text: str) -&gt; str:
+    return transform(transform(text))</pre>
+<p>Read <code>Callable[[str], str]</code> as "takes one string and hands back a string". The inner
+brackets hold the parameter types and the type after the comma is the return type. Import
+<code>Callable</code> from <code>collections.abc</code>, never from <code>typing</code>, which has held
+a deprecated copy since Python 3.9.</p>
+<p>Returning a function needs no grammar either. A function hands back another function the way it
+hands back a number.</p>
+<pre>def pick_transform(loud: bool) -&gt; Callable[[str], str]:
+    return shout if loud else quiet</pre>
+<p>Neither <code>shout</code> nor <code>quiet</code> runs on that line. The caller receives one of the
+two function objects and decides for itself when to call it.</p>
+<p>Sorting is where you meet all of this on an ordinary working day. Java asks the element to be
+<code>Comparable</code>, or asks you for a <code>Comparator</code>, which is one more functional
+interface to build.</p>
+<pre>words.sort(Comparator.comparingInt(String::length));</pre>
+<p>Python asks for one <b>key function</b> instead. <code>sorted(items, key=f)</code> calls
+<code>f</code> once per element and sorts on whatever comes back, so you describe the element and let
+Python do the comparing.</p>
+<pre>sorted(words, key=len)</pre>
+<p><code>len</code> is a built-in function, and there it travels as a value with no parentheses after
+it. Write <code>key=len()</code> instead and Python calls <code>len</code> with no arguments on the
+spot, which fails before the sort has begun.</p>
+<p>Python's sort is <b>stable</b>, which means two elements the key rates equal keep their original
+order. The test data holds two words of five letters and two of six, so you can watch that happen.</p>
+<p>Methods are values too. <code>str.strip</code> is the function behind <code>"  x  ".strip()</code>,
+and it answers <code>String::strip</code> with nothing wrapped around it.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write five short functions. Not one of them needs more than a single line of body.</p>
+<ul>
+<li><code>shout(text)</code> returns the text in upper case with <code>!</code> on the end.</li>
+<li><code>quiet(text)</code> returns the text in lower case with <code>.</code> on the end.</li>
+<li><code>apply_twice(transform, text)</code> runs <code>transform</code> on <code>text</code>, runs it
+again on that result, and returns the second result.</li>
+<li><code>pick_transform(loud)</code> hands back the <code>shout</code> function when <code>loud</code>
+is true and the <code>quiet</code> function otherwise. It returns the function itself, never the result
+of calling it.</li>
+<li><code>by_length(words)</code> returns a new list of the words, shortest first, from one call to
+<code>sorted</code> with a <code>key=</code>.</li>
+</ul>
+<p>The tests print the caller's list afterwards. It must come back untouched.</p>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Hand a function over by its name alone. The moment you type parentheses after it, you are passing its result instead.</li><li>Write no <code>lambda</code> here. Every function you need already has a name, and passing named functions around is the whole of this tier.</li><li>Sort with one call to <code>sorted</code> and one <code>key=</code>. No loop inside <code>by_length</code>, no comparison function, and no <code>list.sort()</code> on the caller's list.</li><li>Annotate every signature. A parameter holding a function takes <code>Callable[[str], str]</code>, imported from <code>collections.abc</code> and never from <code>typing</code>.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>24</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from collections.abc import Callable
+
+
+def shout(text: str) -> str:
+    # TODO: upper case, then a "!" on the end
+
+
+def quiet(text: str) -> str:
+    # TODO: lower case, then a "." on the end
+
+
+def apply_twice(transform: Callable[[str], str], text: str) -> str:
+    # TODO: run transform on the result of running transform
+
+
+def pick_transform(loud: bool) -> Callable[[str], str]:
+    # TODO: hand back one of the two functions. No parentheses.
+
+
+def by_length(words: list[str]) -> list[str]:
+    # TODO: one sorted() with a key=, and leave the caller's list alone
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from collections.abc import Callable
+
+
+def shout(text: str) -> str:
+    return text.upper() + "!"
+
+
+def quiet(text: str) -> str:
+    return text.lower() + "."
+
+
+def apply_twice(transform: Callable[[str], str], text: str) -> str:
+    return transform(transform(text))
+
+
+def pick_transform(loud: bool) -> Callable[[str], str]:
+    return shout if loud else quiet
+
+
+def by_length(words: list[str]) -> list[str]:
+    return sorted(words, key=len)
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(shout("all clear"))
+print(shout.__name__, type(shout).__name__, callable(shout))
+same = shout
+print(same("valve open"), same is shout)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>ALL CLEAR!
+shout function True
+VALVE OPEN! True</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(apply_twice(shout, "pump"))
+print(apply_twice(quiet, "PUMP"))
+print(apply_twice(str.strip, "  relay  ") + "|")
+try:
+    print(apply_twice(shout("pump"), "relay"))
+except TypeError as exc:
+    print(exc)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>PUMP!!
+pump..
+relay|
+'str' object is not callable</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>transform = pick_transform(True)
+print(transform.__name__, transform is shout)
+print(transform("relay"))
+print(pick_transform(False)("RELAY"))
+readings = ["relay", "pump", "burner", "valve", "gasket"]
+print(by_length(readings))
+print(readings)
+print(apply_twice.__annotations__["transform"])</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>shout True
+RELAY!
+relay.
+['pump', 'relay', 'valve', 'burner', 'gasket']
+['relay', 'pump', 'burner', 'valve', 'gasket']
+collections.abc.Callable[[str], str]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+import re
+
+whole = "".join(inspect.getsource(f) for f in (shout, quiet, apply_twice, pick_transform, by_length))
+assert "lambda" not in whole, "rule broken: every function you need already has a name"
+assert not re.search(r"\.sort\(", whole), "rule broken: leave the caller's list alone"
+assert "cmp_to_key" not in whole, "rule broken: hand over a key function, not a comparison"
+picker = inspect.getsource(pick_transform)
+assert "shout(" not in picker and "quiet(" not in picker, "rule broken: return the function, not its result"
+sorter = inspect.getsource(by_length)
+assert "key=" in sorter, "rule broken: sort with one key= and no loop"
+assert not re.search(r"\bfor\b", sorter), "rule broken: sort with one key= and no loop"
+assert "typing" not in repr(apply_twice.__annotations__["transform"]), "rule broken: import Callable from collections.abc"
+for fn in (shout, quiet, apply_twice, pick_transform, by_length):
+    assert "return" in fn.__annotations__, "rule broken: annotate every return"
+
+print(apply_twice(pick_transform(False), "Valve"))
+print(by_length([]))
+print(by_length(["bb", "a"]))
+print(callable(pick_transform(True)), callable(pick_transform(True)("x")))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>valve..
+[]
+['a', 'bb']
+True False</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 16.2: The Switchless Switchboard!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write six handler functions, a dict that dispatches to them, and three functions that run a command and rank faults.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>A Java method is not a value. To pass behaviour around you wrap it in something. You write a
+functional interface, or a method reference, or a Strategy class.</p>
+<p>To dispatch on a string you write a <code>switch</code>. The alternative is a
+<code>Map&lt;String, Handler&gt;</code>, which costs you an interface, a class per handler and a static
+block to fill the map.</p>
+<pre>switch (op) {
+    case "add" -&gt; a + b;
+    case "sub" -&gt; a - b;
+    ...
+}</pre>
+<p>In Python a function <b>is</b> a value. <code>def add(a: float, b: float) -&gt; float</code> binds the
+name <code>add</code> to a function object, exactly as <code>x = 5</code> binds a name to an integer. Write <code>add</code> with
+no parentheses and you have the function itself. Write <code>add(2, 3)</code> and you have called
+it.</p>
+<p>So a dispatch table is a plain dict whose values are functions.</p>
+<pre>OPS = {"add": add, "sub": subtract}
+handler = OPS["add"]
+result = handler(2, 3)</pre>
+<p>The lookup is the branch. A <code>switch</code> becomes a hash table rather than a chain of
+<code>if</code> statements. There is no interface to declare, and no class to write.</p>
+<p>The table's own type is <code>dict[str, Callable[[float, float], float]]</code>, where
+<code>Callable</code> comes from <code>collections.abc</code> and reads as "takes two floats, hands back
+a float".</p>
+<p>An unknown command still needs an answer. <code>OPS.get(op, other)</code> from the dictionaries topic returns
+<code>other</code> when <code>op</code> is not a key, so the fallback is an argument rather than an
+<code>else</code>.</p>
+<p><code>lambda</code> makes a function without giving it a name.
+<code>lambda a, b: a + b</code> is a whole function. The body is one expression, there is no
+<code>return</code> keyword and no statements are allowed inside.</p>
+<p>That limit is deliberate. A lambda that wants a second line wants a <code>def</code>.</p>
+<p>Sorting works the same way. Java chains
+<code>Comparator.comparing(...).thenComparing(...).reversed()</code> and asks each element to be
+<code>Comparable</code>. Python asks you for one <b>key function</b>. <code>sorted(seq, key=f)</code>
+calls <code>f</code> once per element and sorts on whatever comes back.</p>
+<p>Return a tuple from the key function and you get every tiebreak at once, because tuples compare
+left to right. The tuples topic gave you the tuple and the mutation topic gave you <code>sorted</code>, which returns a new
+list and leaves the caller's list alone.</p>
+<pre>sorted(faults, key=lambda fault: (-fault["severity"], fault["name"]))</pre>
+<p>That reads as severity descending, then name ascending. The minus sign flips one field on its own.
+<code>reverse=True</code> cannot do that, because it flips the whole tuple and reverses your tiebreak
+along with your main sort.</p>
+<p>Python's sort is <b>stable</b>, which means two elements the key rates equal stay in their original
+order. Your tuple key leaves no ties here, so stability changes nothing in this exercise. It is worth
+knowing anyway.</p>
+<p><code>max</code> and <code>min</code> take the same <code>key=</code>.
+<code>operator.itemgetter("severity")</code> builds a key function that reads one dict key, so it says
+the same thing as <code>lambda fault: fault["severity"]</code> with less noise.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write the switchboard.</p>
+<ul>
+<li>Six small named functions, one per command, each taking <code>a</code> and <code>b</code>. They
+compute <code>a + b</code>, <code>a - b</code>, <code>a * b</code>, <code>a / b</code>,
+<code>a // b</code> and <code>a % b</code>. The numbers topic explains the last two.</li>
+<li><code>OPS</code>, a dict mapping the six names <code>add</code>, <code>sub</code>,
+<code>mul</code>, <code>div</code>, <code>floordiv</code> and <code>mod</code> to those six
+functions.</li>
+<li><code>run(op, a, b)</code> looks the handler up and calls it. For an unknown operation it falls
+back to a handler that returns the string <code>unknown operation 'sqrt'</code>. Here <code>sqrt</code>
+is whatever the caller asked for, and the <code>!r</code> conversion from the f-strings topic supplies the quotes.
+The fallback has to read <code>op</code>, so build it as a lambda inside <code>run</code>.</li>
+<li><code>by_severity(faults)</code> returns a new list of the fault dicts, severity descending and
+name ascending, from one <code>key=</code> that returns a tuple.</li>
+<li><code>worst(faults)</code> returns the single fault dict with the highest severity, using
+<code>max</code> and <code>operator.itemgetter</code>.</li>
+</ul>
+<p>The tests print the caller's list afterwards. It must come back untouched.</p>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Write no <code>if</code>, <code>elif</code> or <code>match</code> anywhere in the dispatch path. The lookup is the branch, and the handlers are values in a dict rather than branches in a function.</li><li>Sort with one <code>key=</code> returning a tuple. No comparison function, no <code>functools.cmp_to_key</code>, and no returning -1, 0 or 1.</li><li>Do not pass <code>reverse=True</code>. It reverses your tiebreak along with your sort.</li><li>Write no class and no interface anywhere in the answer.</li><li>Do not call <code>eval()</code>. It would pass the tests, and in a safety-critical codebase it is a firing offence.</li><li>Leave the caller's list alone. <code>list.sort()</code> is banned here.</li><li>Annotate every signature, the six handlers included, and give <code>OPS</code> its <code>Callable</code> type as well. A table of functions should say which functions.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>40</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from collections.abc import Callable
+from operator import itemgetter
+
+
+# The ladder you are replacing. Do not write it.
+#
+# def run(op, a, b):
+#     if op == "add":
+#         return a + b
+#     elif op == "sub":
+#         return a - b
+#     ... four more branches ...
+
+
+# TODO: six small named functions, one per command, each (a: float, b: float) -> float
+
+
+OPS: dict[str, Callable[[float, float], float]] = {
+    # TODO: map each name to its function object. No parentheses.
+}
+
+
+def run(op: str, a: float, b: float) -> float | str:
+    # TODO: look the handler up with a fallback, then call it. No if.
+
+
+def by_severity(faults: list[dict[str, str | int]]) -> list[dict[str, str | int]]:
+    # TODO: one sorted() with one key= returning a tuple
+
+
+def worst(faults: list[dict[str, str | int]]) -> dict[str, str | int]:
+    # TODO: max() with operator.itemgetter
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from collections.abc import Callable
+from operator import itemgetter
+
+
+def add(a: float, b: float) -> float:
+    return a + b
+
+
+def subtract(a: float, b: float) -> float:
+    return a - b
+
+
+def multiply(a: float, b: float) -> float:
+    return a * b
+
+
+def divide(a: float, b: float) -> float:
+    return a / b
+
+
+def floor_divide(a: float, b: float) -> float:
+    return a // b
+
+
+def modulo(a: float, b: float) -> float:
+    return a % b
+
+
+OPS: dict[str, Callable[[float, float], float]] = {
+    "add": add,
+    "sub": subtract,
+    "mul": multiply,
+    "div": divide,
+    "floordiv": floor_divide,
+    "mod": modulo,
+}
+
+
+def run(op: str, a: float, b: float) -> float | str:
+    handler = OPS.get(op, lambda x, y: f"unknown operation {op!r}")
+    return handler(a, b)
+
+
+def by_severity(faults: list[dict[str, str | int]]) -> list[dict[str, str | int]]:
+    return sorted(faults, key=lambda fault: (-fault["severity"], fault["name"]))
+
+
+def worst(faults: list[dict[str, str | int]]) -> dict[str, str | int]:
+    return max(faults, key=itemgetter("severity"))
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(run("add", 7, 5))
+print(run("sub", 7, 5))
+print(run("mul", 7, 5))
+print(run("div", 7, 5))
+print(run("floordiv", 7, 5))
+print(run("mod", 7, 5))
+print(run("sqrt", 7, 5))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>12
+2
+35
+1.4
+1
+2
+unknown operation 'sqrt'</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>faults = [
+    {"name": "valve", "severity": 2},
+    {"name": "pump", "severity": 5},
+    {"name": "relay", "severity": 2},
+    {"name": "burner", "severity": 5},
+    {"name": "sensor", "severity": 1},
+]
+for fault in by_severity(faults):
+    print(fault["severity"], fault["name"])
+print(worst(faults))
+print(faults[0])
+print(len(faults))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>5 burner
+5 pump
+2 relay
+2 valve
+1 sensor
+{'name': 'pump', 'severity': 5}
+{'name': 'valve', 'severity': 2}
+5</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(sorted(OPS) == ["add", "div", "floordiv", "mod", "mul", "sub"])
+print(OPS["add"](2, 3), OPS["mul"](2, 3))
+handler = OPS["sub"]
+print(handler(9, 4))
+print(run("nope", 1, 2))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>True
+5 6
+5
+unknown operation 'nope'</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+import re
+
+whole = "".join(inspect.getsource(f) for f in (run, by_severity, worst))
+assert not re.search(r"\b(if|elif|else|match|case)\b", inspect.getsource(run)), "rule broken: the lookup is the branch"
+assert "eval(" not in whole, "rule broken: no eval"
+assert "cmp_to_key" not in whole, "rule broken: no comparison function"
+assert "reverse=" not in whole, "rule broken: reverse=True reverses your tiebreak too"
+assert ".sort(" not in whole, "rule broken: do not mutate the caller's list"
+assert not re.search(r"\bclass\b", whole), "rule broken: no class and no interface"
+assert "key=" in inspect.getsource(by_severity), "rule broken: sort with one key="
+assert len(OPS) == 6 and all(callable(h) for h in OPS.values()), "rule broken: six handlers, stored as values"
+
+original = [{"name": "b", "severity": 1}, {"name": "a", "severity": 1}]
+ranked = by_severity(original)
+print(ranked is original, [f["name"] for f in ranked], [f["name"] for f in original])
+print(run("mod", -7, 5), run("floordiv", -7, 5))
+print(run("", 1, 1))
+print(worst([{"name": "only", "severity": 0}]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>False ['a', 'b'] ['b', 'a']
+3 -2
+unknown operation ''
+{'name': 'only', 'severity': 0}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 16.3: Closure Encounters!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write a counter factory and a checker factory so every function they hand back closes over its own private value.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java lets a lambda read a local variable only when that variable is effectively final. Try to change
+one and the compiler stops you.</p>
+<pre>int count = 0;
+Runnable r = () -&gt; count++;   // does not compile</pre>
+<p>Java therefore captures a value, so you have never met the bug in this exercise. The usual
+workaround is a one-element array, because the array reference stays final while its contents do
+not.</p>
+<pre>int[] box = {0};
+Runnable r = () -&gt; box[0]++;   // compiles</pre>
+<p>Neither restriction exists in Python. You may write a <code>def</code> inside another
+<code>def</code>, and Java has no form for that. The inner function is built again every time the
+outer one runs.</p>
+<p>Python captures the <b>variable</b>, not the value. A function defined inside another function keeps
+a live link to the enclosing function's locals. That link is called a <b>closure</b>, and the storage
+it points at is called a <b>cell</b>.</p>
+<p>Read <code>tick.__closure__</code> and you get a tuple of cells. Read
+<code>cell.cell_contents</code> and you get whatever the variable holds right now.</p>
+<p>Python resolves a name by looking in four places in order. Local, then Enclosing, then Global, then
+Built-in. That order is called the <b>LEGB rule</b>.</p>
+<p>Reading an enclosing variable needs nothing special. Rebinding one does. Assign to a name anywhere
+in a function and Python marks that name local for the whole function, so this fails.</p>
+<pre>def make_counter() -&gt; Callable[[], int]:
+    count = 0
+    def tick() -&gt; int:
+        count += 1     # UnboundLocalError
+        return count
+    return tick</pre>
+<p><code>count += 1</code> is a read and then a write. The write makes <code>count</code> local, the
+read then finds a local with no value yet, and you get <code>UnboundLocalError</code>. The keyword
+<code>nonlocal</code> is the fix. It tells Python that this name belongs to the enclosing function, so
+leave it there.</p>
+<pre>def tick() -&gt; int:
+    nonlocal count
+    count += 1
+    return count</pre>
+<p>That gives you private per-call state with no class and no field. Each call to
+<code>make_counter</code> runs the body again, makes a fresh <code>count</code> and returns a function
+closed over that one. Two counters never touch each other.</p>
+<p>Now the trap. Build functions in a loop and every one of them closes over the <b>same</b> loop
+variable. The loop reuses that variable rather than making a new one per pass.</p>
+<p>When the loop finishes, the variable holds the last value, and every function you built sees it. No
+warning, and no error.</p>
+<pre>for limit in limits:
+    checkers.append(lambda reading: reading &gt; limit)</pre>
+<p>The repair is a <b>factory function</b>, which is a function whose whole job is to build and return
+another function. Call it with the value and the call gets its own local, so each returned closure gets
+its own cell.</p>
+<p>A factory's return type is itself a function type, so <code>make_counter</code> returns
+<code>Callable[[], int]</code>, where the empty brackets mean it takes no arguments at all.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p><code>unbound_demo</code> and <code>broken_checkers</code> already sit in the answer box. Leave both
+alone, because the tests put the error and the wrong answers on screen before the fix goes on
+screen.</p>
+<p>Write three functions.</p>
+<ul>
+<li><code>make_counter()</code> returns a function of no arguments. Each call to that function adds one
+to a count private to this closure and returns the new total. The first call returns
+<code>1</code>.</li>
+<li><code>make_checker(limit)</code> returns a function that takes <code>reading</code> and returns
+<code>reading &gt; limit</code>.</li>
+<li><code>fixed_checkers(limits)</code> returns a list of checkers, one per limit, built through
+<code>make_checker</code>.</li>
+</ul>
+<p>The second test prints <code>[30, 30, 30]</code> from the broken checkers and <code>True</code> for
+the shared cell. The third test prints <code>[10, 20, 30]</code> and <code>False</code>. Those two
+lines are the whole lesson.</p>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Write no <code>global</code> and no class. The state lives in the enclosing function, and <code>nonlocal</code> is the tool this exercise exists to teach.</li><li>Do not smuggle the count in a one-element list. That is the Java workaround for a rule Python does not have.</li><li>Do not fix the lambdas with the <code>i=i</code> default-argument trick. The defaults topic told you when a default is evaluated, and this is not what defaults are for. Write a real factory function.</li><li>Leave <code>broken_checkers</code> and <code>unbound_demo</code> untouched. If the three broken checkers agree with each other, you have found the trap rather than fixed it.</li><li>Annotate every signature you write, the inner functions included. A factory returns <code>Callable[[int], bool]</code>, and writing that down is half of what makes a closure readable to the next person.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>30</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from collections.abc import Callable
+
+
+# Supplied. Do not change these two.
+def unbound_demo():
+    total = 0
+
+    def bump():
+        total += 1
+        return total
+
+    try:
+        return bump()
+    except UnboundLocalError as exc:
+        return type(exc).__name__
+
+
+def broken_checkers(limits):
+    checkers = []
+    for limit in limits:
+        checkers.append(lambda reading: reading > limit)
+    return checkers
+
+
+def make_counter() -> Callable[[], int]:
+    # TODO: a private count, an inner function annotated -> int, and nonlocal
+
+
+def make_checker(limit: int) -> Callable[[int], bool]:
+    # TODO: return a function closed over this call's own limit
+
+
+def fixed_checkers(limits: list[int]) -> list[Callable[[int], bool]]:
+    # TODO: one checker per limit, built through make_checker
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from collections.abc import Callable
+
+
+# Supplied. Do not change these two.
+def unbound_demo():
+    total = 0
+
+    def bump():
+        total += 1
+        return total
+
+    try:
+        return bump()
+    except UnboundLocalError as exc:
+        return type(exc).__name__
+
+
+def broken_checkers(limits):
+    checkers = []
+    for limit in limits:
+        checkers.append(lambda reading: reading > limit)
+    return checkers
+
+
+def make_counter() -> Callable[[], int]:
+    count = 0
+
+    def tick() -> int:
+        nonlocal count
+        count += 1
+        return count
+
+    return tick
+
+
+def make_checker(limit: int) -> Callable[[int], bool]:
+    def check(reading: int) -> bool:
+        return reading > limit
+
+    return check
+
+
+def fixed_checkers(limits: list[int]) -> list[Callable[[int], bool]]:
+    return [make_checker(limit) for limit in limits]
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>left = make_counter()
+right = make_counter()
+print(left(), left(), left())
+print(right())
+print(left(), right())
+print(left is right, left.__closure__[0].cell_contents)
+print(unbound_demo())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>1 2 3
+1
+4 2
+False 4
+UnboundLocalError</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>checkers = broken_checkers([10, 20, 30])
+print([check(25) for check in checkers])
+print([check.__closure__[0].cell_contents for check in checkers])
+print(checkers[0].__closure__[0] is checkers[2].__closure__[0])</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[False, False, False]
+[30, 30, 30]
+True</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>checkers = fixed_checkers([10, 20, 30])
+print([check(25) for check in checkers])
+print([check.__closure__[0].cell_contents for check in checkers])
+print(checkers[0].__closure__[0] is checkers[2].__closure__[0])</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[True, True, False]
+[10, 20, 30]
+False</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+import re
+
+whole = "".join(inspect.getsource(f)
+                for f in (make_counter, unbound_demo, broken_checkers, make_checker, fixed_checkers))
+assert "nonlocal" in inspect.getsource(make_counter), "rule broken: rebind with nonlocal"
+assert not re.search(r"\bglobal\b", whole), "rule broken: no global"
+assert not re.search(r"\bclass\b", whole), "rule broken: no class"
+assert not re.search(r"lambda[^:]*=", whole), "rule broken: no i=i default trick"
+assert "make_checker" in inspect.getsource(fixed_checkers), "rule broken: use a real factory function"
+assert make_checker.__code__.co_argcount == 1, "rule broken: the factory takes the value"
+assert make_counter.__closure__ is None, "rule broken: the state lives inside make_counter"
+
+first = make_counter()
+second = make_counter()
+first()
+first()
+print(first(), second())
+broken = broken_checkers([1, 2])
+fixed = fixed_checkers([1, 2])
+print([c(2) for c in broken], [c(2) for c in fixed])
+print(len(set(id(c.__closure__[0]) for c in fixed)))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>3 1
+[False, False] [True, False]
+2</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+</quiz>

@@ -1,0 +1,787 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 07.1: Negative Is Not an Error!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>You write one function, <code>edges</code>, that reports the ends of a list and its length.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java gives you two ordered types and neither one counts backwards.</p>
+<pre>int[] readings = {12, 7, 9, 4, 18};
+int first = readings[0];
+int last  = readings[readings.length - 1];
+int size  = readings.length;
+
+List&lt;Integer&gt; more     = List.of(12, 7, 9);
+int           alsoLast = more.get(more.size() - 1);</pre>
+<p>Python has one type for both jobs. A <b>list</b> is written with square brackets, holds its items in
+order, and grows and shrinks as you work. It is the counterpart of <code>ArrayList</code> rather than of
+a Java array, and you never declare its length.</p>
+<pre>readings = [12, 7, 9, 4, 18]</pre>
+<p>Three differences to take on board.</p>
+<ul>
+<li>You read an item with square brackets, the same as a Java array. <code>readings[0]</code> is
+<code>12</code>. There is no <code>.get()</code>.</li>
+<li>You ask for the length with <code>len(readings)</code>, not <code>readings.length</code> and not
+<code>readings.size()</code>. <code>len</code> is a function you call on the list rather than something
+you ask the list for.</li>
+<li>A <b>negative index</b> counts back from the right. <code>readings[-1]</code> is the last item and
+<code>readings[-2]</code> is the one before it. Java throws
+<code>ArrayIndexOutOfBoundsException</code> for a negative index, so this is the reflex to break. Write
+<code>readings[-1]</code> and never <code>readings[len(readings) - 1]</code>.</li>
+</ul>
+<p>Running off the end still raises. <code>readings[9]</code> on a five-item list raises
+<code>IndexError</code>, which is Python's <code>ArrayIndexOutOfBoundsException</code>. Python has no
+checked exceptions, so nothing in a signature warns you that it can happen.</p>
+<p>A list holds anything, and the items need not agree. <code>[12, "kea", 2.5]</code> is a perfectly
+ordinary list. There is no <code>List&lt;Integer&gt;</code> to satisfy and no boxing to think about.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Write one function.</p>
+<ul>
+<li><code>edges(readings)</code> returns a list holding five values in this order. The first item, the
+second item, the last item, the second to last item, and how many items there are.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Write the body as a single <code>return</code> statement that builds one list.</li><li>Do not write <code>len(readings) - 1</code> inside square brackets. A negative index already knows where the end is.</li><li>Do not write a loop.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>6</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def edges(readings):
+    # TODO: return [first, second, last, second to last, how many]
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def edges(readings):
+    return [readings[0], readings[1], readings[-1], readings[-2], len(readings)]
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(edges([12, 7, 9, 4, 18]))
+print(edges([431, 5, 9, 1002, 7, 88]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[12, 7, 18, 4, 5]
+[431, 5, 88, 7, 6]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>pair = [3, 1]
+print(edges(pair))
+try:
+    print(pair[9])
+except IndexError as problem:
+    print("IndexError:", problem)
+print(pair[-1], pair[-2])</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[3, 1, 1, 3, 2]
+IndexError: list index out of range
+1 3</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+src = inspect.getsource(edges)
+assert "for " not in src, "rule broken: no loops"
+assert "while " not in src, "rule broken: no loops"
+assert "len(readings) -" not in src, "rule broken: use a negative index, not len() minus one"
+assert "len(readings)-" not in src, "rule broken: use a negative index, not len() minus one"
+assert src.count("return") == 1, "rule broken: one return statement"
+print(edges(["kea", "tui", "moa", "weka"]))
+print(edges([2.5, 0.0, 9.75]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>['kea', 'tui', 'weka', 'moa', 4]
+[2.5, 0.0, 9.75, 0.0, 3]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 07.2: Step Right Up!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>You write three functions, <code>channel</code>, <code>newest</code> and <code>trimmed</code>, that cut windows out of a list of samples.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java reads part of a list with <code>subList</code>, and <code>subList</code> cannot skip. Taking every
+second item means writing the counting loop yourself.</p>
+<pre>List&lt;Integer&gt; window = samples.subList(2, samples.size() - 2);
+
+List&lt;Integer&gt; evens = new ArrayList&lt;&gt;();
+for (int i = 0; i &lt; samples.size(); i += 2) {
+    evens.add(samples.get(i));
+}</pre>
+<p>Python replaces both with one piece of syntax. A <b>slice</b> is written
+<code>samples[start:stop:step]</code> inside square brackets. It returns a new list and leaves the
+original alone.</p>
+<ul>
+<li>The <b>start</b> is included and the <b>stop</b> is excluded, exactly as <code>subList</code>
+excludes its end. <code>samples[2:5]</code> takes items 2, 3 and 4.</li>
+<li>The <b>step</b> is how far Python moves along the list between one item and the next.
+<code>samples[::2]</code> takes every second item, starting at the front.</li>
+<li>Leave a number out and Python fills in the end of the list for you. <code>samples[2:]</code> runs
+from item 2 to the last item, and <code>samples[:5]</code> runs from the front to item 4.</li>
+<li>A negative bound counts back from the right, so <code>samples[:-2]</code> stops two short of the
+end.</li>
+</ul>
+<p>Here is the shape you are working with. A logger writes two channels into one flat list, taking a
+sample from each in turn.</p>
+<pre>flat = [10, 90, 11, 91, 12, 92]
+#       c0  c1  c0  c1  c0  c1</pre>
+<p>Pulling one channel back out is a start and a step together. <code>flat[0::2]</code> is channel
+zero and <code>flat[1::2]</code> is channel one. Java needs a loop and a counter for the same job.</p>
+<h4>The trap</h4>
+<p><code>samples[-count:]</code> looks like the way to take the last
+<code>count</code> items, and it is, right up until <code>count</code> is zero. <code>-0</code> is
+<code>0</code>, so <code>samples[-0:]</code> means <code>samples[0:]</code>, which is the whole list.
+Ask for nothing and Python hands back everything. That bug reads as correct in review and only shows
+up in the data.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Write three functions. Each one returns a value and none of them prints.</p>
+<ul>
+<li><code>channel(samples, index)</code> returns every sample belonging to that channel, where two
+channels are interleaved, channel zero first.</li>
+<li><code>newest(samples, count)</code> returns the last <code>count</code> samples in their original
+order. A count of zero returns an empty list.</li>
+<li><code>trimmed(samples)</code> drops the first two and the last two samples and returns what is
+left.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Build every result with a slice.</li><li>Do not call <code>len()</code>. A negative bound already counts from the right.</li><li>Do not write a loop, and do not call <code>range()</code>, <code>append()</code> or <code>reversed()</code>.</li><li>Guard the zero count and nothing else. A slice that runs off the end returns what it can reach, so a short list needs no help from you.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>14</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def channel(samples, index):
+    # TODO: return every sample for this channel, where two channels alternate
+
+
+def newest(samples, count):
+    # TODO: return the last count samples. Mind what -0 does
+
+
+def trimmed(samples):
+    # TODO: return the samples with the first two and the last two dropped
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def channel(samples, index):
+    return samples[index::2]
+
+
+def newest(samples, count):
+    if count == 0:
+        return []
+    return samples[-count:]
+
+
+def trimmed(samples):
+    return samples[2:-2]
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>flat = [10, 90, 11, 91, 12, 92, 13, 93]
+print(channel(flat, 0))
+print(channel(flat, 1))
+print(trimmed(flat))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[10, 11, 12, 13]
+[90, 91, 92, 93]
+[11, 91, 12, 92]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>odd = [10, 90, 11, 91, 12]
+print(channel(odd, 0))
+print(channel(odd, 1))
+print(newest(odd, 3))
+print(newest(odd, 1))
+print(newest(odd, 0))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[10, 11, 12]
+[90, 91]
+[11, 91, 12]
+[12]
+[]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (channel, newest, trimmed))
+assert "for " not in whole, "rule broken: no loops"
+assert "while " not in whole, "rule broken: no loops"
+assert "len(" not in whole, "rule broken: do not call len()"
+assert "range(" not in whole, "rule broken: no range"
+assert ".append(" not in whole, "rule broken: no append"
+assert "reversed(" not in whole, "rule broken: no reversed()"
+short = [5, 6, 7, 8]
+print(trimmed(short))
+print(trimmed([5, 6, 7]))
+print(newest(short, 99))
+print(channel([], 0), channel([], 1))
+print(newest([], 0), newest([], 2))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[]
+[]
+[5, 6, 7, 8]
+[] []
+[] []</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 07.3: Slice Twice, Cut Once!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>You write four functions that take a byte frame and a string apart using slices.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java gives you a different method for every sequence type. Not one of them can skip items as it
+goes.</p>
+<pre>List&lt;Integer&gt; head  = frame.subList(0, 4);
+String        start = line.substring(0, 4);
+int[]         chunk = Arrays.copyOfRange(bytes, 0, 4);
+Collections.reverse(frame);            // changes frame itself</pre>
+<p>Python replaces all four with one piece of syntax. A <b>slice</b> is written
+<code>sequence[start:stop:step]</code> inside square brackets. It returns a new sequence and leaves the
+original alone.</p>
+<p>Square brackets also build a <b>list</b>, which is the Python counterpart of
+<code>ArrayList</code>. The list below holds twelve bytes.</p>
+<pre>frame = [170, 1, 0, 12, 72, 101, 108, 108, 111, 33, 4, 210]
+print(frame[0:4])       # [170, 1, 0, 12]</pre>
+<p>These eight forms cover the whole feature.</p>
+<ul>
+<li><code>frame[0:4]</code> takes items 0, 1, 2 and 3. The stop is excluded, exactly as
+<code>subList</code> excludes its end.</li>
+<li><code>frame[:4]</code> means the same thing. Leave a bound out and Python fills in the end of the
+sequence for you.</li>
+<li><code>frame[4:]</code> runs from item 4 to the last item.</li>
+<li><code>frame[-2:]</code> takes the last two items. A negative index counts back from the right, so
+<code>-1</code> is the last item and <code>-2</code> is the one before it.</li>
+<li><code>frame[4:-2]</code> starts at item 4 and stops two short of the end.</li>
+<li><code>frame[::2]</code> takes every second item. The third number is the step, which is how far
+Python moves along the sequence between one item and the next.</li>
+<li><code>frame[::-1]</code> walks backwards and hands you the whole sequence reversed.</li>
+<li><code>frame[:]</code> copies the whole sequence. You get a new list holding the same items.</li>
+</ul>
+<p>Java throws <code>IndexOutOfBoundsException</code> when a bound runs off the end. A Python slice
+cuts the bound back to the end of the sequence instead. Ask a twelve-byte frame for
+<code>frame[99:200]</code> and an empty list comes back with no error at all. Ask the same frame for
+<code>frame[99]</code> and Python raises <code>IndexError</code>. One number in square brackets is an
+index, and an index raises. Two numbers separated by a colon are a slice, and a slice returns whatever
+it can reach.</p>
+<p>That difference hides bugs. A slice that returns nothing looks exactly like a slice that worked, so
+the tests stay green while the data goes missing. This exercise asks you to call the out-of-range slice
+yourself and read what comes back.</p>
+<p>A string is a sequence too, so every form above works on one. <code>"Kaitaia"[::-1]</code> gives
+<code>"aiatiaK"</code>. Python has no <code>StringBuilder.reverse()</code> because the step already
+does the job.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Write four functions. Each one returns a value and none of them prints.</p>
+<ul>
+<li><code>carve(frame)</code> returns a list holding five slices of <code>frame</code> in this order.
+The four-byte header, the payload sitting between the header and the last two bytes, the last two
+bytes, the whole frame reversed, and every second byte.</li>
+<li><code>far_slice(frame)</code> returns <code>frame[99:200]</code>. Run the tests and see what a
+clamped slice hands back.</li>
+<li><code>copy_of(frame)</code> returns a copy of the whole frame.</li>
+<li><code>reverse_text(text)</code> returns the string reversed.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Write each function body as a single <code>return</code> statement. Assign nothing, so no index variable exists anywhere.</li><li>Do not call <code>len()</code>. A negative index already knows where the end is.</li><li>Do not write a loop, and do not call <code>reversed()</code>, <code>list()</code> or <code>range()</code>.</li><li>Do not guard against a short frame. Run the tests and find out what the clamped slice does instead.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>14</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def carve(frame):
+    # TODO: return one list holding five slices. Header, payload, last two, reversed, every second
+
+
+def far_slice(frame):
+    # TODO: return frame[99:200] and find out what a clamped slice gives you
+
+
+def copy_of(frame):
+    # TODO: return a copy of the whole frame using a slice
+
+
+def reverse_text(text):
+    # TODO: return the string reversed using a negative step
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def carve(frame):
+    return [frame[:4], frame[4:-2], frame[-2:], frame[::-1], frame[::2]]
+
+
+def far_slice(frame):
+    return frame[99:200]
+
+
+def copy_of(frame):
+    return frame[:]
+
+
+def reverse_text(text):
+    return text[::-1]
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>frame = [170, 1, 0, 12, 72, 101, 108, 108, 111, 33, 4, 210]
+for piece in carve(frame):
+    print(piece)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[170, 1, 0, 12]
+[72, 101, 108, 108, 111, 33]
+[4, 210]
+[210, 4, 33, 111, 108, 108, 101, 72, 12, 0, 1, 170]
+[170, 0, 72, 108, 111, 4]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>frame = [170, 1, 0, 12, 72, 101, 108, 108, 111, 33, 4, 210]
+print(far_slice(frame))
+try:
+    print(frame[99])
+except IndexError as problem:
+    print("IndexError:", problem)
+print(reverse_text("Kaitaia"))
+print(reverse_text("radar"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[]
+IndexError: list index out of range
+aiatiaK
+radar</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (carve, far_slice, copy_of, reverse_text))
+assert "for " not in whole, "rule broken: no loops"
+assert "len(" not in whole, "rule broken: do not call len()"
+assert "reversed(" not in whole, "rule broken: the step reverses, not reversed()"
+assert "list(" not in whole, "rule broken: no list()"
+assert ".append(" not in whole, "rule broken: no append"
+assert "range(" not in whole, "rule broken: no range"
+assert " = " not in whole, "rule broken: assign nothing, one return statement each"
+assert whole.count("return") == 4, "rule broken: one return per function"
+short = [7, 8]
+print(carve(short))
+print(far_slice(short))
+twin = copy_of(short)
+print(twin == short, twin is short)
+twin.append(9)
+print(short, twin)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[[7, 8], [], [7, 8], [8, 7], [7]]
+[]
+True False
+[7, 8] [7, 8, 9]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 07.4: The Robot Wrote Java!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>You rewrite three AI-written functions so they read as Python without changing what they return.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>This one is a code review. The three functions below were written by an AI, they are already in the
+starter box, and every test passes.</p>
+<h4>Passing tests is not the same as the code being right</h4>
+<p>Tests check behaviour. They say
+nothing about whether the next person can read the code, whether an index can drift out of step with
+the item it is meant to point at, or whether the shape belongs in the language at all. At work you will
+be reviewing AI-written Python in a safety-critical codebase, where the suite going green is the
+beginning of the review rather than the end of it. This question is that review, on a small scale.</p>
+<p>Here is the Java the AI was thinking in, whether it knew it or not.</p>
+<pre>for (int i = 0; i &lt; readings.size(); i++) {
+    System.out.println(i + ": " + readings.get(i));
+}</pre>
+<p>And here is what it wrote.</p>
+<pre>def label_readings(readings):
+    labels = []
+    for i in range(len(readings)):
+        labels.append(f"{i}: {readings[i]}")
+    return labels
+
+
+def positions_over(readings, limit):
+    hits = []
+    for i in range(len(readings)):
+        if readings[i] &gt; limit:
+            hits.append(i)
+    return hits
+
+
+def total_power(readings):
+    total = 0
+    for i in range(len(readings)):
+        total = total + readings[i]
+    return total</pre>
+<p>One habit, repeated three times. <code>range(len(readings))</code> builds a run of numbers, and then
+every line inside the loop pays for it by indexing back into the list. The number is a middleman. Python
+does not need one.</p>
+<ul>
+<li>A <code>for</code> loop over a list hands you the items directly. <code>for reading in
+readings</code> gives you each reading in turn, and there is no index to get wrong.</li>
+<li>When you genuinely need the position, <code>enumerate</code> hands you both. <code>for i, reading
+in enumerate(readings)</code> binds <code>i</code> to the position and <code>reading</code> to the item
+on every pass. It counts from zero, the same as the list does.</li>
+</ul>
+<p>Two of the three functions need the position. The third never uses it and should not be asking for
+it.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Rewrite all three so they read as Python.</p>
+<ul>
+<li><code>label_readings(readings)</code>, rewritten.</li>
+<li><code>positions_over(readings, limit)</code>, rewritten.</li>
+<li><code>total_power(readings)</code>, rewritten.</li>
+</ul>
+<p>The behaviour must not change by a single character of
+output. The visible tests check that it has not, and a hidden test checks that the
+<code>range(len(...))</code> shape is gone, so a rewrite that keeps the old shape fails even though the
+output is right.</p>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not write <code>range(len(...))</code> anywhere.</li><li>Use <code>enumerate</code> in the two functions that need a position.</li><li>The function that needs no position must not ask for one. No <code>enumerate</code> in that one.</li><li>Keep every return value exactly as it is today. This is a rewrite, not a redesign.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed for discussion. The code below came from an AI and it passes every test. Your job is to judge it, so do not ask an AI whether it is good.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>20</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[# The AI wrote this. It passes every test. Rewrite it as Python.
+def label_readings(readings):
+    labels = []
+    for i in range(len(readings)):
+        labels.append(f"{i}: {readings[i]}")
+    return labels
+
+
+def positions_over(readings, limit):
+    hits = []
+    for i in range(len(readings)):
+        if readings[i] > limit:
+            hits.append(i)
+    return hits
+
+
+def total_power(readings):
+    total = 0
+    for i in range(len(readings)):
+        total = total + readings[i]
+    return total
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def label_readings(readings):
+    labels = []
+    for i, reading in enumerate(readings):
+        labels.append(f"{i}: {reading}")
+    return labels
+
+
+def positions_over(readings, limit):
+    hits = []
+    for i, reading in enumerate(readings):
+        if reading > limit:
+            hits.append(i)
+    return hits
+
+
+def total_power(readings):
+    total = 0
+    for reading in readings:
+        total = total + reading
+    return total
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>readings = [12, 47, 9, 63, 47]
+for line in label_readings(readings):
+    print(line)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>0: 12
+1: 47
+2: 9
+3: 63
+4: 47</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>readings = [12, 47, 9, 63, 47]
+print(positions_over(readings, 40))
+print(positions_over(readings, 100))
+print(total_power(readings))
+print(total_power([]))
+print(label_readings([]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[1, 3, 4]
+[]
+178
+0
+[]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (label_readings, positions_over, total_power))
+assert "range(len(" not in whole, "rule broken: the range(len(...)) shape is still there"
+assert "range(len (" not in whole, "rule broken: the range(len(...)) shape is still there"
+assert "enumerate(" in inspect.getsource(label_readings), "rule broken: number the items with enumerate"
+assert "enumerate(" in inspect.getsource(positions_over), "rule broken: number the items with enumerate"
+assert "enumerate(" not in inspect.getsource(total_power), "rule broken: total_power never uses the position, so do not ask for one"
+print(label_readings(["kea", "tui"]))
+print(positions_over([2.5, 9.0, 2.5], 3))
+print(total_power([1.5, 2.5]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>['0: kea', '1: tui']
+[1]
+4.0</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+</quiz>

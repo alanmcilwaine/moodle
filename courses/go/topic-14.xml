@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 14.1: Errors Are Values!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A rain gauge measures how much rain falls each day. The miller receives each reading as text and wants the total for the week. In a wet week, some entries contain smudges instead of numbers, and the first smudge stops the count. A stopped count returns <code>0</code> as the total and passes the conversion error back unchanged. A week with no readings totals <code>0</code> with no error.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/errors-are-values">Errors are values</a>. Find the block with three calls to <code>fd.Write</code>. What does the code do immediately after each call that can fail?</li><li><a href="https://go.dev/ref/spec#Errors">Errors</a> in the spec. Read the sentence after the interface. Which <code>error</code> value means that no error occurred?</li><li><a href="https://pkg.go.dev/strconv#Atoi">strconv.Atoi</a>. Its documentation names the function that it uses. In that function's error paragraph, what number accompanies an out-of-range error?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>Integer.parseInt</code> inside a <code>try</code>, with a <code>NumberFormatException</code> caught somewhere above. The Go conversion throws nothing, so there is nothing to catch.</p><pre>try {
+    total += Integer.parseInt(reading);
+} catch (NumberFormatException e) {
+    throw new IllegalArgumentException("smudged reading", e);
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>panic</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find the GoCon story in the blog. Use the check after each <code>fd.Write</code> once inside your loop.</li><li>For a week without smudges, check the value returned beside the sum. Compare it with the specification sentence.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>16</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "strconv"
+
+func total(readings []string) (int, error) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "strconv"
+
+func total(readings []string) (int, error) {
+	sum := 0
+	for _, r := range readings {
+		n, err := strconv.Atoi(r)
+		if err != nil {
+			return 0, err
+		}
+		sum += n
+	}
+	return sum, nil
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "panic"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[n, _ := total([]string{"3", "0", "12"})
+fmt.Println(n)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>15</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[_, err := total([]string{"3", "wet", "12"})
+fmt.Println(err)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>strconv.Atoi: parsing "wet": invalid syntax</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var n int
+_, err := total([]string{"7", "smudge", "2", "torn"})
+fmt.Println(err)
+n, err = total([]string{"1", "99999999999999999999"})
+fmt.Println(n, err)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>strconv.Atoi: parsing "smudge": invalid syntax
+0 strconv.Atoi: parsing "99999999999999999999": value out of range</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[n, err := total(nil)
+fmt.Println(n, err == nil)
+n, err = total([]string{"-4", "9", "0"})
+fmt.Println(n, err == nil)
+_, err = total([]string{"4", ""})
+fmt.Println(err)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 true
+5 true
+strconv.Atoi: parsing "": invalid syntax</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 14.2: The Happy Error Path!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A parcel counter checks each parcel against a list of rejection reasons, in this order. A weight under 1 g is <code>empty parcel</code>, a weight over 20000 g is <code>too heavy</code>, and a blank destination is <code>no destination</code>. The counter stops at the first reason that applies and labels an acceptable parcel with its destination and weight, as in <code>Leeds 1200g</code>. The old clerk nested every check inside the previous one. Rewrite the checks without nesting.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/errors">errors</a>. Read the second overview sentence and open the named function in the index. Where does the returned error get its text?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is an <code>if</code>, <code>else if</code>, <code>else</code> sequence ending in a <code>throw</code>, or nested <code>if</code> blocks with the success branch innermost. Neither shape passes the rules below.</p><pre>if (p.weight() &lt; 1) {
+    throw new IllegalArgumentException("empty parcel");
+} else if (p.weight() &gt; 20000) {
+    throw new IllegalArgumentException("too heavy");
+} else {
+    return p.dest() + " " + p.weight() + "g";
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>else</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If a parcel that breaks two rules reports the wrong error, compare the order of your checks with the order in the Goal.</li><li>If a parcel that passes every check reports an error, look at what you return beside the label.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>24</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+type Parcel struct {
+	Weight int
+	Dest   string
+}
+
+func label(p Parcel) (string, error) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+type Parcel struct {
+	Weight int
+	Dest   string
+}
+
+func label(p Parcel) (string, error) {
+	if p.Weight < 1 {
+		return "", errors.New("empty parcel")
+	}
+	if p.Weight > 20000 {
+		return "", errors.New("too heavy")
+	}
+	if p.Dest == "" {
+		return "", errors.New("no destination")
+	}
+	return fmt.Sprintf("%s %dg", p.Dest, p.Weight), nil
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "else"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[s, err := label(Parcel{Weight: 1200, Dest: "Leeds"})
+fmt.Println(s, err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Leeds 1200g true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[_, err := label(Parcel{Weight: 0, Dest: "Leeds"})
+fmt.Println(err)
+_, err = label(Parcel{Weight: 800})
+fmt.Println(err)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>empty parcel
+no destination</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[_, err := label(Parcel{})
+fmt.Println(err)
+_, err = label(Parcel{Weight: 25000})
+fmt.Println(err)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>empty parcel
+too heavy</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[for _, p := range []Parcel{{1, "Skye"}, {20000, "Ely"}, {20001, "Ely"}} {
+	s, err := label(p)
+	if err != nil {
+		fmt.Println(err)
+		continue
+	}
+	fmt.Println(s)
+}]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Skye 1g
+Ely 20000g
+too heavy</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 14.3: The Sentinel's Watch!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A sentinel guards a keep and records why each guest was refused entry. He checks the guest list first, then the curfew, then whether the hall is full, and a refused guest never counts as inside. By morning, several clerks have copied the log and added their own notes. The captain must still identify the original reason. A refusal the captain cannot match to a known reason reads as plain <code>turned away</code>.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/errors#Is">errors.Is</a>. Read the first sentence and the paragraph that defines the error tree. Besides err itself, what can err's tree contain?</li><li><a href="https://pkg.go.dev/errors#New">errors.New</a>. Read the second sentence. If two calls use identical text, how many distinct error values do they create?</li><li><a href="https://pkg.go.dev/io#pkg-variables">io, the Variables section</a>. Inspect <code>EOF</code> and the nearby variables. Are these values created once or once per call? Ignore the note about the equality operator because the red line bans that operator.</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is one exception class per refusal with a <code>catch</code> block for each, or a comparison on <code>getMessage()</code>. A hidden test punishes both.</p><pre>try {
+    gate.admit(name, hour);
+} catch (NotInvitedException e) {
+    return "turned away, fetch the steward";
+} catch (CurfewException e) {
+    return "turned away, come back at dawn";
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>==</code>. <b>Required:</b> <code>errors.Is</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If an error with a note gets the plain <code>turned away</code>, reread <code>errors.Is</code> on what err's tree holds beyond err itself.</li><li>If <code>Admit</code>'s error does not match <code>ErrNotInvited</code>, count the calls to <code>errors.New</code> in your file against that function's second sentence.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>40</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "errors"
+
+// TODO: declare ErrNotInvited, ErrAfterCurfew, and ErrHallFull.
+
+type Gate struct {
+	invited  map[string]bool
+	curfew   int
+	capacity int
+	inside   int
+}
+
+func NewGate(invited []string, curfew, capacity int) *Gate {
+	// TODO
+}
+
+func (g *Gate) Admit(name string, hour int) error {
+	// TODO
+}
+
+func verdict(err error) string {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "errors"
+
+var (
+	ErrNotInvited  = errors.New("not on the list")
+	ErrAfterCurfew = errors.New("after curfew")
+	ErrHallFull    = errors.New("hall full")
+)
+
+type Gate struct {
+	invited  map[string]bool
+	curfew   int
+	capacity int
+	inside   int
+}
+
+func NewGate(invited []string, curfew, capacity int) *Gate {
+	g := &Gate{invited: map[string]bool{}, curfew: curfew, capacity: capacity}
+	for _, name := range invited {
+		g.invited[name] = true
+	}
+	return g
+}
+
+func (g *Gate) Admit(name string, hour int) error {
+	if !g.invited[name] {
+		return ErrNotInvited
+	}
+	if hour >= g.curfew {
+		return ErrAfterCurfew
+	}
+	if g.inside >= g.capacity {
+		return ErrHallFull
+	}
+	g.inside++
+	return nil
+}
+
+func verdict(err error) string {
+	switch {
+	case errors.Is(err, ErrNotInvited):
+		return "turned away, fetch the steward"
+	case errors.Is(err, ErrAfterCurfew):
+		return "turned away, come back at dawn"
+	case errors.Is(err, ErrHallFull):
+		return "turned away, wait by the fire"
+	case err != nil:
+		return "turned away"
+	}
+	return "admitted"
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "==", "required": "errors.Is"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[g := NewGate([]string{"Ada", "Bram"}, 22, 2)
+fmt.Println(verdict(g.Admit("Ada", 20)))
+fmt.Println(verdict(g.Admit("Cy", 20)))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>admitted
+turned away, fetch the steward</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[g := NewGate([]string{"Ada", "Bram"}, 22, 1)
+fmt.Println(verdict(g.Admit("Ada", 21)))
+fmt.Println(verdict(g.Admit("Bram", 21)))
+fmt.Println(verdict(g.Admit("Bram", 22)))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>admitted
+turned away, wait by the fire
+turned away, come back at dawn</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[g := NewGate([]string{"Ada"}, 22, 3)
+fmt.Println(verdict(fmt.Errorf("west gate: %w", g.Admit("Ada", 23))))
+fmt.Println(verdict(fmt.Errorf("after curfew, said the cook")))
+fmt.Println(verdict(g.Admit("Ada", 9)))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>turned away, come back at dawn
+turned away
+admitted</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[g := NewGate([]string{"Ada", "Bram", "Cy"}, 22, 2)
+fmt.Println(verdict(g.Admit("Zed", 23)))
+fmt.Println(verdict(g.Admit("Zed", 9)), verdict(ErrHallFull))
+fmt.Println(verdict(g.Admit("Ada", 10)), verdict(g.Admit("Bram", 10)))
+fmt.Println(verdict(g.Admit("Cy", 10)))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>turned away, fetch the steward
+turned away, fetch the steward turned away, wait by the fire
+admitted admitted
+turned away, wait by the fire</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

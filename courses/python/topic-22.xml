@@ -1,0 +1,990 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 22.1: The Case That Ate Everything!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write three functions that each pick an answer with one <code>match</code> statement.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java 14 gave you the arrow switch, and you have written it a hundred times.</p>
+<pre>String describe(int code) {
+    return switch (code) {
+        case 0 -&gt; "idle";
+        case 1, 2 -&gt; "running";
+        case 3 -&gt; "stopping";
+        default -&gt; "unknown code " + code;
+    };
+}</pre>
+<p>Python 3.10 added the same shape under the name <b>structural pattern matching</b>, spelled
+<code>match</code> and <code>case</code>. Most Python material on the internet is older than it, which is
+why you have not seen it yet.</p>
+<pre>match code:
+    case 0:
+        return "idle"
+    case 1 | 2:
+        return "running"
+    case 3:
+        return "stopping"
+    case other:
+        return f"unknown code {other}"</pre>
+<p>Python tries the cases from the top and stops at the first one that fits. There is no fallthrough and
+no <code>break</code>, so the body runs and the whole statement ends.</p>
+<h4>A statement, not an expression</h4>
+<p>Here is the first difference that will bite you. The Java arrow switch is an <b>expression</b>, so it
+produces a value and you return the whole thing. A Python <code>match</code> is a <b>statement</b>, and
+a statement produces nothing. Each case body has to return or assign for itself, which is why every
+branch above carries its own <code>return</code>.</p>
+<p><code>match</code> and <code>case</code> are <b>soft keywords</b>. A variable called
+<code>match</code> elsewhere in your program keeps working, because Python decides what the word means
+from where it sits on the line.</p>
+<h4>Four kinds of pattern</h4>
+<p>A <b>literal pattern</b> such as <code>case 0:</code> or <code>case "stop":</code> compares the
+subject with <code>==</code>. That is the closest thing to a Java case label.</p>
+<p>An <b>alternative</b> puts several patterns in one case, separated by <code>|</code>. Where Java
+writes <code>case 1, 2 -&gt;</code>, Python writes <code>case 1 | 2:</code>. Reach for it whenever two
+values share a body.</p>
+<p>The <b>wildcard</b> <code>case _:</code> matches anything and binds nothing. It reads like Java's
+<code>default</code> and behaves very differently in one respect. Java's switch over a sealed type
+refuses to compile when you miss a subtype. Python checks nothing at all, so a subject that fits no case
+falls off the end of the <code>match</code> and the statement does nothing. Inside a function that means
+a silent <code>None</code> comes back, which in a safety controller is a fault nobody reads.</p>
+<p>A <b>capture pattern</b> is a bare name such as <code>case other:</code>. It matches anything, like
+the wildcard, and it also binds the subject to that name so the body can read it. Use it when the
+fallback needs to report what arrived.</p>
+<h4>The trap that eats your dispatch</h4>
+<p>Read this section twice, because it costs people whole afternoons. A bare name in a <code>case</code>
+is <b>always</b> a capture and <b>never</b> a comparison. It does not matter that the name already
+exists and holds the value you wanted to test against.</p>
+<pre>FAILED = Status.FAILED
+
+match status:
+    case FAILED:                 # not a comparison. This binds.
+        return "tripped"</pre>
+<p>That case matches every status. It also rebinds <code>FAILED</code> to whatever came in, so the name
+you trusted now holds the subject.</p>
+<p>The trap wears two faces. Put cases after the bare name and Python stops you at compile time, which
+is the kind day.</p>
+<pre>SyntaxError: name capture 'FAILED' makes remaining patterns unreachable</pre>
+<p>Put the bare name last and Python compiles it without a murmur, because the last case is allowed to
+match everything. Your dispatcher now answers "tripped" for a healthy sensor and no error is raised
+anywhere. The supplied <code>broken_alert</code> in the answer box is exactly that, and one of the tests
+runs it beside yours so you can watch it lie.</p>
+<h4>The fix is a dot</h4>
+<p>A <b>dotted</b> name is a different animal. It is a <b>value pattern</b>, and a value pattern
+compares.</p>
+<pre>case Status.FAILED:              # compares with ==
+case Status.OK:</pre>
+<p>Python treats the dot as proof that you meant the thing on the right of it rather than a fresh
+variable. Enum members therefore belong inside a <code>match</code>, and loose module constants such as
+that <code>FAILED</code> do not. This is one more reason the enums topic told you to give a set of
+related constants a proper <code>Enum</code>.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>The answer box opens with a supplied block holding <code>Status</code>, a module constant
+<code>FAILED</code> and the broken <code>broken_alert</code>. Leave every line of it alone. Write the
+three functions below it.</p>
+<ul>
+<li><code>describe_code(code)</code> takes a whole number. <code>0</code> gives <code>"idle"</code>,
+<code>1</code> and <code>2</code> both give <code>"running"</code>, and <code>3</code> gives
+<code>"stopping"</code>. Anything else gives <code>f"unknown code {code}"</code>, and the last case must
+bind the value to a name of your choosing rather than use <code>case _</code>.</li>
+<li><code>alert(status)</code> takes a <code>Status</code> member. <code>Status.FAILED</code> gives
+<code>"trip"</code>, <code>Status.OK</code> gives <code>"all good"</code>, and any other member gives
+<code>"stale reading"</code> through <code>case _</code>. This is the working version of
+<code>broken_alert</code>.</li>
+<li><code>label(word)</code> takes a string. <code>"on"</code> and <code>"start"</code> give
+<code>"running"</code>. <code>"off"</code>, <code>"stop"</code> and <code>"halt"</code> give
+<code>"stopped"</code>. The empty string gives <code>"no word given"</code>. Anything else gives
+<code>"unrecognised"</code>.</li>
+</ul>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not write <code>if</code>, <code>elif</code> or <code>else</code>. The <code>match</code> statement picks the branch.</li><li>Compare an enum member with a dotted name. <code>case Status.FAILED</code> compares, and <code>case FAILED</code> binds a new variable and swallows the subject whole.</li><li>Put alternatives in one case with <code>|</code>. Do not repeat a body across two cases.</li><li>Leave the supplied block untouched, broken function and all. A hidden test calls it.</li><li>Annotate every signature, parameters and return alike.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>40</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from enum import Enum
+
+# ----------------------------------------------------------------------
+# Supplied. Do not change anything in this block.
+# ----------------------------------------------------------------------
+class Status(Enum):
+    OK = "OK"
+    FAILED = "FAILED"
+    STALE = "STALE"
+
+
+FAILED = Status.FAILED
+
+
+def broken_alert(status: Status) -> str:
+    match status:
+        case Status.STALE:
+            return "stale reading"
+        case FAILED:
+            return f"tripped, and FAILED now means {FAILED.name}"
+# ----------------------------------------------------------------------
+# End of the supplied block.
+# ----------------------------------------------------------------------
+
+
+def describe_code(code: int) -> str:
+    # TODO: one match with literal cases, a | alternative and a capture last
+
+
+def alert(status: Status) -> str:
+    # TODO: one match with dotted enum members and case _
+
+
+def label(word: str) -> str:
+    # TODO: one match with string literals, | alternatives and case _
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from enum import Enum
+
+# ----------------------------------------------------------------------
+# Supplied. Do not change anything in this block.
+# ----------------------------------------------------------------------
+class Status(Enum):
+    OK = "OK"
+    FAILED = "FAILED"
+    STALE = "STALE"
+
+
+FAILED = Status.FAILED
+
+
+def broken_alert(status: Status) -> str:
+    match status:
+        case Status.STALE:
+            return "stale reading"
+        case FAILED:
+            return f"tripped, and FAILED now means {FAILED.name}"
+# ----------------------------------------------------------------------
+# End of the supplied block.
+# ----------------------------------------------------------------------
+
+
+def describe_code(code: int) -> str:
+    match code:
+        case 0:
+            return "idle"
+        case 1 | 2:
+            return "running"
+        case 3:
+            return "stopping"
+        case other:
+            return f"unknown code {other}"
+
+
+def alert(status: Status) -> str:
+    match status:
+        case Status.FAILED:
+            return "trip"
+        case Status.OK:
+            return "all good"
+        case _:
+            return "stale reading"
+
+
+def label(word: str) -> str:
+    match word:
+        case "on" | "start":
+            return "running"
+        case "off" | "stop" | "halt":
+            return "stopped"
+        case "":
+            return "no word given"
+        case _:
+            return "unrecognised"
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>for code in [0, 1, 2, 3, 7]:
+    print(describe_code(code))
+for word in ["on", "start", "off", "stop", "halt", "", "spin"]:
+    print(label(word))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>idle
+running
+running
+stopping
+unknown code 7
+running
+running
+stopped
+stopped
+stopped
+no word given
+unrecognised</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>for status in (Status.FAILED, Status.OK, Status.STALE):
+    print(f"{status.name}: yours says {alert(status)}, the broken one says {broken_alert(status)}")</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>FAILED: yours says trip, the broken one says tripped, and FAILED now means FAILED
+OK: yours says all good, the broken one says tripped, and FAILED now means OK
+STALE: yours says stale reading, the broken one says stale reading</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+
+sources = {f.__name__: inspect.getsource(f) for f in (describe_code, alert, label)}
+for name, source in sources.items():
+    for line in source.splitlines():
+        head = line.strip()
+        assert not head.startswith("if "), "rule broken: no if statement, the match picks the branch"
+        assert not head.startswith("elif "), "rule broken: no elif, the match picks the branch"
+        assert not head.startswith("else"), "rule broken: no else, the match picks the branch"
+    assert "match " in source, "rule broken: every answer uses one match statement"
+assert "Status.FAILED" in sources["alert"], "rule broken: compare an enum with a dotted name"
+assert "case _" in sources["alert"], "rule broken: alert ends with case _"
+assert "case _" in sources["label"], "rule broken: label ends with case _"
+assert "case _" not in sources["describe_code"], "rule broken: the last case of describe_code binds a name"
+assert "|" in sources["label"], "rule broken: put alternatives in one case with |"
+assert "|" in sources["describe_code"], "rule broken: put alternatives in one case with |"
+assert sources["label"].count("case ") == 4, "rule broken: four cases, do not repeat a body"
+assert sources["describe_code"].count("case ") == 4, "rule broken: four cases, do not repeat a body"
+print(describe_code(-1), "|", describe_code(3))
+print(alert(Status.STALE), "|", alert(Status.FAILED))
+print(label("HALT"), "|", label("stop"))
+print(broken_alert(Status.OK))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>unknown code -1 | stopping
+stale reading | trip
+unrecognised | stopped
+tripped, and FAILED now means OK</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 22.2: Shape Up or Ship Out!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write three functions that read a list, a coordinate pair and a dict, each with one <code>match</code> statement.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java 21 lets a switch take a record apart in the case label, and <code>when</code> adds a condition.</p>
+<pre>switch (shape) {
+    case Point(int x, int y) when x == y -&gt; "on the diagonal at " + x;
+    case Point(int x, int y) -&gt; "at " + x + "," + y;
+    default -&gt; "not a point";
+}</pre>
+<p>That is as far as Java goes. There is no case label for a <code>List</code> and none for a
+<code>Map</code>, so a two element list is still <code>size()</code> and two calls to <code>get</code>,
+with the bounds check written by hand.</p>
+<pre>if (samples.isEmpty()) return "no samples";
+int first = samples.get(0);
+if (first &gt; 100) {
+    return "spike at " + first + ", " + (samples.size() - 1) + " more";
+}</pre>
+<p>Python matches a list and a dict as readily as it matches a record. Three tools do it, and the earlier
+tier of this topic gave you the rest of the statement.</p>
+<h4>Sequence patterns match by shape</h4>
+<pre>match samples:
+    case []:
+        return "no samples"
+    case [only]:
+        return f"one sample: {only}"
+    case [first, *rest]:
+        return f"starts at {first}, {len(rest)} more"</pre>
+<p>Length and position decide. <code>[]</code> wants nothing, <code>[only]</code> wants exactly one item,
+and <code>[a, b]</code> wants exactly two. A name inside the brackets is a capture, so it binds the item
+sitting in that position.</p>
+<p>A starred name soaks up whatever is left over, which is the same star you met when unpacking a tuple.
+<code>[first, *rest]</code> therefore matches a list of one item or a list of a hundred, and
+<code>rest</code> arrives as a list that is empty in the first of those two cases. The star can sit in
+the middle as well, so <code>[first, *middle, last]</code> is a legal pattern.</p>
+<p>Two surprises live here. The square brackets describe a shape rather than a list, so a tuple matches
+<code>case [x, y]</code> as happily as a list does. And strings never match a sequence pattern at all,
+which stops the word <code>"ab"</code> passing itself off as a coordinate pair.</p>
+<h4>Mapping patterns match by key</h4>
+<pre>match config:
+    case {"mode": "auto", "limit": limit}:
+        return f"auto up to {limit}"</pre>
+<p>That case wants a <code>"mode"</code> key holding <code>"auto"</code> and a <code>"limit"</code> key
+holding anything, and it binds the limit. Now the rule that catches everybody. A mapping pattern asks for
+a <b>subset</b>, so any other key in the dict is ignored and the case still fits. Sequence patterns
+demand the exact length and mapping patterns do not, and the two rules sit one page apart in your head.</p>
+<p>The subset rule has a sharp edge. <code>case {}:</code> asks for no keys at all, so it matches every
+mapping including a full one. It does not mean "an empty dict". Put it anywhere except last and every
+case below it is dead, and Python raises nothing to tell you.</p>
+<h4>Guards decide what the pattern cannot</h4>
+<pre>case [first, *rest] if first &gt; 100:
+    return f"spike at {first}, {len(rest)} more"</pre>
+<p>A <b>guard</b> is an <code>if</code> on the end of a <code>case</code> line, and it is Java's
+<code>when</code> under another spelling. The pattern runs first and binds its names, and the guard then
+reads those names and gives a yes or a no. A guard that says no does not end the match, so Python carries
+on to the next case and tries again.</p>
+<p>That is why two cases can carry the same pattern with different guards. The first case whose guard
+holds is the one that wins, so put the narrow case above the broad one or the broad one will take
+everything.</p>
+<p>A guard is an ordinary expression rather than part of the pattern, so it can compare two bound names,
+call a function, or read anything else in scope.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>All three take untrusted input, so the parameters are annotated <code>object</code> where the tests
+send more than one type. Every one of them ends with <code>case _</code>.</p>
+<ul>
+<li><code>summarise(samples)</code> takes a list of whole numbers. An empty list gives
+<code>"no samples"</code>. A list whose first sample is above 100 gives
+<code>f"spike at {first}, {len(rest)} more"</code>, counting only what follows the first sample. A list of
+exactly one sample gives <code>f"one sample: {only}"</code>. Any other list gives
+<code>f"starts at {first}, {len(rest)} more"</code>. Anything that is not a list gives
+<code>"not a batch"</code>.</li>
+<li><code>axis(point)</code> takes a pair of whole numbers as a list or a tuple.
+<code>(0, 0)</code> gives <code>"origin"</code>. A zero second value gives
+<code>f"on the x axis at {x}"</code> and a zero first value gives <code>f"on the y axis at {y}"</code>.
+A pair of equal values gives <code>f"on the diagonal at {x}"</code>. Any other pair gives
+<code>f"at {x},{y}"</code>. Anything that is not a pair gives <code>"not a point"</code>.</li>
+<li><code>setting(config)</code> takes a dict. A <code>"mode"</code> of <code>"auto"</code> with a
+<code>"limit"</code> above 100 gives <code>f"auto, limit {limit} above the safe band"</code>, and with any
+other limit gives <code>f"auto up to {limit}"</code>. An <code>"auto"</code> mode with no limit key gives
+<code>"auto with no limit"</code>. A <code>"mode"</code> of <code>"manual"</code> gives
+<code>"manual, limit ignored"</code>. Any other mode gives <code>f"unsupported mode {mode}"</code>, and a
+dict without a mode key gives <code>"no mode given"</code>.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not write <code>if</code>, <code>elif</code> or <code>else</code> as a statement. A guard on a <code>case</code> line is the only <code>if</code> these answers get.</li><li>Do not measure or index the subject. <code>len(samples)</code>, <code>point[0]</code> and <code>config["mode"]</code> are all the pattern's job. <code>len(rest)</code> on a name the pattern bound is fine.</li><li>Do not call <code>get</code> and do not write <code>in</code> to test for a key. The mapping pattern does both.</li><li>Use no class pattern here. Lists, tuples and dicts only.</li><li>End every <code>match</code> with <code>case _</code>. A dispatch that falls off the end returns <code>None</code> in silence.</li><li>Annotate every signature, parameters and return alike.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>34</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def summarise(samples: object) -> str:
+    # TODO: one match over the shape of the list, with a guard for the spike
+
+
+def axis(point: object) -> str:
+    # TODO: one match over a two item sequence, with a guard for the diagonal
+
+
+def setting(config: object) -> str:
+    # TODO: one match over the keys of the dict, with a guard on the limit
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def summarise(samples: object) -> str:
+    match samples:
+        case []:
+            return "no samples"
+        case [first, *rest] if first > 100:
+            return f"spike at {first}, {len(rest)} more"
+        case [only]:
+            return f"one sample: {only}"
+        case [first, *rest]:
+            return f"starts at {first}, {len(rest)} more"
+        case _:
+            return "not a batch"
+
+
+def axis(point: object) -> str:
+    match point:
+        case [0, 0]:
+            return "origin"
+        case [x, 0]:
+            return f"on the x axis at {x}"
+        case [0, y]:
+            return f"on the y axis at {y}"
+        case [x, y] if x == y:
+            return f"on the diagonal at {x}"
+        case [x, y]:
+            return f"at {x},{y}"
+        case _:
+            return "not a point"
+
+
+def setting(config: object) -> str:
+    match config:
+        case {"mode": "auto", "limit": limit} if limit > 100:
+            return f"auto, limit {limit} above the safe band"
+        case {"mode": "auto", "limit": limit}:
+            return f"auto up to {limit}"
+        case {"mode": "auto"}:
+            return "auto with no limit"
+        case {"mode": "manual"}:
+            return "manual, limit ignored"
+        case {"mode": mode}:
+            return f"unsupported mode {mode}"
+        case _:
+            return "no mode given"
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>for batch in [[], [42], [200], [150, 1, 2], [3, 4, 5], "12"]:
+    print(summarise(batch))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>no samples
+one sample: 42
+spike at 200, 0 more
+spike at 150, 2 more
+starts at 3, 2 more
+not a batch</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>for point in [(0, 0), (5, 0), (0, -2), [3, 3], (2, 7), "ab", (1, 2, 3)]:
+    print(axis(point))
+for config in [{"mode": "auto", "limit": 50},
+               {"mode": "auto", "limit": 150},
+               {"mode": "auto", "limit": 50, "unit": "bar"},
+               {"mode": "auto"},
+               {"mode": "manual", "limit": 9},
+               {"mode": "burst"},
+               {"limit": 10}]:
+    print(setting(config))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>origin
+on the x axis at 5
+on the y axis at -2
+on the diagonal at 3
+at 2,7
+not a point
+not a point
+auto up to 50
+auto, limit 150 above the safe band
+auto up to 50
+auto with no limit
+manual, limit ignored
+unsupported mode burst
+no mode given</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+
+sources = {f.__name__: inspect.getsource(f) for f in (summarise, axis, setting)}
+for name, source in sources.items():
+    for line in source.splitlines():
+        head = line.strip()
+        assert not head.startswith("if "), "rule broken: no if statement, a guard is the only if"
+        assert not head.startswith("elif "), "rule broken: no elif in the dispatch"
+        assert not head.startswith("else"), "rule broken: no else in the dispatch"
+    assert "case _" in source, "rule broken: every match ends with case _"
+    assert " if " in source, "rule broken: every answer carries a guard"
+assert "len(samples)" not in sources["summarise"], "rule broken: the pattern measures the list, not len"
+assert "samples[" not in sources["summarise"], "rule broken: do not index the subject"
+assert "*" in sources["summarise"], "rule broken: collect the rest with a starred name"
+assert "point[" not in sources["axis"], "rule broken: do not index the subject"
+assert "config[" not in sources["setting"], "rule broken: the mapping pattern reads the keys"
+assert ".get(" not in sources["setting"], "rule broken: do not call get, the pattern reads the keys"
+assert " in config" not in sources["setting"], "rule broken: do not test for a key with in"
+print(summarise([101]), "|", summarise([100, 1]))
+print(axis((-4, -4)), "|", axis([0, 0]), "|", axis([]))
+print(setting({"mode": "auto", "limit": 101}), "|", setting({}))
+print(setting(["mode", "auto"]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>spike at 101, 0 more | starts at 100, 1 more
+on the diagonal at -4 | origin | not a point
+auto, limit 101 above the safe band | no mode given
+no mode given</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 22.3: Death to isinstance!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write three dispatchers that replace an <code>isinstance</code> ladder with one <code>match</code> statement each.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java 21 gave you a switch that reads a sealed hierarchy and takes records apart in the same line.
+You write the shape you expect, and the compiler checks you covered every permitted subtype.</p>
+<pre>sealed interface Event permits Reading, Alarm, Heartbeat {}
+record Reading(String sensor, double value) implements Event {}
+
+String classify(Event event) {
+    return switch (event) {
+        case Alarm a when a.status() == Status.FAILED -&gt; "trip on " + a.code();
+        case Reading(String sensor, double value) -&gt; sensor + " reads " + value;
+        case Heartbeat h -&gt; h.node() + " is alive";
+        default -&gt; "unrecognised event";
+    };
+}</pre>
+<p>Before that arrived you wrote a ladder of <code>instanceof</code> tests with a cast in every branch.
+Python 3.10 added the same tool under the name <b>structural pattern matching</b>, spelled
+<code>match</code> and <code>case</code>. This is the closest thing in the language to that switch, and
+most Python tutorials predate it.</p>
+<pre>match event:
+    case Reading(sensor=sensor, value=value):
+        return f"{sensor} reads {value}"
+    case _:
+        return "unrecognised event"</pre>
+<p>Python runs the cases from the top and stops at the first one that fits. A <code>match</code> is a
+statement and not an expression, so each body returns or assigns rather than producing a value for the
+whole block. <code>match</code> and <code>case</code> are <b>soft keywords</b>, which means a variable
+called <code>match</code> elsewhere in your program keeps working.</p>
+<p>Six kinds of pattern do the work. A <b>literal pattern</b> such as <code>case 0:</code> or
+<code>case "stop":</code> compares with <code>==</code>. A <b>capture pattern</b> is a bare name. It
+matches anything and binds the subject to that name. <code>case _:</code> is the <b>wildcard</b>, which
+matches anything and binds nothing.</p>
+<p>The capture pattern carries a trap worth its own sentence. A bare name in a <code>case</code> is a
+capture and never a comparison, so <code>case FAILED:</code> does not test the subject against your
+constant <code>FAILED</code>. It matches every subject, rebinds <code>FAILED</code> to whatever came in,
+and every case below it becomes dead code. Write a dotted name instead. <code>case Status.FAILED:</code>
+is a <b>value pattern</b> and compares, which is why enum members belong in a <code>match</code> and
+loose module constants do not.</p>
+<p>A <b>class pattern</b> looks like a constructor call and does the work of
+<code>instanceof</code> plus the cast plus the field reads. <code>case Reading(sensor=sensor,
+value=value):</code> checks the type and binds the two attributes in one line. A dataclass also fills in
+<code>__match_args__</code>, so the positional form <code>case Reading(sensor, value)</code> works as
+well, and the keyword form is the one that survives somebody reordering the fields.</p>
+<p>A <b>guard</b> is an <code>if</code> on the end of a <code>case</code> line. The pattern binds first
+and the guard then decides, so <code>case Reading(sensor=sensor, value=value) if value &gt; 100.0:</code>
+reads the bound value. When the guard is false Python carries on to the next case.</p>
+<p>A <b>sequence pattern</b> matches by length and position. <code>case ["arm", node]:</code> wants
+exactly two items and binds the second. A starred name collects the rest, so
+<code>case ["log", *rest]:</code> matches one item or a hundred. Strings and bytes never match a
+sequence pattern, which stops <code>"arm"</code> quietly matching a four-item list of characters.</p>
+<p>A <b>mapping pattern</b> matches by key. <code>case {"kind": "alarm", "code": code}:</code> wants
+those two keys with that first value, and it ignores every other key in the dict. That subset rule is the
+opposite of the sequence rule, so read it twice.</p>
+<p>Alternatives go in one case with <code>|</code>. <code>case ["stop" | "halt"]:</code> takes either
+word. Every alternative must bind the same names, so <code>case [x] | [x, y]:</code> is rejected.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Write three dispatchers over the supplied types. Leave the supplied block alone.</p>
+<ul>
+<li><code>classify(event)</code> takes a <code>Reading</code>, an <code>Alarm</code> or a
+<code>Heartbeat</code>. A failed alarm gives <code>f"trip on {code}"</code>. Any other alarm gives
+<code>f"alarm {code} is {status.value}"</code>. A reading above <code>100.0</code> gives
+<code>f"{sensor} over range at {value}"</code> and any other reading gives
+<code>f"{sensor} reads {value}"</code>. A heartbeat gives <code>f"{node} is alive"</code>. Anything else
+gives <code>"unrecognised event"</code>.</li>
+<li><code>route(command)</code> takes a list of strings. An empty list gives
+<code>"no command"</code>. <code>["stop"]</code> and <code>["halt"]</code> both give
+<code>"stopping"</code>. <code>["arm", node]</code> gives <code>f"arming {node}"</code>.
+<code>["set", key, value]</code> gives <code>f"{key} set to {value}"</code>. A list starting with
+<code>"log"</code> gives <code>f"log of {len(rest)} entries"</code>, counting only what follows the
+word. Anything else gives <code>"unsupported command"</code>.</li>
+<li><code>unpack(payload)</code> takes a dict. A <code>"kind"</code> of <code>"reading"</code> with a
+string <code>"sensor"</code> and a float <code>"value"</code> gives
+<code>f"reading {sensor}={value}"</code>. A <code>"kind"</code> of <code>"alarm"</code> with a
+<code>"code"</code> gives <code>f"alarm {code}"</code>. Any other <code>"kind"</code> gives
+<code>f"unsupported kind {kind}"</code>, and a dict without one gives <code>"no kind given"</code>.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not write <code>isinstance</code> anywhere. The <code>match</code> statement decides.</li><li>Do not write <code>if</code>, <code>elif</code> or <code>else</code> to choose a branch. A guard on a <code>case</code> line is the only <code>if</code> this answer gets.</li><li>Compare an enum member with a dotted name. <code>case Status.FAILED</code> compares, and <code>case FAILED</code> binds a new variable and eats every case below it.</li><li>Destructure in the pattern. An <code>event.code</code> inside a case body means the pattern did not do its job.</li><li>End every <code>match</code> with <code>case _</code>. A dispatch that falls off the end returns <code>None</code> in silence, and a silent <code>None</code> in a safety controller is a fault nobody reads.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>60</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from dataclasses import dataclass
+from enum import Enum
+
+# ----------------------------------------------------------------------
+# Supplied. Do not change anything in this block.
+# ----------------------------------------------------------------------
+class Status(Enum):
+    OK = "OK"
+    FAILED = "FAILED"
+    STALE = "STALE"
+
+
+@dataclass(frozen=True)
+class Reading:
+    sensor: str
+    value: float
+
+
+@dataclass(frozen=True)
+class Alarm:
+    code: str
+    status: Status
+
+
+@dataclass(frozen=True)
+class Heartbeat:
+    node: str
+# ----------------------------------------------------------------------
+# End of the supplied block.
+# ----------------------------------------------------------------------
+
+
+def classify(event: Reading | Alarm | Heartbeat) -> str:
+    # TODO: one match statement over the three record types, guards and all
+
+
+def route(command: list[str]) -> str:
+    # TODO: one match statement over the shape of the list
+
+
+def unpack(payload: dict[str, object]) -> str:
+    # TODO: one match statement over the keys of the dict
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from dataclasses import dataclass
+from enum import Enum
+
+# ----------------------------------------------------------------------
+# Supplied. Do not change anything in this block.
+# ----------------------------------------------------------------------
+class Status(Enum):
+    OK = "OK"
+    FAILED = "FAILED"
+    STALE = "STALE"
+
+
+@dataclass(frozen=True)
+class Reading:
+    sensor: str
+    value: float
+
+
+@dataclass(frozen=True)
+class Alarm:
+    code: str
+    status: Status
+
+
+@dataclass(frozen=True)
+class Heartbeat:
+    node: str
+# ----------------------------------------------------------------------
+# End of the supplied block.
+# ----------------------------------------------------------------------
+
+
+def classify(event: Reading | Alarm | Heartbeat) -> str:
+    match event:
+        case Alarm(code=code, status=Status.FAILED):
+            return f"trip on {code}"
+        case Alarm(code=code, status=status):
+            return f"alarm {code} is {status.value}"
+        case Reading(sensor=sensor, value=value) if value > 100.0:
+            return f"{sensor} over range at {value}"
+        case Reading(sensor=sensor, value=value):
+            return f"{sensor} reads {value}"
+        case Heartbeat(node=node):
+            return f"{node} is alive"
+        case _:
+            return "unrecognised event"
+
+
+def route(command: list[str]) -> str:
+    match command:
+        case []:
+            return "no command"
+        case ["stop" | "halt"]:
+            return "stopping"
+        case ["arm", node]:
+            return f"arming {node}"
+        case ["set", key, value]:
+            return f"{key} set to {value}"
+        case ["log", *rest]:
+            return f"log of {len(rest)} entries"
+        case _:
+            return "unsupported command"
+
+
+def unpack(payload: dict[str, object]) -> str:
+    match payload:
+        case {"kind": "reading", "sensor": str(sensor), "value": float(value)}:
+            return f"reading {sensor}={value}"
+        case {"kind": "alarm", "code": code}:
+            return f"alarm {code}"
+        case {"kind": kind}:
+            return f"unsupported kind {kind}"
+        case _:
+            return "no kind given"
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>events = [
+    Alarm("E17", Status.FAILED),
+    Alarm("E18", Status.STALE),
+    Reading("p1", 42.5),
+    Reading("p2", 140.0),
+    Heartbeat("node-a"),
+    "not an event",
+]
+for event in events:
+    print(classify(event))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>trip on E17
+alarm E18 is STALE
+p1 reads 42.5
+p2 over range at 140.0
+node-a is alive
+unrecognised event</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>commands = [[], ["stop"], ["halt"], ["arm", "inlet"], ["set", "limit", "90"],
+            ["log", "a", "b", "c"], ["log"], ["fly", "me"], "arm"]
+for command in commands:
+    print(route(command))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>no command
+stopping
+stopping
+arming inlet
+limit set to 90
+log of 3 entries
+log of 0 entries
+unsupported command
+unsupported command</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>payloads = [
+    {"kind": "reading", "sensor": "p1", "value": 12.5},
+    {"kind": "reading", "sensor": "p1", "value": 12.5, "unit": "bar"},
+    {"kind": "reading", "sensor": "p1", "value": 12},
+    {"kind": "alarm", "code": "E17"},
+    {"kind": "shrug"},
+    {"sensor": "p1"},
+]
+for payload in payloads:
+    print(unpack(payload))
+
+FAILED = Status.FAILED
+
+
+def trap(status: Status) -> str:
+    match status:
+        case FAILED:
+            return f"case FAILED captured {FAILED.name}"
+
+
+print(trap(Status.OK))
+print(trap(Status.STALE))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>reading p1=12.5
+reading p1=12.5
+unsupported kind reading
+alarm E17
+unsupported kind shrug
+no kind given
+case FAILED captured OK
+case FAILED captured STALE</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+
+sources = [inspect.getsource(f) for f in (classify, route, unpack)]
+whole = "".join(sources)
+assert "isinstance(" not in whole, "rule broken: the match statement decides, not isinstance"
+for source in sources:
+    assert "case _" in source, "rule broken: every match needs a wildcard case"
+    for line in source.splitlines():
+        head = line.strip()
+        assert not head.startswith("if "), "rule broken: no if statement in the dispatch"
+        assert not head.startswith("elif "), "rule broken: no elif in the dispatch"
+        assert not head.startswith("else"), "rule broken: no else in the dispatch"
+classify_src = inspect.getsource(classify)
+assert "Status.FAILED" in classify_src, "rule broken: compare an enum with a dotted name"
+assert "event." not in classify_src, "rule broken: destructure in the pattern, not in the body"
+assert "*" in inspect.getsource(route), "rule broken: collect the rest with a starred name"
+
+print(classify(Alarm("E99", Status.FAILED)))
+print(classify(Reading("t1", 100.0)), "|", classify(Reading("t1", 100.5)))
+print(route(["log"]), "|", route(["set", "gain", "3"]))
+print(unpack({"kind": "alarm", "code": "E1", "extra": 1}))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>trip on E99
+t1 reads 100.0 | t1 over range at 100.5
+log of 0 entries | gain set to 3
+alarm E1</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+</quiz>

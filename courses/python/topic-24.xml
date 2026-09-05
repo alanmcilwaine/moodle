@@ -1,0 +1,735 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 24.1: Fail Safe or Fail Loud!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Delete a skeleton of four Java design patterns and rebuild the safety interlock controller out of plain Python data.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>This is the capstone. You are building a safety interlock controller, and the answer box already
+holds a straight Java design written out in Python syntax.</p>
+<p>The skeleton carries four Java patterns.</p>
+<ul>
+<li>An <code>AbstractHandler</code> base class with three subclasses and a <code>successor</code>
+field, which is Chain of Responsibility.</li>
+<li>A <code>HandlerRegistry</code> with a <code>getInstance</code> method, which is Singleton.</li>
+<li>A <code>StateInterface</code> with one class per state, plus an <code>if</code> ladder that picks
+between them.</li>
+<li>An <code>accept</code> method taking a visitor, which is Visitor.</li>
+</ul>
+<p>Python replaces all four with plain data. Here is each one.</p>
+<h4>The registry decorator</h4>
+<p>A dict maps a name to a function, and a decorator factory puts each function in it. The decorator
+returns the function unchanged, so every handler stays directly callable and directly testable.</p>
+<pre>HANDLERS: dict[str, Callable[[Reading], bool]] = {}
+
+
+def handler(name: str) -&gt; Callable[[Callable[[Reading], bool]], Callable[[Reading], bool]]:
+    def register(func: Callable[[Reading], bool]) -&gt; Callable[[Reading], bool]:
+        HANDLERS[name] = func
+        return func
+    return register
+
+
+@handler("pressure")
+def check_pressure(reading: Reading) -&gt; bool:
+    return reading.value &lt; 90.0</pre>
+<p>A hand-written dict literal would hold the same three entries. It would also drift the first time
+somebody adds a handler and forgets the literal. Each function enrols itself instead.</p>
+<h4>The transition table</h4>
+<p>An <code>Enum</code> names the states, and <code>auto()</code> gives each member a distinct value
+you never have to read. Both are from the dunders, dataclasses and enums topic. A dict keyed by a
+<code>(state, event)</code> tuple then names every legal move. Tuples are hashable, which you met in
+the dictionaries and sets topic, so they work as dict keys. Every move that is not in the dict is
+illegal, and the whole specification is readable in one place.</p>
+<pre>TRANSITIONS = {
+    (State.IDLE, "arm"): State.ARMED,
+    (State.ARMED, "start"): State.RUNNING,
+}</pre>
+<p>Look the move up with <code>TRANSITIONS[(self.state, action)]</code>. Catch the
+<code>KeyError</code> and raise your own error <code>from</code> it. The <code>from</code> keyword
+chains the two, so <code>__cause__</code> on your exception points at the <code>KeyError</code>
+underneath. The reader of the traceback sees both.</p>
+<h4>The formatter</h4>
+<p><code>functools.singledispatch</code> replaces Visitor. Decorate a base function, then register one
+implementation per argument type. Python picks the implementation from the run-time type of the first
+argument, and no record class needs an <code>accept</code> method.</p>
+<pre>@singledispatch
+def describe(record: object) -&gt; str:
+    raise TypeError(f"no formatter for {type(record).__name__}")
+
+
+@describe.register
+def _(record: Reading) -&gt; str:
+    return f"reading {record.sensor}={record.value:.1f}"</pre>
+<p>The registered functions are all named <code>_</code> on purpose. Nothing calls them by name.
+<code>singledispatch</code> reads the type annotation on the parameter to know which type each one
+handles.</p>
+<h4>The session</h4>
+<p>The context manager from the context managers topic wraps the run. It journals <code>BEGIN</code>,
+then <code>COMMIT</code> or <code>ROLLBACK</code>. On a failure it puts the state back where it found
+it and re-raises. A safety interlock that recovers from a fault in silence is the worst thing this
+program can do, so the exception must reach the caller.</p>
+<p>The audit trail is a frozen dataclass, from the dunders, dataclasses and enums topic. Frozen means
+assignment to a field raises <code>FrozenInstanceError</code>, so a recorded event cannot be edited
+after the fact.</p>
+<h4>The pipeline</h4>
+<p>The pipeline streams, as in the generators topic. <code>stream</code> is a generator, so it hands
+over one record at a time and never builds a list. It takes an <code>Iterable</code>, which is anything
+you can loop over, and returns an <code>Iterator</code>, which is the thing handing those records over.
+<code>itertools.islice(iterable, n)</code> takes the first <code>n</code> items and then stops asking
+for more. A hidden test counts how many records the source actually produced. Read more than the report
+needed and you fail.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>The supplied block at the top of the answer box holds four module-level names, <code>JOURNAL</code>,
+<code>LOG</code>, <code>RELAY_ATTEMPTS</code> and <code>STRATEGIES</code>. Below them sit two
+exceptions, the <code>Reading</code> and <code>Alarm</code> dataclasses, the <code>audit</code> and
+<code>retry</code> decorators from the decorators topic, and a flaky <code>relay_state</code> helper.
+Leave every line of it alone.</p>
+<ul>
+<li>Delete every line of the Java skeleton between the two banners. Do not translate it, and let no
+name from it survive anywhere in your answer.</li>
+<li><code>HANDLERS</code>, a dict from a name to a handler function, and <code>handler(name)</code>, a
+decorator factory that stores the function it decorates in <code>HANDLERS</code> under
+<code>name</code> and hands it back unchanged.</li>
+<li>Three handler functions, each enrolled through <code>@handler</code>.
+<code>check_pressure</code> goes in as <code>"pressure"</code> and returns
+<code>reading.value &lt; 90.0</code>. <code>check_temperature</code> goes in as
+<code>"temperature"</code> and returns <code>reading.value &lt; 70.0</code>. <code>check_relay</code>
+goes in as <code>"relay"</code>, returns <code>relay_state(reading)</code>, and carries
+<code>@audit("relay")</code> and <code>@retry(3)</code> beneath its <code>@handler("relay")</code>
+line.</li>
+<li><code>State</code>, an <code>Enum</code> with <code>IDLE</code>, <code>ARMED</code>,
+<code>RUNNING</code> and <code>STOPPED</code>, in that order, each given <code>auto()</code>.</li>
+<li><code>TRANSITIONS</code>, a dict keyed by a <code>(state, action)</code> tuple, with exactly five
+entries in this order. <code>IDLE arm ARMED</code>, <code>ARMED start RUNNING</code>,
+<code>RUNNING trip STOPPED</code>, <code>RUNNING stop STOPPED</code>,
+<code>STOPPED reset IDLE</code>.</li>
+<li><code>transition_table()</code> returns one string per entry, in insertion order, shaped
+<code>f"{state.name} --{action}--&gt; {target.name}"</code>.</li>
+<li><code>Event</code>, a frozen dataclass with the string fields <code>at</code>,
+<code>state</code> and <code>action</code>, in that order.</li>
+<li><code>Clock</code>, a runtime-checkable Protocol with one method, <code>now()</code>, returning a
+string.</li>
+<li><code>FixedClock(stamp)</code>, whose <code>now()</code> hands back the stamp it was built with.
+Its default stamp is <code>"2026-03-01T06:00:00"</code>.</li>
+<li><code>stream(source)</code>, a generator yielding one <code>(number, record)</code> pair at a time,
+numbered from 1.</li>
+<li><code>describe(record)</code>, built with <code>singledispatch</code>. A <code>Reading</code> gives
+<code>reading p1=12.0</code>, to one decimal place. An <code>Alarm</code> gives <code>alarm E1</code>.
+Anything else raises <code>TypeError</code>.</li>
+<li><code>best_strategy(strategies)</code> returns the key with the highest value, using
+<code>max</code> with a <code>key</code> function.</li>
+<li><code>Interlock(clock)</code>, the one controller class. It stores the clock, starts at
+<code>State.IDLE</code>, and holds an empty <code>events</code> list.</li>
+<li><code>Interlock.fire(action)</code> looks the move up in <code>TRANSITIONS</code>. When there is no
+such move it raises <code>TransitionError(f"{self.state.name} cannot {action}")</code> chained
+<code>from</code> the <code>KeyError</code>. Otherwise it moves the state, appends an
+<code>Event</code> stamped by the clock and naming the state it moved to, and returns that state.</li>
+<li><code>Interlock.session()</code>, the context manager wrapping a run. It appends
+<code>"BEGIN"</code> to <code>JOURNAL</code> on the way in, then <code>"COMMIT"</code> on success. On a
+failure it puts the state back where it found it, appends <code>"ROLLBACK"</code>, and re-raises.</li>
+<li><code>Interlock.report(source, limit)</code> returns the first <code>limit</code> records, each
+shaped <code>f"{number}. {describe(record)}"</code>, taken through <code>stream</code> and
+<code>islice</code>.</li>
+<li><code>Interlock.screen(name, reading)</code> looks the handler up in <code>HANDLERS</code> by name
+and calls it on the reading.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Write exactly one class statement for the controller. No handler may be a class, and no <code>AbstractHandler</code>, subclass, <code>getInstance</code> or <code>accept</code> may survive anywhere.</li><li>Let no <code>if</code> or <code>elif</code> decide anything inside <code>Interlock</code>. The registry is the dispatch, the transition table is the specification, and <code>transition_table()</code> prints it to prove it.</li><li>Enrol every handler through the <code>@handler</code> decorator. A hand-written registry literal fails the check even when its three entries are correct.</li><li>Stream the pipeline. The laziness probe counts source reads and fails you when the count runs ahead of what the report asked for.</li><li>Freeze every recorded event. A test that can edit the audit trail afterwards is a failed test.</li><li>Re-raise on the rollback path. A safety interlock that recovers from a fault in silence hides it until it matters.</li><li>Annotate every signature you write here. This is the shape of the code you will meet in production, so leave a reader nothing to guess at.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>90</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[import functools
+from collections.abc import Callable, Iterable, Iterator
+from contextlib import contextmanager
+from dataclasses import dataclass
+from enum import Enum, auto
+from functools import singledispatch
+from itertools import islice
+from typing import Any, Protocol, runtime_checkable
+
+# ----------------------------------------------------------------------
+# Supplied. Do not change anything in this block.
+# ----------------------------------------------------------------------
+JOURNAL: list[str] = []
+LOG: list[str] = []
+RELAY_ATTEMPTS: list[str] = []
+STRATEGIES = {"vent": 3, "isolate": 7, "shutdown": 5}
+
+
+class TransitionError(Exception):
+    pass
+
+
+class RelayError(Exception):
+    pass
+
+
+@dataclass(frozen=True)
+class Reading:
+    sensor: str
+    value: float
+
+
+@dataclass(frozen=True)
+class Alarm:
+    code: str
+
+
+def audit(channel: str) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    def decorate(func: Callable[..., Any]) -> Callable[..., Any]:
+        @functools.wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            LOG.append(f"{channel}: calling {func.__name__}")
+            return func(*args, **kwargs)
+        return wrapper
+    return decorate
+
+
+def retry(times: int) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    def decorate(func: Callable[..., Any]) -> Callable[..., Any]:
+        @functools.wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            last = None
+            for _ in range(times):
+                try:
+                    return func(*args, **kwargs)
+                except RelayError as exc:
+                    last = exc
+            raise last
+        return wrapper
+    return decorate
+
+
+def relay_state(reading: Reading) -> bool:
+    """Read the relay. It bounces the first two times."""
+    RELAY_ATTEMPTS.append(reading.sensor)
+    if len(RELAY_ATTEMPTS) < 3:
+        raise RelayError(f"{reading.sensor} bounced")
+    return reading.value < 5.0
+# ----------------------------------------------------------------------
+# End of the supplied block.
+# ----------------------------------------------------------------------
+
+
+# ======================================================================
+# DELETE EVERY LINE BETWEEN THE TWO BANNERS. Do not translate it.
+# ======================================================================
+class AbstractHandler:
+    def __init__(self, successor=None):
+        self.successor = successor
+
+    def handle(self, record):
+        raise NotImplementedError
+
+    def accept(self, visitor):
+        return visitor.visit(self)
+
+
+class PressureHandler(AbstractHandler):
+    def handle(self, record):
+        return record.value < 90.0
+
+
+class TemperatureHandler(AbstractHandler):
+    def handle(self, record):
+        return record.value < 70.0
+
+
+class RelayHandler(AbstractHandler):
+    def handle(self, record):
+        return relay_state(record)
+
+
+class HandlerRegistry:
+    _instance = None
+
+    @classmethod
+    def getInstance(cls):
+        if cls._instance is None:
+            cls._instance = HandlerRegistry()
+        return cls._instance
+
+    def lookup(self, name):
+        if name == "pressure":
+            return PressureHandler()
+        elif name == "temperature":
+            return TemperatureHandler()
+        elif name == "relay":
+            return RelayHandler()
+        raise KeyError(name)
+
+
+class StateInterface:
+    def next_state(self, action):
+        raise NotImplementedError
+
+
+class IdleState(StateInterface):
+    def next_state(self, action):
+        if action == "arm":
+            return ArmedState()
+        raise ValueError(action)
+
+
+class ArmedState(StateInterface):
+    def next_state(self, action):
+        if action == "start":
+            return RunningState()
+        raise ValueError(action)
+
+
+class RunningState(StateInterface):
+    def next_state(self, action):
+        if action == "trip" or action == "stop":
+            return StoppedState()
+        raise ValueError(action)
+
+
+class StoppedState(StateInterface):
+    def next_state(self, action):
+        if action == "reset":
+            return IdleState()
+        raise ValueError(action)
+# ======================================================================
+# END OF THE PART YOU DELETE.
+# ======================================================================
+
+
+# TODO: HANDLERS and the @handler decorator factory
+
+# TODO: three enrolled handler functions, the relay one audited and retried
+
+# TODO: State, TRANSITIONS and transition_table()
+
+# TODO: the frozen Event dataclass
+
+# TODO: the Clock Protocol and FixedClock
+
+# TODO: stream(), describe() and best_strategy()
+
+# TODO: class Interlock, the one controller class
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[import functools
+from collections.abc import Callable, Iterable, Iterator
+from contextlib import contextmanager
+from dataclasses import dataclass
+from enum import Enum, auto
+from functools import singledispatch
+from itertools import islice
+from typing import Any, Protocol, runtime_checkable
+
+# ----------------------------------------------------------------------
+# Supplied. Do not change anything in this block.
+# ----------------------------------------------------------------------
+JOURNAL: list[str] = []
+LOG: list[str] = []
+RELAY_ATTEMPTS: list[str] = []
+STRATEGIES = {"vent": 3, "isolate": 7, "shutdown": 5}
+
+
+class TransitionError(Exception):
+    pass
+
+
+class RelayError(Exception):
+    pass
+
+
+@dataclass(frozen=True)
+class Reading:
+    sensor: str
+    value: float
+
+
+@dataclass(frozen=True)
+class Alarm:
+    code: str
+
+
+def audit(channel: str) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    def decorate(func: Callable[..., Any]) -> Callable[..., Any]:
+        @functools.wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            LOG.append(f"{channel}: calling {func.__name__}")
+            return func(*args, **kwargs)
+        return wrapper
+    return decorate
+
+
+def retry(times: int) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    def decorate(func: Callable[..., Any]) -> Callable[..., Any]:
+        @functools.wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            last = None
+            for _ in range(times):
+                try:
+                    return func(*args, **kwargs)
+                except RelayError as exc:
+                    last = exc
+            raise last
+        return wrapper
+    return decorate
+
+
+def relay_state(reading: Reading) -> bool:
+    """Read the relay. It bounces the first two times."""
+    RELAY_ATTEMPTS.append(reading.sensor)
+    if len(RELAY_ATTEMPTS) < 3:
+        raise RelayError(f"{reading.sensor} bounced")
+    return reading.value < 5.0
+# ----------------------------------------------------------------------
+# End of the supplied block.
+# ----------------------------------------------------------------------
+
+
+HANDLERS: dict[str, Callable[[Reading], bool]] = {}
+
+
+def handler(name: str) -> Callable[[Callable[[Reading], bool]], Callable[[Reading], bool]]:
+    def register(func: Callable[[Reading], bool]) -> Callable[[Reading], bool]:
+        HANDLERS[name] = func
+        return func
+    return register
+
+
+@handler("pressure")
+def check_pressure(reading: Reading) -> bool:
+    return reading.value < 90.0
+
+
+@handler("temperature")
+def check_temperature(reading: Reading) -> bool:
+    return reading.value < 70.0
+
+
+@handler("relay")
+@audit("relay")
+@retry(3)
+def check_relay(reading: Reading) -> bool:
+    return relay_state(reading)
+
+
+class State(Enum):
+    IDLE = auto()
+    ARMED = auto()
+    RUNNING = auto()
+    STOPPED = auto()
+
+
+TRANSITIONS = {
+    (State.IDLE, "arm"): State.ARMED,
+    (State.ARMED, "start"): State.RUNNING,
+    (State.RUNNING, "trip"): State.STOPPED,
+    (State.RUNNING, "stop"): State.STOPPED,
+    (State.STOPPED, "reset"): State.IDLE,
+}
+
+
+def transition_table() -> list[str]:
+    return [f"{state.name} --{action}--> {target.name}"
+            for (state, action), target in TRANSITIONS.items()]
+
+
+@dataclass(frozen=True)
+class Event:
+    at: str
+    state: str
+    action: str
+
+
+@runtime_checkable
+class Clock(Protocol):
+    def now(self) -> str:
+        ...
+
+
+class FixedClock:
+    def __init__(self, stamp: str = "2026-03-01T06:00:00") -> None:
+        self.stamp = stamp
+
+    def now(self) -> str:
+        return self.stamp
+
+
+def stream(source: Iterable[Reading | Alarm]) -> Iterator[tuple[int, Reading | Alarm]]:
+    """Yield one numbered record at a time. Nothing is ever materialised."""
+    for number, record in enumerate(source, start=1):
+        yield number, record
+
+
+@singledispatch
+def describe(record: object) -> str:
+    raise TypeError(f"no formatter for {type(record).__name__}")
+
+
+@describe.register
+def _(record: Reading) -> str:
+    return f"reading {record.sensor}={record.value:.1f}"
+
+
+@describe.register
+def _(record: Alarm) -> str:
+    return f"alarm {record.code}"
+
+
+def best_strategy(strategies: dict[str, int]) -> str:
+    return max(strategies, key=strategies.get)
+
+
+class Interlock:
+    def __init__(self, clock: Clock) -> None:
+        self.clock = clock
+        self.state = State.IDLE
+        self.events: list[Event] = []
+
+    def fire(self, action: str) -> State:
+        try:
+            target = TRANSITIONS[(self.state, action)]
+        except KeyError as exc:
+            raise TransitionError(f"{self.state.name} cannot {action}") from exc
+        self.state = target
+        self.events.append(Event(self.clock.now(), target.name, action))
+        return target
+
+    @contextmanager
+    def session(self) -> Iterator["Interlock"]:
+        previous = self.state
+        JOURNAL.append("BEGIN")
+        try:
+            yield self
+        except BaseException:
+            self.state = previous
+            JOURNAL.append("ROLLBACK")
+            raise
+        else:
+            JOURNAL.append("COMMIT")
+
+    def report(self, source: Iterable[Reading | Alarm], limit: int) -> list[str]:
+        return [f"{number}. {describe(record)}"
+                for number, record in islice(stream(source), limit)]
+
+    def screen(self, name: str, reading: Reading) -> bool:
+        return HANDLERS[name](reading)
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>for row in transition_table():
+    print(row)
+print(sorted(HANDLERS))
+lock = Interlock(FixedClock())
+print(lock.state.name)
+with lock.session():
+    lock.fire("arm")
+    lock.fire("start")
+    lock.fire("trip")
+print(lock.state.name, JOURNAL)
+for event in lock.events:
+    print(event)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>IDLE --arm--&gt; ARMED
+ARMED --start--&gt; RUNNING
+RUNNING --trip--&gt; STOPPED
+RUNNING --stop--&gt; STOPPED
+STOPPED --reset--&gt; IDLE
+['pressure', 'relay', 'temperature']
+IDLE
+STOPPED ['BEGIN', 'COMMIT']
+Event(at='2026-03-01T06:00:00', state='ARMED', action='arm')
+Event(at='2026-03-01T06:00:00', state='RUNNING', action='start')
+Event(at='2026-03-01T06:00:00', state='STOPPED', action='trip')</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>JOURNAL.clear()
+lock = Interlock(FixedClock())
+lock.fire("arm")
+try:
+    with lock.session():
+        lock.fire("start")
+        lock.fire("arm")
+except TransitionError as exc:
+    print("TransitionError:", exc)
+    print("caused by:", type(exc.__cause__).__name__)
+print(lock.state.name, JOURNAL, len(lock.events))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>TransitionError: RUNNING cannot arm
+caused by: KeyError
+ARMED ['BEGIN', 'ROLLBACK'] 2</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>READS = []
+
+
+def feed():
+    for record in [Reading("p1", 12.0), Alarm("E1"), Reading("t1", 68.5),
+                   Alarm("E2"), Reading("r1", 3.0)]:
+        READS.append(record)
+        yield record
+
+
+lock = Interlock(FixedClock())
+for line in lock.report(feed(), 2):
+    print(line)
+print("source reads:", len(READS))
+print(best_strategy(STRATEGIES))
+print(lock.screen("pressure", Reading("p1", 12.0)))
+print(lock.screen("temperature", Reading("t1", 98.0)))
+print(lock.screen("relay", Reading("r1", 3.0)))
+print(RELAY_ATTEMPTS, LOG)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>1. reading p1=12.0
+2. alarm E1
+source reads: 2
+isolate
+True
+False
+True
+['r1', 'r1', 'r1'] ['relay: calling check_relay']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+from dataclasses import FrozenInstanceError, is_dataclass
+
+for gone in ("AbstractHandler", "PressureHandler", "TemperatureHandler",
+             "RelayHandler", "HandlerRegistry", "StateInterface",
+             "IdleState", "RunningState"):
+    assert gone not in globals(), "rule broken: delete the whole hierarchy"
+
+here = Interlock.__module__
+for value in list(globals().values()):
+    if isinstance(value, type) and getattr(value, "__module__", "") == here:
+        assert not hasattr(value, "handle"), "rule broken: no handler classes"
+        assert not hasattr(value, "accept"), "rule broken: no accept method"
+
+assert len(HANDLERS) == 3, "rule broken: register exactly three handlers"
+for name, func in HANDLERS.items():
+    assert inspect.isfunction(func), "rule broken: every handler is a function"
+    assert "@handler(" in inspect.getsource(func), "rule broken: enrol through the decorator"
+assert HANDLERS["pressure"] is check_pressure, "rule broken: the decorator returns the function unchanged"
+
+controller = inspect.getsource(Interlock)
+assert "if " not in controller, "rule broken: no if decides anything"
+assert "elif " not in controller, "rule broken: no elif decides anything"
+assert inspect.isgeneratorfunction(stream), "rule broken: stream must be a generator"
+assert is_dataclass(Event), "rule broken: Event is a dataclass"
+assert Event.__dataclass_params__.frozen, "rule broken: freeze the audit trail"
+
+reads = []
+
+
+def feed():
+    for record in [Reading("a", 1.0), Alarm("X"), Reading("b", 2.0), Alarm("Y")]:
+        reads.append(record)
+        yield record
+
+
+lock = Interlock(FixedClock("2026-03-01T06:00:00"))
+print(lock.report(feed(), 1), len(reads))
+assert len(reads) == 1, "rule broken: the pipeline must stream"
+
+lock.fire("arm")
+try:
+    lock.events[0].state = "TAMPERED"
+    raise AssertionError("rule broken: the audit trail must be immutable")
+except FrozenInstanceError:
+    print("audit trail is immutable")
+
+JOURNAL.clear()
+raised = False
+try:
+    with lock.session():
+        lock.fire("reset")
+except TransitionError:
+    raised = True
+assert raised, "rule broken: the rollback path must re-raise"
+print("rollback re-raised")
+print(lock.state.name, JOURNAL)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>['1. reading a=1.0'] 1
+audit trail is immutable
+rollback re-raised
+ARMED ['BEGIN', 'ROLLBACK']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+</quiz>

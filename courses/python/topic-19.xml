@@ -1,0 +1,1166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 19.1: Two Faces of toString!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write three small classes, each defining a different combination of <code>__repr__</code> and <code>__str__</code>.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java gives an object one way to describe itself, and one audience to describe itself to.</p>
+<pre>class Sensor {
+    private final String code;
+    private final double reading;
+
+    @Override
+    public String toString() {
+        return "Sensor[code=" + code + ", reading=" + reading + "]";
+    }
+}
+
+System.out.println(sensor);            // calls toString
+System.out.println(List.of(sensor));   // calls toString on each element</pre>
+<p>Python splits that one method into two, because the two audiences want different things.</p>
+<ul>
+<li><code>__repr__</code> is for a developer holding a broken program. Make it precise, show the real
+values, and aim for text you could paste back into the source.</li>
+<li><code>__str__</code> is for a person reading output. Make it readable, and leave out whatever the
+reader does not need.</li>
+</ul>
+<p>Which one Python calls depends on how you ask. <code>print(sensor)</code>, <code>str(sensor)</code>
+and <code>f"{sensor}"</code> all go to <code>__str__</code>. <code>repr(sensor)</code> and
+<code>f"{sensor!r}"</code> go to <code>__repr__</code>.</p>
+<h4>A container prints the repr of its contents, never the str</h4>
+<p><code>print([sensor])</code>
+calls <code>__repr__</code> on the sensor inside, and so does a tuple, a dict and a set. This catches
+everybody once. You write a lovely <code>__str__</code>, print a list of your objects, and get
+something else entirely.</p>
+<p>The fallback runs one way only. Write <code>__repr__</code> alone and <code>print</code> uses it,
+because <code>__str__</code> falls back to <code>__repr__</code> when you have not written one. Write
+<code>__str__</code> alone and a list of your objects still prints rubbish. That is why
+<code>__repr__</code> is the one to write first, and often the only one worth writing.</p>
+<p>Write neither and Python prints this.</p>
+<pre>&lt;__main__.Sensor object at 0x7f2a1c0d3ef0&gt;</pre>
+<p>A class name and a memory address. It is Java's <code>Sensor@6d06d69c</code> and it is worth the
+same, which is nothing. The address changes on every run, so it cannot even go in a bug report.</p>
+<p>One piece of syntax carries the weight here. <code>{self.code!r}</code> inside an f-string is the
+<code>!r</code> conversion from the strings topic. It formats the value with <code>repr</code> rather
+than <code>str</code>, so a string keeps its quotes and you can see that <code>"3"</code> is not
+<code>3</code>. Use it on every value inside <code>__repr__</code>.</p>
+<pre>def __repr__(self) -&gt; str:
+    return f"Sensor(code={self.code!r}, reading={self.reading!r})"</pre>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Write three small classes. None of them prints anything by itself.</p>
+<ul>
+<li><code>Sensor(code, reading)</code> stores both values under those names. Its <code>__repr__</code>
+returns <code>Sensor(code='S1', reading=21.5)</code> and its <code>__str__</code> returns
+<code>sensor S1 reading 21.5</code>.</li>
+<li><code>Reading(code, value)</code> stores both values under those names and has
+<code>__repr__</code> only, returning <code>Reading(code='R7', value=3)</code>. Leaving
+<code>__str__</code> out is the point of this one.</li>
+<li><code>Bare(code)</code> stores the code and has neither dunder. Leave it useless on purpose, and
+read what the tests print about it.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not write a method named <code>toString</code>. Nothing in Python will ever call it.</li><li>Define <code>__repr__</code> above <code>__str__</code> inside <code>Sensor</code>, and use <code>!r</code> on both values inside it.</li><li>Give <code>Reading</code> no <code>__str__</code> and give <code>Bare</code> neither dunder. A hidden test checks that you left them out.</li><li>Annotate every signature. <code>__init__</code> returns <code>-&gt; None</code>, <code>__repr__</code> and <code>__str__</code> return <code>-&gt; str</code>, and <code>self</code> is never annotated.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>24</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[class Sensor:
+    def __init__(self, code: str, reading: float) -> None:
+        self.code = code
+        self.reading = reading
+
+    # TODO: __repr__ first, built with !r on both values
+    # TODO: then __str__, for a person reading output
+
+
+class Reading:
+    def __init__(self, code: str, value: int) -> None:
+        self.code = code
+        self.value = value
+
+    # TODO: __repr__ only. No __str__ here
+
+
+class Bare:
+    def __init__(self, code: str) -> None:
+        self.code = code
+
+    # TODO: nothing. Leave this one with no __repr__ and no __str__
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[class Sensor:
+    def __init__(self, code: str, reading: float) -> None:
+        self.code = code
+        self.reading = reading
+
+    def __repr__(self) -> str:
+        return f"Sensor(code={self.code!r}, reading={self.reading!r})"
+
+    def __str__(self) -> str:
+        return f"sensor {self.code} reading {self.reading}"
+
+
+class Reading:
+    def __init__(self, code: str, value: int) -> None:
+        self.code = code
+        self.value = value
+
+    def __repr__(self) -> str:
+        return f"Reading(code={self.code!r}, value={self.value!r})"
+
+
+class Bare:
+    def __init__(self, code: str) -> None:
+        self.code = code
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>one = Sensor("S1", 21.5)
+two = Sensor("S2", 4.0)
+print(one)
+print(repr(one))
+print([one, two])</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>sensor S1 reading 21.5
+Sensor(code='S1', reading=21.5)
+[Sensor(code='S1', reading=21.5), Sensor(code='S2', reading=4.0)]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>only = Reading("R7", 3)
+print(only)
+print(repr(only))
+print([only])
+print(f"{only} and {only!r}")</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>Reading(code='R7', value=3)
+Reading(code='R7', value=3)
+[Reading(code='R7', value=3)]
+Reading(code='R7', value=3) and Reading(code='R7', value=3)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+sensor_src = inspect.getsource(Sensor)
+assert "def toString" not in sensor_src, "rule broken: that name is Java. Write __repr__ and __str__"
+assert "!r" in sensor_src, "rule broken: use the !r conversion inside __repr__"
+assert sensor_src.index("__repr__") &lt; sensor_src.index("__str__"), "rule broken: __repr__ comes first"
+assert "def __str__" not in inspect.getsource(Reading), "rule broken: leave Reading with no __str__, that is what it is for"
+plain = Bare("B4")
+text = repr(plain)
+print(text.startswith("&lt;__main__.Bare object at 0x"), text.endswith("&gt;"), str(plain) == text)
+print(str(Sensor("S3", 0.5)), "|", repr(Sensor("S3", 0.5)))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>True True True
+sensor S3 reading 0.5 | Sensor(code='S3', reading=0.5)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 19.2: Equals Ate My Hash!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write two classes and a function that show what <code>__eq__</code> does to a class's hash.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java has a contract you have broken at least once. Override <code>equals</code> and you must override
+<code>hashCode</code> as well. Nothing enforces it.</p>
+<pre>@Override
+public boolean equals(Object o) {
+    if (!(o instanceof Tag other)) return false;
+    return kind.equals(other.kind) &amp;&amp; number == other.number;
+}
+// no hashCode. This compiles. This ships.</pre>
+<p>That class works everywhere except a <code>HashSet</code> or a <code>HashMap</code>, where two equal
+tags land in different buckets and the set holds both. Nothing throws. The wrong answer arrives quietly,
+months later, in production.</p>
+<p>Python renames the pair and then does something Java never does.</p>
+<h4><code>equals</code> becomes <code>__eq__</code></h4>
+<p>The <code>==</code> operator calls it. The
+signature is <code>__eq__(self, other: object) -&gt; bool</code>, and <code>other</code> is annotated
+<code>object</code> because anything at all can turn up on the far side of <code>==</code>. You get
+<code>!=</code> free, because Python derives it from <code>__eq__</code>. Never write
+<code>__ne__</code>.</p>
+<h4><code>__eq__</code> deletes your hash</h4>
+<p>This is the part with no Java equivalent, and it is the
+whole point of this tier. The moment a class defines <code>__eq__</code>, Python sets that class's
+<code>__hash__</code> to <code>None</code>. Your objects stop being hashable.</p>
+<pre>{tag}
+# TypeError: unhashable type: 'Tag'</pre>
+<p>Read that as Python refusing to let you ship the Java bug. Rather than let a half-kept contract rot
+in a set, it breaks the class the first time anyone tries, loudly, on the developer's own machine. Put the hash
+back yourself.</p>
+<pre>def __hash__(self) -&gt; int:
+    return hash((self.kind, self.number))</pre>
+<p>Hash a tuple of the same fields that <code>__eq__</code> compares. The contract is Java's contract.
+Two objects that compare equal must hash equal. Hash only fields that cannot change while the object
+sits in a set, because an object whose hash moves is an object you cannot find again.</p>
+<h4>Return <code>NotImplemented</code> for a stranger, never <code>False</code></h4>
+<p>When
+<code>other</code> is not your type, you do not know the answer. Say so. <code>NotImplemented</code> is a
+built-in constant, and returning it tells Python to ask the other operand instead. Only when both sides
+decline does Python fall back to identity and answer <code>False</code>.</p>
+<pre>def __eq__(self, other: object) -&gt; bool:
+    if not isinstance(other, Tag):
+        return NotImplemented
+    return (self.kind, self.number) == (other.kind, other.number)</pre>
+<p>Answer <code>False</code> there instead and you have ruled on behalf of a type you have never seen. A
+wrapper that knows perfectly well how to compare itself to a <code>Tag</code> never gets asked.
+<code>isinstance</code> is Python's <code>instanceof</code>, and <code>NotImplemented</code> is not
+<code>NotImplementedError</code>. One is a value you return and the other is an exception you raise.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Write two classes and one function.</p>
+<ul>
+<li><code>Tag(kind, number)</code> stores both values under those names. Give it <code>__repr__</code>
+returning <code>Tag(kind='valve', number=7)</code>, <code>__eq__</code> comparing both fields and
+returning <code>NotImplemented</code> for a stranger, and <code>__hash__</code> over both fields.</li>
+<li><code>Loose(label)</code> stores the label, defines <code>__eq__</code> the same way, and
+deliberately has no <code>__hash__</code>. It exists to break.</li>
+<li><code>unhashable_error()</code> puts a <code>Loose</code> into a set inside a <code>try</code>,
+catches the <code>TypeError</code>, and returns its message as a string.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not write a method named <code>equals</code> or <code>hashCode</code>. Write the dunders Python actually calls.</li><li>Do not write <code>__ne__</code>. Python derives <code>!=</code> from <code>__eq__</code>, and writing it by hand is how the two drift apart.</li><li>Return <code>NotImplemented</code> when the other operand is a stranger. Never return <code>False</code> there.</li><li>Hash a tuple of the same fields <code>__eq__</code> compares.</li><li>Leave <code>Loose</code> with no <code>__hash__</code>. A hidden test checks that you did.</li><li>Annotate every signature. <code>__eq__</code> takes <code>other: object</code>, <code>__hash__</code> returns <code>-&gt; int</code>, and <code>self</code> is never annotated.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>32</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[class Tag:
+    def __init__(self, kind: str, number: int) -> None:
+        self.kind = kind
+        self.number = number
+
+    # TODO: __repr__
+    # TODO: __eq__, returning NotImplemented for a stranger
+    # TODO: __hash__, because __eq__ has already deleted the inherited one
+
+
+class Loose:
+    def __init__(self, label: str) -> None:
+        self.label = label
+
+    # TODO: __eq__ only. No __hash__ here, on purpose
+
+
+def unhashable_error() -> str:
+    # TODO: put a Loose into a set inside a try, catch TypeError, return its message
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[class Tag:
+    def __init__(self, kind: str, number: int) -> None:
+        self.kind = kind
+        self.number = number
+
+    def __repr__(self) -> str:
+        return f"Tag(kind={self.kind!r}, number={self.number!r})"
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Tag):
+            return NotImplemented
+        return (self.kind, self.number) == (other.kind, other.number)
+
+    # Both fields are set once and never reassigned, so the hash cannot move.
+    def __hash__(self) -> int:
+        return hash((self.kind, self.number))
+
+
+class Loose:
+    def __init__(self, label: str) -> None:
+        self.label = label
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Loose):
+            return NotImplemented
+        return self.label == other.label
+
+
+def unhashable_error() -> str:
+    try:
+        {Loose("x")}
+    except TypeError as problem:
+        return str(problem)
+    return "no error"
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>one = Tag("valve", 7)
+same = Tag("valve", 7)
+other = Tag("pump", 7)
+print(one == same, one is same, one == other)
+print(one != same, one != other)
+print(len({one, same, other}))
+counts = {one: 3}
+print(counts[same])</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>True False False
+False True
+2
+3</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>one = Tag("valve", 7)
+print(one == "valve7", one == 5, one == None)
+print(one.__eq__("valve7") is NotImplemented)
+print(Loose("x") == Loose("x"), Loose("x") == "x")
+print(unhashable_error())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>False False False
+True
+True False
+unhashable type: 'Loose'</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+tag_src = inspect.getsource(Tag)
+for banned in ("def equals", "def hashCode", "def __ne__"):
+    assert banned not in tag_src, "rule broken: Python does not want that method"
+assert "NotImplemented" in tag_src, "rule broken: return NotImplemented for a stranger"
+assert "def __hash__" in tag_src, "rule broken: put __hash__ back yourself"
+assert "def __hash__" not in inspect.getsource(Loose), "rule broken: leave Loose with no hash, that is what it is for"
+print(hash(Tag("valve", 7)) == hash(Tag("valve", 7)))
+print({Tag("a", n) for n in range(3)} == {Tag("a", 2), Tag("a", 1), Tag("a", 0)})
+print(sorted({Tag("a", 1), Tag("a", 1), Tag("b", 1)}, key=lambda tag: tag.kind))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>True
+True
+[Tag(kind='a', number=1), Tag(kind='b', number=1)]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 19.3: Boilerplate Bonfire!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write a value class by hand, then build a second one with a dataclass and an enum instead.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>A Java value object costs you four methods before it does any work. <code>toString</code>,
+<code>equals</code>, <code>hashCode</code> and <code>compareTo</code>. Python has the same four jobs under
+different names. One of the four behaves in a way Java never warns you about.</p>
+<h4>toString splits in two</h4>
+<p>Python asks for <code>__repr__</code> and <code>__str__</code>.
+<code>__repr__</code> is for you while you are debugging, so make it precise and show the real
+values. <code>__str__</code> is for a person reading output. Print an object and Python calls
+<code>__str__</code>. Print a <b>list</b> of objects and Python calls <code>__repr__</code> on each
+one. Leave <code>__repr__</code> out and the list prints
+<code>&lt;__main__.Batch object at 0x7f9c...&gt;</code>. That line tells you nothing. Write
+<code>__repr__</code> first. Use the <code>!r</code> conversion from the strings topic inside it so strings keep
+their quotes.</p>
+<pre>def __repr__(self) -&gt; str:
+    return f"Batch(code={self.code!r}, readings={self.readings!r})"</pre>
+<h4>equals becomes <code>__eq__</code>, and it deletes your hash</h4>
+<p>In Java, overriding
+<code>equals</code> without <code>hashCode</code> compiles cleanly and then fails at run time, because
+the object never comes back out of a <code>HashSet</code>. Python stops you sooner. Defining
+<code>__eq__</code> sets <code>__hash__</code> to <code>None</code>, so your object raises
+<code>TypeError</code> the moment you put it in a <code>set</code>. Put the hash back yourself, and hash only
+the fields that cannot change. Hash a list and an object could move buckets while it still sits in a
+set. Preventing that bug is why Python deletes the hash in the first place.</p>
+<h4>Return <code>NotImplemented</code> for a stranger</h4>
+<p>When the other operand is not your type,
+do not return <code>False</code>. Return the built-in constant <code>NotImplemented</code>, which tells
+Python to ask the other object instead. Only when both sides decline does Python fall back to identity
+and answer <code>False</code>. It is not the same thing as <code>NotImplementedError</code>, and it is
+not raised. The example below asks about the other operand with <code>isinstance</code>. That function
+is Python's <code>instanceof</code>.</p>
+<pre>def __eq__(self, other: object) -&gt; bool:
+    if not isinstance(other, Batch):
+        return NotImplemented
+    return (self.code, self.readings) == (other.code, other.readings)</pre>
+<h4>compareTo becomes <code>__lt__</code></h4>
+<p>Define less-than and <code>sorted()</code> works.
+Three more dunders make your object behave like a container. <code>__len__</code> powers
+<code>len()</code>, <code>__iter__</code> powers a <code>for</code> loop, and
+<code>__contains__</code> powers the <code>in</code> keyword. <code>Iterable[int]</code> is anything
+you can loop over and <code>Iterator[int]</code> is what <code>__iter__</code> hands back, and both
+names come from <code>collections.abc</code> rather than from <code>typing</code>.</p>
+<p>Now delete most of it. A Java <code>record</code> writes the value-object half for you, and Python's
+answer is the <b>dataclass</b>.</p>
+<pre>from dataclasses import dataclass, field, replace
+
+@dataclass(frozen=True, order=True, slots=True)
+class Sample:
+    code: str
+    readings: list[int] = field(default_factory=list, compare=False)</pre>
+<p>Each line in the class body names a field and annotates its type, in the annotation style from the type hints topic.
+Python still checks nothing at run time. The decorator reads those annotated names anyway and writes
+<code>__init__</code>, <code>__repr__</code>, <code>__eq__</code> and the ordering dunders. Three
+switches matter here. <code>frozen=True</code> blocks assignment after construction and raises
+<code>FrozenInstanceError</code>. <code>order=True</code> writes the comparison dunders.
+<code>slots=True</code> drops the per-instance dictionary. That saves memory and blocks attributes you
+never declared.</p>
+<p>A dataclass goes further than a record in four ways you need here.</p>
+<ul>
+<li><b>Defaults.</b> A record has none. A dataclass field can have one.</li>
+<li><b><code>field(default_factory=list)</code>.</b> Write <code>readings: list = []</code> instead and
+the decorator raises <code>ValueError</code> before your program runs. A bare <code>[]</code> there
+would be one list shared by every instance. That is the shared mutable from the classes topic again, caught this time by the library.
+<code>default_factory</code> takes a function and calls it once per instance.</li>
+<li><b><code>compare=False</code>.</b> Keeps a field out of equality and ordering.</li>
+<li><b><code>__post_init__</code>.</b> The generated <code>__init__</code> calls it after every field is
+set, which is where validation goes.</li>
+</ul>
+<p>Copy a frozen instance with a change using <code>replace(sample, code="S9")</code>. Be careful with
+the word frozen. The freeze is shallow. The instance refuses new attribute values, but a list stored
+inside it still accepts <code>append</code>.</p>
+<p>Last, the loose string constant. Java gives you an <code>enum</code> and a <code>switch</code> over
+it. Python gives you <code>Enum</code>, and <code>auto()</code> supplies the values so you never write
+them.</p>
+<pre>from enum import Enum, auto
+
+class Severity(Enum):
+    LOW = auto()
+    HIGH = auto()</pre>
+<p>Each member is a single object that exists once, so compare members with <code>is</code>, never with
+their underlying value. Loop over the class and you get the members in definition order. You already built
+the dispatch half of a Java <code>switch</code> in the closures topic. It is a dict of functions, and now the keys
+are enum members.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Write both halves. Build <code>Batch</code> by hand, then let the decorator build
+<code>Sample</code> for you.</p>
+<ul>
+<li><code>Batch</code>, built by hand, taking <code>code</code> and <code>readings</code>. Store a copy
+of the readings with <code>list(readings)</code>. Give it <code>__repr__</code>, <code>__str__</code>,
+<code>__eq__</code>, <code>__hash__</code>, <code>__lt__</code>, <code>__len__</code>,
+<code>__iter__</code> and <code>__contains__</code>. <code>__str__</code> returns
+<code>f"batch {code} holding {..} readings"</code>. Order on <code>code</code> alone.</li>
+<li><code>Severity</code>, an enum with <code>LOW</code> and <code>HIGH</code> from
+<code>auto()</code>.</li>
+<li><code>Sample</code>, a dataclass built with
+<code>@dataclass(frozen=True, order=True, slots=True)</code>. It has three fields in this order.
+<code>code</code> comes first. <code>severity</code> comes next, defaulting to
+<code>Severity.LOW</code> with <code>compare=False</code>. <code>readings</code> comes last, with a
+<code>default_factory</code> and <code>compare=False</code>.
+<code>__post_init__</code> raises
+<code>ValueError(f"code {code!r} must be 1 to 4 characters")</code> when the code length is outside 1 to
+4.</li>
+<li><code>mutable_default_error()</code> defines a broken dataclass inside a <code>try</code>, catches
+the <code>ValueError</code>, and returns its message as a string.</li>
+<li><code>shallow_freeze()</code> builds <code>Sample("S1", Severity.HIGH, [1, 2])</code>, appends
+<code>3</code> to its readings, then tries to assign a new <code>code</code> inside a
+<code>try</code>. Return
+<code>f"{readings} but code is frozen: {..}"</code> with the list and the caught exception's type
+name.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not write a method named <code>equals</code>, <code>hashCode</code>, <code>toString</code> or <code>compareTo</code>. Write the dunder Python actually calls.</li><li>Define <code>__repr__</code> above <code>__str__</code>. A hidden test checks the order, because a list of your objects prints the repr.</li><li>Define <code>__hash__</code> yourself. <code>__eq__</code> has already deleted the inherited one.</li><li>Hash only fields that cannot change, and say why in one comment.</li><li>Return <code>NotImplemented</code> when the other operand is a stranger. Never return <code>False</code> there.</li><li>Do not write <code>__init__</code>, <code>__repr__</code>, <code>__eq__</code> or <code>__lt__</code> inside <code>Sample</code>. The decorator writes all four.</li><li>Do not give any dataclass field a mutable default. Use <code>field(default_factory=..)</code>.</li><li>Raise in <code>__post_init__</code>. Never clamp a bad value quietly into range.</li><li>Compare enum members with <code>is</code>. Never compare their values.</li><li>Annotate every signature you write. <code>__eq__</code> takes <code>other: object</code>, because anything at all can turn up on the other side of <code>==</code>.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>48</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from collections.abc import Iterable, Iterator
+from dataclasses import dataclass, field, replace
+from enum import Enum, auto
+
+
+class Batch:
+    def __init__(self, code: str, readings: Iterable[int]) -> None:
+        self.code = code
+        self.readings = list(readings)
+
+    # TODO: __repr__ first, then __str__
+    # TODO: __eq__ returning NotImplemented for a stranger
+    # TODO: __hash__ over fields that cannot change, with a comment saying why
+    # TODO: __lt__, __len__, __iter__, __contains__
+
+
+class Severity(Enum):
+    # TODO: LOW and HIGH, both from auto()
+    pass
+
+
+# TODO: @dataclass(frozen=True, order=True, slots=True)
+class Sample:
+    # TODO: code, severity, readings, then __post_init__ validation
+    pass
+
+
+def mutable_default_error() -> str:
+    # TODO: define a dataclass with a bare [] default inside a try, return the ValueError text
+
+
+def shallow_freeze() -> str:
+    # TODO: append to a frozen sample's list, fail to assign its code, return the f-string
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from collections.abc import Iterable, Iterator
+from dataclasses import dataclass, field, replace
+from enum import Enum, auto
+
+
+class Batch:
+    def __init__(self, code: str, readings: Iterable[int]) -> None:
+        self.code = code
+        self.readings = list(readings)
+
+    def __repr__(self) -> str:
+        return f"Batch(code={self.code!r}, readings={self.readings!r})"
+
+    def __str__(self) -> str:
+        return f"batch {self.code} holding {len(self.readings)} readings"
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Batch):
+            return NotImplemented
+        return (self.code, self.readings) == (other.code, other.readings)
+
+    # Defining __eq__ set __hash__ to None, so put one back by hand.
+    # Hash the code alone, because readings is a list and can still change.
+    def __hash__(self) -> int:
+        return hash(self.code)
+
+    def __lt__(self, other: object) -> bool:
+        if not isinstance(other, Batch):
+            return NotImplemented
+        return self.code < other.code
+
+    def __len__(self) -> int:
+        return len(self.readings)
+
+    def __iter__(self) -> Iterator[int]:
+        return iter(self.readings)
+
+    def __contains__(self, value: object) -> bool:
+        return value in self.readings
+
+
+class Severity(Enum):
+    LOW = auto()
+    HIGH = auto()
+
+
+@dataclass(frozen=True, order=True, slots=True)
+class Sample:
+    code: str
+    severity: Severity = field(default=Severity.LOW, compare=False)
+    readings: list[int] = field(default_factory=list, compare=False)
+
+    def __post_init__(self) -> None:
+        if not 1 <= len(self.code) <= 4:
+            raise ValueError(f"code {self.code!r} must be 1 to 4 characters")
+
+
+def mutable_default_error() -> str:
+    try:
+        @dataclass
+        class Broken:
+            readings: list[int] = []
+    except ValueError as problem:
+        return str(problem)
+    return "no error"
+
+
+def shallow_freeze() -> str:
+    sample = Sample("S1", Severity.HIGH, [1, 2])
+    sample.readings.append(3)
+    try:
+        sample.code = "S2"
+    except Exception as problem:
+        return f"{sample.readings} but code is frozen: {type(problem).__name__}"
+    return "nothing was frozen"
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>one = Batch("B1", [3, 9])
+two = Batch("A7", [4])
+print(repr(one))
+print(one)
+print([one, two])
+print(sorted([one, two]))
+print(len(one), 9 in one, 5 in one)
+for reading in one:
+    print("reading", reading)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>Batch(code='B1', readings=[3, 9])
+batch B1 holding 2 readings
+[Batch(code='B1', readings=[3, 9]), Batch(code='A7', readings=[4])]
+[Batch(code='A7', readings=[4]), Batch(code='B1', readings=[3, 9])]
+2 True False
+reading 3
+reading 9</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>one = Batch("B1", [3, 9])
+copy = Batch("B1", [3, 9])
+print(one == copy, one == 5, one is copy)
+print(len({one, copy, Batch("A7", [4])}))
+sample = Sample("S1")
+print(sample)
+print(sample == Sample("S1"), sample &lt; Sample("S2"))
+print(replace(sample, code="S9"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>True False False
+2
+Sample(code='S1', severity=&lt;Severity.LOW: 1&gt;, readings=[])
+True True
+Sample(code='S9', severity=&lt;Severity.LOW: 1&gt;, readings=[])</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+batch_src = inspect.getsource(Batch)
+for banned in ("def equals", "def hashCode", "def toString", "def compareTo"):
+    assert banned not in batch_src, "rule broken: that name is Java"
+assert batch_src.index("__repr__") &lt; batch_src.index("__str__"), "rule broken: __repr__ comes first"
+assert "def __hash__" in batch_src, "rule broken: put __hash__ back"
+assert "NotImplemented" in batch_src, "rule broken: return NotImplemented for a stranger"
+sample_src = inspect.getsource(Sample)
+for banned in ("def __init__", "def __repr__", "def __eq__", "def __lt__"):
+    assert banned not in sample_src, "rule broken: the decorator writes that one"
+assert "default_factory" in sample_src, "rule broken: no mutable default"
+print(mutable_default_error())
+try:
+    Sample("far-too-long")
+except ValueError as problem:
+    print("ValueError:", problem)
+print([member.name for member in Severity])
+print(Sample("S1").severity is Severity.LOW)
+print(shallow_freeze())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>mutable default &lt;class 'list'&gt; for field readings is not allowed: use default_factory
+ValueError: code 'far-too-long' must be 1 to 4 characters
+['LOW', 'HIGH']
+True
+[1, 2, 3] but code is frozen: FrozenInstanceError</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 19.4: Java in a Python Suit!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Rewrite an AI's Java-shaped class and its three callers as idiomatic Python.</p></div>
+<p>This one is a code review. The class below was written by an AI, it is already in the starter box,
+and every visible test passes.</p>
+<p>Here is what it wrote. Read it before the explanation.</p>
+<pre>class Station:
+    def __init__(self, name: str, altitude: int) -&gt; None:
+        self.set_name(name)
+        self._altitude = altitude
+
+    def get_name(self) -&gt; str:
+        return self._name
+
+    def set_name(self, value: str) -&gt; None:
+        if value == "":
+            raise ValueError("name must not be empty")
+        self._name = value
+
+    def get_altitude(self) -&gt; int:
+        return self._altitude
+
+    def to_string(self) -&gt; str:
+        return "Station " + self._name + " at " + str(self._altitude) + "m"
+
+    def equals(self, other: object) -&gt; bool:
+        if not isinstance(other, Station):
+            return False
+        return self._name == other._name and self._altitude == other._altitude</pre>
+<p>Three functions sit below the class and they are the callers. Their results must not change by a
+single character, but they carry the same accent as the class.</p>
+<pre>def describe(stations: list[Station]) -&gt; list[str]:
+    lines = []
+    for station in stations:
+        lines.append(station.to_string())
+    return lines
+
+
+def rename(station: Station, value: str) -&gt; str:
+    station.set_name(value)
+    return station.get_name()
+
+
+def count_distinct(stations: list[Station]) -&gt; int:
+    seen = []
+    for station in stations:
+        found = False
+        for other in seen:
+            if station.equals(other):
+                found = True
+        if not found:
+            seen.append(station)
+    return len(seen)</pre>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<h4>Passing tests is not the same as the code being right</h4>
+<p>Tests check behaviour. They say nothing
+about whether the next person can read the code, whether the shape belongs in the language, or whether a
+caller has to learn a private vocabulary before touching your object. At work you will be reviewing
+AI-written Python in a safety-critical codebase, where a green suite is the beginning of the review
+rather than the end of it. This question is that review, on a small scale.</p>
+<p>Every line runs. The annotations are correct. There is no bug in it. It is a Java class transliterated
+word for word, with the Java kept and the Python left out, and the giveaway is that not one of those six
+methods has a name Python itself will ever call.</p>
+<h4><code>get_name</code> and <code>set_name</code></h4>
+<p>The classes topic already retired the getter
+that only hands a field back. The rule there was to expose the attribute, because Python has no private
+fields to guard and no reason to route a plain read through a method call. That kills
+<code>get_altitude</code> outright, and <code>altitude</code> becomes an ordinary attribute.</p>
+<p><code>set_name</code> is the interesting one, because it does something. It rejects an empty name, and
+that check has to survive. Wrap the pair in a <b>property</b> and you keep the check while the caller
+writes <code>station.name = "Bluff"</code>. The <code>@property</code> decorator marks the reader, and
+<code>@name.setter</code> marks the writer.</p>
+<pre>@property
+def name(self) -&gt; str:
+    return self._name
+
+@name.setter
+def name(self, value: str) -&gt; None:
+    if value == "":
+        raise ValueError("name must not be empty")
+    self._name = value</pre>
+<p>Both are called <code>name</code>, and that is not a mistake. The setter attaches itself to the
+property the reader created. Once both exist, <code>__init__</code> can assign
+<code>self.name = name</code> and the check still runs, which is where the Java version had to remember
+to call its own setter by hand.</p>
+<h4><code>to_string</code></h4>
+<p>Python calls <code>__str__</code>. Nothing in the language will ever
+look for a method named <code>to_string</code>, so <code>print(station)</code> prints a memory address
+today and always will. Build the text with an f-string rather than gluing five pieces together with
+<code>+</code> and a call to <code>str()</code>.</p>
+<h4><code>equals</code></h4>
+<p>Python calls <code>__eq__</code>, so <code>one == two</code> is
+<code>False</code> here no matter what the fields hold. Rename it, and fix the stranger case while you
+are in there. Return <code>NotImplemented</code> rather than <code>False</code>. Then remember what
+<code>__eq__</code> does to the hash and put <code>__hash__</code> back, or the rewritten
+<code>count_distinct</code> cannot use a set.</p>
+<p><code>describe</code> builds a list with a loop and <code>append</code> where a comprehension
+belongs. <code>count_distinct</code> compares every station against every other one, which is the loop
+you write when your objects cannot go in a set. Once <code>__eq__</code> and <code>__hash__</code> are
+in place, that whole function is <code>len(set(stations))</code>.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Rewrite the class and all three functions so they read as Python. The visible tests check the
+behaviour has not moved. The hidden test checks the Java shape is gone, so a rewrite that keeps the old
+names fails even though the output is right.</p>
+<ul>
+<li><code>Station</code>, rewritten. <code>name</code> becomes a property whose setter keeps the
+empty-name check, and <code>altitude</code> becomes a plain attribute.</li>
+<li><code>__str__</code>, <code>__eq__</code> and <code>__hash__</code> on <code>Station</code>, in
+place of <code>to_string</code> and <code>equals</code>.</li>
+<li><code>describe(stations)</code>, rewritten with a comprehension.</li>
+<li><code>rename(station, value)</code>, rewritten against the property.</li>
+<li><code>count_distinct(stations)</code>, rewritten with a set.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Leave no method whose name begins <code>get_</code> or <code>set_</code>, and none named <code>to_string</code> or <code>equals</code>. The hidden test looks for all four.</li><li>Give <code>name</code> a property whose setter keeps the empty-name check. Make <code>altitude</code> a plain attribute, because its getter never did anything.</li><li>Write <code>__str__</code> with an f-string. No <code>+</code> and no call to <code>str()</code>.</li><li>Write <code>__eq__</code> returning <code>NotImplemented</code> for a stranger, then put <code>__hash__</code> back after it.</li><li>Build <code>describe</code> with a comprehension and <code>count_distinct</code> with a set. Write no <code>append</code> anywhere.</li><li>Keep every return value exactly as it is today. This is a rewrite, not a redesign.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed for discussion. The code below came from an AI and it passes every test. Your job is to judge it, so do not ask an AI whether it is good.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>46</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[# The AI wrote this. It passes every visible test. Rewrite it as Python.
+class Station:
+    def __init__(self, name: str, altitude: int) -> None:
+        self.set_name(name)
+        self._altitude = altitude
+
+    def get_name(self) -> str:
+        return self._name
+
+    def set_name(self, value: str) -> None:
+        if value == "":
+            raise ValueError("name must not be empty")
+        self._name = value
+
+    def get_altitude(self) -> int:
+        return self._altitude
+
+    def to_string(self) -> str:
+        return "Station " + self._name + " at " + str(self._altitude) + "m"
+
+    def equals(self, other: object) -> bool:
+        if not isinstance(other, Station):
+            return False
+        return self._name == other._name and self._altitude == other._altitude
+
+
+def describe(stations: list[Station]) -> list[str]:
+    lines = []
+    for station in stations:
+        lines.append(station.to_string())
+    return lines
+
+
+def rename(station: Station, value: str) -> str:
+    station.set_name(value)
+    return station.get_name()
+
+
+def count_distinct(stations: list[Station]) -> int:
+    seen = []
+    for station in stations:
+        found = False
+        for other in seen:
+            if station.equals(other):
+                found = True
+        if not found:
+            seen.append(station)
+    return len(seen)
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[class Station:
+    def __init__(self, name: str, altitude: int) -> None:
+        self.name = name
+        self.altitude = altitude
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @name.setter
+    def name(self, value: str) -> None:
+        if value == "":
+            raise ValueError("name must not be empty")
+        self._name = value
+
+    def __repr__(self) -> str:
+        return f"Station(name={self._name!r}, altitude={self.altitude!r})"
+
+    def __str__(self) -> str:
+        return f"Station {self._name} at {self.altitude}m"
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Station):
+            return NotImplemented
+        return (self._name, self.altitude) == (other._name, other.altitude)
+
+    def __hash__(self) -> int:
+        return hash((self._name, self.altitude))
+
+
+def describe(stations: list[Station]) -> list[str]:
+    return [str(station) for station in stations]
+
+
+def rename(station: Station, value: str) -> str:
+    station.name = value
+    return station.name
+
+
+def count_distinct(stations: list[Station]) -> int:
+    return len(set(stations))
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>north = Station("Kaitaia", 3)
+south = Station("Bluff", 8)
+print(describe([north, south]))
+print(rename(north, "Kaitaia North"))
+print(describe([north]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>['Station Kaitaia at 3m', 'Station Bluff at 8m']
+Kaitaia North
+['Station Kaitaia North at 3m']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>one = Station("Kaitaia", 3)
+two = Station("Kaitaia", 3)
+three = Station("Bluff", 8)
+print(count_distinct([one, two, three]))
+print(count_distinct([]))
+try:
+    rename(one, "")
+except ValueError as problem:
+    print("ValueError:", problem)
+try:
+    Station("", 12)
+except ValueError as problem:
+    print("ValueError:", problem)
+print(describe([one]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>2
+0
+ValueError: name must not be empty
+ValueError: name must not be empty
+['Station Kaitaia at 3m']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(item) for item in (Station, describe, rename, count_distinct))
+for banned in ("get_", "set_", "to_string", "equals"):
+    assert banned not in whole, "rule broken: a Java name is still there"
+assert ".append(" not in whole, "rule broken: a comprehension and a set do that work"
+assert "def __hash__" in whole, "rule broken: __eq__ deleted the hash, so put one back"
+assert "NotImplemented" in whole, "rule broken: return NotImplemented for a stranger"
+assert "__str__" in Station.__dict__, "rule broken: Python calls __str__, not to_string"
+text_src = inspect.getsource(Station.__str__)
+assert 'f"' in text_src or "f'" in text_src, "rule broken: build the text with an f-string"
+assert isinstance(Station.__dict__.get("name"), property), "rule broken: name must be a property"
+assert Station.__dict__["name"].fset is not None, "rule broken: the property needs a setter that keeps the check"
+assert "altitude" not in Station.__dict__, "rule broken: altitude is a plain attribute, because its getter did nothing"
+one = Station("Kaitaia", 3)
+two = Station("Kaitaia", 3)
+print(str(one))
+print(one.name, one.altitude)
+print(one == two, one == "Kaitaia", one.__eq__("Kaitaia") is NotImplemented)
+print(len({one, two}))
+one.name = "Kaitaia West"
+print(one.name)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>Station Kaitaia at 3m
+Kaitaia 3
+True False True
+1
+Kaitaia West</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+</quiz>

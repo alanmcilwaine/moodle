@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 00.1: Smoke Test!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write <code>add</code>, a function returning the sum of two ints. Infrastructure check question, not part of the course.</p></div>]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>12</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func add(a, b int) int {
+	return 0 // TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func add(a, b int) int {
+	// no for loop here, == is unused too
+	return a + b
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "for ==", "required": "+", "limit": "return=1"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(add(2, 3))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>5</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(add(-1, 1))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var name string
+fmt.Scan(&name)
+fmt.Println(add(40, 2), name)]]></text></testcode>
+            <stdin><text>gopher</text></stdin>
+            <expected><text>42 gopher</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

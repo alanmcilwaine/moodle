@@ -1,0 +1,1224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 10.1: Brace Yourself, It's a Map!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write five functions that build a Python dict, read it, add to it and report its contents.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java's <code>HashMap</code> wants a declaration, a constructor, and a method call for every job you
+give it.</p>
+<pre>Map&lt;String, Integer&gt; readings = new HashMap&lt;&gt;();
+readings.put("north-pier", 14);
+readings.put("kaitaia", 21);
+
+int north = readings.get("north-pier");
+boolean known = readings.containsKey("kaitaia");
+
+for (Map.Entry&lt;String, Integer&gt; entry : readings.entrySet()) {
+    System.out.println(entry.getKey() + " " + entry.getValue());
+}</pre>
+<p>Python's version of that map is a <b>dict</b>, short for dictionary. It is built into the language,
+so there is nothing to import and no type to declare.</p>
+<h4>The literal</h4>
+<p>Braces hold comma-separated <code>key: value</code> pairs, and a colon separates
+each key from its value. That one line replaces the constructor and both calls to <code>put</code>.</p>
+<pre>readings = {"north-pier": 14, "kaitaia": 21}</pre>
+<h4>Lookup</h4>
+<p>Square brackets read a key, so <code>readings["kaitaia"]</code> hands back
+<code>21</code>. They are the same brackets you put on a list in the lists topic, with a key in place of
+a position. What happens when the key is absent is the whole subject of the next question, so every
+lookup you write below asks for a key you know is there.</p>
+<h4>Assignment</h4>
+<p>The same brackets on the left of an <code>=</code> store a value.
+<code>readings["cape-reinga"] = 19</code> adds the key when it is absent and replaces the value when it
+is present. One piece of syntax covers <code>put</code>.</p>
+<h4>Membership</h4>
+<p><code>"kaitaia" in readings</code> is <code>True</code> or <code>False</code>, and
+it tests keys, never values. It replaces <code>containsKey</code>, and it is the same
+<code>in</code> you used on a list. Python has no <code>has_key</code> method, because the language grew
+the operator instead.</p>
+<h4>Iteration</h4>
+<p><code>readings.items()</code> hands you one <code>(key, value)</code> pair each
+pass, and a loop header naming two variables unpacks that pair for you. That is the unpacking from the
+tuples topic doing the work of <code>entrySet</code> and both getters at once.</p>
+<pre>for station, celsius in readings.items():
+    print(station, celsius)</pre>
+<h4>Order</h4>
+<p>Here is the part that catches Java developers out. A <code>HashMap</code> returns its
+entries in whatever order hashing produced, and the documentation warns you not to depend on it. A
+Python dict keeps the order the keys went in. That behaviour arrived as an implementation detail in
+CPython 3.6 and became a promise of the language itself in Python 3.7, so you can rely on it. There is
+no <code>LinkedHashMap</code> to reach for, because the plain dict already does that job.</p>
+<p>Replacing the value under a key that is already present leaves the key where it sits, so the order
+does not shift. <code>len(readings)</code> counts the entries, the same <code>len</code> you called on a
+string and on a list.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write five functions. None of them prints.</p>
+<ul>
+<li><code>make_readings()</code> takes no arguments and returns the dict
+<code>{"north-pier": 14, "kaitaia": 21}</code>, written as one literal.</li>
+<li><code>reading_for(readings, station)</code> returns the value stored under <code>station</code>.
+The tests only ask for keys that are present.</li>
+<li><code>record(readings, station, celsius)</code> stores <code>celsius</code> under
+<code>station</code> and returns nothing at all. The caller keeps hold of the dict, so change the one
+you were handed rather than building a new one.</li>
+<li><code>knows(readings, station)</code> returns whether <code>station</code> is a key.</li>
+<li><code>report(readings)</code> returns one string holding <code>station=celsius</code> for every
+entry, separated by a single space, in the order the keys went in. Walk the pairs with
+<code>.items()</code>, then join the pieces with the <code>join</code> method from the strings
+topic.</li>
+</ul>
+<p>An empty dict has nothing to report, so <code>report({})</code> returns the empty string.</p>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Build the dict with one literal. An empty <code>{}</code> followed by two assignments is <code>put</code> wearing a disguise.</li><li>Ask with <code>in</code>. There is no <code>containsKey</code> and no <code>has_key</code>.</li><li>Walk the pairs with <code>.items()</code>. Do not loop over <code>.keys()</code> and subscript each one, because that pays for the lookup twice.</li><li><code>sorted()</code> appears nowhere in your answer. Insertion order is the lesson.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>20</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def make_readings():
+    # TODO: one dict literal, two pairs
+
+
+def reading_for(readings, station):
+    # TODO: square brackets, the key goes where an index would
+
+
+def record(readings, station, celsius):
+    # TODO: square brackets on the left of an =. Return nothing.
+
+
+def knows(readings, station):
+    # TODO: the in operator tests keys
+
+
+def report(readings):
+    # TODO: walk .items(), build the pieces, join them with a space
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def make_readings():
+    return {"north-pier": 14, "kaitaia": 21}
+
+
+def reading_for(readings, station):
+    return readings[station]
+
+
+def record(readings, station, celsius):
+    readings[station] = celsius
+
+
+def knows(readings, station):
+    return station in readings
+
+
+def report(readings):
+    pieces = []
+    for station, celsius in readings.items():
+        pieces.append(f"{station}={celsius}")
+    return " ".join(pieces)
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>readings = make_readings()
+print(readings)
+print(reading_for(readings, "kaitaia"))
+print(knows(readings, "kaitaia"), knows(readings, "cape-reinga"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>{'north-pier': 14, 'kaitaia': 21}
+21
+True False</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>readings = make_readings()
+record(readings, "cape-reinga", 19)
+print(readings)
+record(readings, "north-pier", 15)
+print(readings)
+print(report(readings))
+print(record(readings, "raglan", 18))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>{'north-pier': 14, 'kaitaia': 21, 'cape-reinga': 19}
+{'north-pier': 15, 'kaitaia': 21, 'cape-reinga': 19}
+north-pier=15 kaitaia=21 cape-reinga=19
+None</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (make_readings, reading_for, record, knows, report))
+assert "sorted(" not in whole, "rule broken: insertion order is the lesson, do not sort"
+assert ".keys()" not in whole, "rule broken: walk the pairs with .items()"
+assert ".items()" in inspect.getsource(report), "rule broken: walk the pairs with .items()"
+assert " in " in inspect.getsource(knows), "rule broken: ask with the in operator"
+assert "{" in inspect.getsource(make_readings), "rule broken: build the dict with one literal"
+empty = {}
+print(repr(report(empty)), len(empty), knows(empty, "kaitaia"))
+fresh = {}
+record(fresh, "b", 2)
+record(fresh, "a", 1)
+record(fresh, "b", 3)
+print(fresh, len(fresh))
+print(report(fresh))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>'' 0 False
+{'b': 3, 'a': 1} 2
+b=3 a=1</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 10.2: KeyError Is Not Null!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write four functions that read a configuration dict and tell a missing key apart from a stored <code>None</code>.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java's <code>Map</code> answers a missing key with <code>null</code>. That one habit shapes every
+lookup you have ever written.</p>
+<pre>Integer port = config.get("port");
+if (port == null) {
+    port = 8080;
+}
+
+if (config.containsKey("host")) {
+    connect(config.get("host"));
+}</pre>
+<p>Python splits that one behaviour into two forms. A <b>dict</b> is Python's hash map, written with
+braces as <code>{"port": 8080}</code>. Square brackets are the strict form, and reading with square
+brackets is called a <b>subscript</b>. <code>config["port"]</code> returns the value, and a missing key
+raises <code>KeyError</code> instead of handing back nothing.</p>
+<p>The forgiving form is a method. <code>config.get("port")</code> returns <code>None</code> when the
+key is absent, which is the behaviour your Java reflex expects. <code>None</code> is Python's
+<code>null</code>. Pass a second argument and you pick the fallback yourself, so
+<code>config.get("timeout", 30)</code> returns <code>30</code> when <code>timeout</code> is
+absent.</p>
+<p><code>config.setdefault("retries", 3)</code> does two jobs in one call. It returns the stored value
+when the key exists. It stores <code>3</code> and returns <code>3</code> when the key does not exist.
+The dict grows by one entry.</p>
+<p>Your <code>containsKey</code> then <code>get</code> pair costs two hash lookups. It also leaves a gap
+between the check and the read. Python closes both with a single call, so never write
+<code>if key in config</code> followed by <code>config[key]</code>. The word <code>in</code> is still
+worth knowing, because <code>"port" in config</code> tests keys and reads well on its own.</p>
+<p>Python names this style <b>EAFP</b>, short for "easier to ask forgiveness than permission". You
+run the operation and you catch the failure. The Java habit of testing first has a name too, "look
+before you leap", and Python prefers the other one.</p>
+<p>Three Python keywords cover the Java syntax you already use. <code>try</code> is Java's
+<code>try</code>. <code>except</code> is Java's <code>catch</code>. <code>raise</code> is Java's
+<code>throw</code>. Each header ends in a colon, and the indented lines under it are the block.</p>
+<pre>try:
+    value = config["port"]
+except KeyError as exc:
+    raise RuntimeError("no port") from exc</pre>
+<p><code>except KeyError as exc</code> catches the error and binds it to the name <code>exc</code>.
+<code>raise ... from exc</code> chains the new error to the original one. That line is Python's version
+of <code>new RuntimeException(msg, cause)</code>. The original <code>KeyError</code> stays reachable
+afterwards as <code>exc.__cause__</code>.</p>
+<p>To walk a dict, call <code>.items()</code>. Each pass of the loop hands you a key and a value
+together. The header names both, so it is the <code>for</code> loop from the loops topic with the
+unpacking from the tuples topic in front of the <code>in</code>.</p>
+<pre>for key, value in config.items():
+    print(key, value)</pre>
+<p>Do not loop over the keys and then subscript each one. That costs two lookups per entry and repeats
+the habit this exercise removes.</p>
+<p>One trap is left, and Java has the same one. <code>containsKey(k)</code> and
+<code>get(k) != null</code> disagree whenever a key is present with a <code>null</code> value. In
+Python, <code>config.get("label")</code> returns <code>None</code> for an absent key and also for a key
+whose stored value is <code>None</code>. Those two cases are indistinguishable.</p>
+<p>The repair is a <b>sentinel</b>. <code>object()</code> creates a bare object equal to nothing but
+itself. Store one in a module-level name and pass it as the default.</p>
+<pre>_MISSING = object()
+value = config.get(key, _MISSING)</pre>
+<p><code>value is _MISSING</code> is then true only when the key was absent. The leading underscore is
+a Python naming convention meaning "private to this module". It is a hint to readers, not an access
+modifier.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write four functions. The sentinel is already in the answer box.</p>
+<ul>
+<li><code>read_settings(cfg)</code> reads <code>port</code> with square brackets, <code>timeout</code>
+with <code>.get</code> and a default of <code>30</code>, and <code>retries</code> with
+<code>setdefault</code> and a default of <code>3</code>. It returns the three values as a tuple in that
+order, which a bare comma-separated <code>return</code> builds for you. Calling it grows
+<code>cfg</code> by one key.</li>
+<li><code>config_table(cfg)</code> returns one string holding one line per entry. Each line is the key
+left-aligned in ten characters, then the value. Walk the dict with <code>.items()</code>, then join the
+lines with <code>\n</code> using the <code>join</code> method from the strings topic.</li>
+<li><code>must_get(cfg, key)</code> returns <code>cfg[key]</code>. When the key is absent, it raises
+<code>RuntimeError</code> chained from the original <code>KeyError</code>. For the key
+<code>nope</code>, the message reads <code>device config is missing 'nope'</code>.</li>
+<li><code>lookup(cfg, key)</code> returns the string <code>ABSENT</code> when the key is absent, the
+string <code>NULL</code> when the stored value is <code>None</code>, and the value itself
+otherwise.</li>
+</ul>
+<p>The quotes in the <code>must_get</code> message come from the <code>!r</code> conversion you met in
+the strings topic. The field width in <code>config_table</code> is the <code>{key:&lt;10}</code> spec
+from that same topic.</p>
+<p>You pass when the printed output matches the expected text character for character, spaces
+included.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Never write <code>if key in cfg</code> and then <code>cfg[key]</code>. That is <code>containsKey</code> in disguise, and one lookup does the work of two.</li><li>Tell absent apart from <code>None</code> with the sentinel. <code>.get(key) or default</code> is banned, because the truthiness topic showed it also fires on <code>0</code>, <code>""</code> and an empty list.</li><li>Let no <code>KeyError</code> escape uncaught. Never catch one with a bare <code>except:</code>.</li><li>Walk the dict with <code>.items()</code>. Do not loop over the keys and subscript each one.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>26</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[_MISSING = object()
+
+
+def read_settings(cfg):
+    # TODO: subscript, then .get with a default, then setdefault. Return the three.
+
+
+def config_table(cfg):
+    # TODO: one line per entry over .items(), joined with a newline
+
+
+def must_get(cfg, key):
+    # TODO: try the subscript, catch KeyError, raise RuntimeError chained from it
+
+
+def lookup(cfg, key):
+    # TODO: ABSENT, NULL, or the value. The sentinel tells the first two apart.
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[_MISSING = object()
+
+
+def read_settings(cfg):
+    port = cfg["port"]
+    timeout = cfg.get("timeout", 30)
+    retries = cfg.setdefault("retries", 3)
+    return port, timeout, retries
+
+
+def config_table(cfg):
+    lines = []
+    for key, value in cfg.items():
+        lines.append(f"{key:<10}{value}")
+    return "\n".join(lines)
+
+
+def must_get(cfg, key):
+    try:
+        return cfg[key]
+    except KeyError as exc:
+        raise RuntimeError(f"device config is missing {key!r}") from exc
+
+
+def lookup(cfg, key):
+    value = cfg.get(key, _MISSING)
+    if value is _MISSING:
+        return "ABSENT"
+    if value is None:
+        return "NULL"
+    return value
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>cfg = {"host": "sensor-01", "port": 8080}
+print(read_settings(cfg))
+print(config_table(cfg))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>(8080, 30, 3)
+host      sensor-01
+port      8080
+retries   3</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>cfg = {"port": 8080, "label": None}
+print(cfg.get("label"), cfg.get("nope"))
+print(lookup(cfg, "port"))
+print(lookup(cfg, "label"))
+print(lookup(cfg, "nope"))
+print(must_get(cfg, "port"))
+try:
+    must_get(cfg, "nope")
+except RuntimeError as exc:
+    print(exc)
+    print(type(exc.__cause__).__name__)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>None None
+8080
+NULL
+ABSENT
+8080
+device config is missing 'nope'
+KeyError</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+import re
+whole = "".join(inspect.getsource(f) for f in (read_settings, config_table, must_get, lookup))
+assert not re.search(r"if\s+\w+\s+in\s+\w+\s*:", whole), "rule broken: no look-before-you-leap"
+assert not re.search(r"\.get\([^)]*\)\s*or\b", whole), "rule broken: no .get(...) or default"
+assert "except:" not in whole, "rule broken: no bare except"
+assert "setdefault(" in whole, "rule broken: use setdefault"
+assert ".items()" in inspect.getsource(config_table), "rule broken: iterate .items()"
+assert ".keys()" not in whole, "rule broken: no .keys() then subscript"
+assert type(_MISSING) is object, "rule broken: _MISSING must be object()"
+blank = {"a": None}
+print(lookup(blank, "a"), lookup(blank, "b"), lookup(blank, "a") is None)
+grown = {}
+print(read_settings({"port": 1, "timeout": 0}))
+print(config_table(grown) == "")</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>NULL ABSENT False
+(1, 0, 3)
+True</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 10.3: Group Therapy!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write five functions that group and count fault records with <code>defaultdict</code> and <code>Counter</code>.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Grouping and counting each take one line in Java.</p>
+<pre>Map&lt;String, List&lt;String&gt;&gt; groups = new HashMap&lt;&gt;();
+groups.computeIfAbsent(subsystem, k -&gt; new ArrayList&lt;&gt;()).add(code);
+
+Map&lt;String, Integer&gt; counts = new HashMap&lt;&gt;();
+counts.merge(code, 1, Integer::sum);</pre>
+<p>The JDK ships no multiset, so teams add an outside collections library when they want one. Python
+ships both jobs in its standard library, in a module named <code>collections</code>.</p>
+<p>An <b>import</b> brings a name into your file. It is Java's <code>import</code> with the module
+written after <code>from</code> and the names written after <code>import</code>. Write it once, at the
+top.</p>
+<pre>from collections import Counter, defaultdict</pre>
+<p><code>defaultdict(list)</code> is a dict that builds a missing value instead of raising. You hand it
+a factory. <code>list</code> with no brackets after it is the list type itself, so Python calls it with
+no arguments to get a new empty list. Read that as <code>ArrayList::new</code> rather than as a call.
+Reading a missing key calls the factory, stores the result and returns it.</p>
+<pre>groups = defaultdict(list)
+groups["radar"].append("E14")</pre>
+<p>That is <code>computeIfAbsent</code> with the lambda deleted. One difference matters, and it is the
+point of this exercise. <code>computeIfAbsent</code> inserts only when you call it. A
+<code>defaultdict</code> inserts on any read of a missing key, including a read you believed was
+harmless. Reading a container and changing its size is a defect few reviewers catch.</p>
+<p><code>Counter</code> is a dict whose values are counts. Hand it any sequence and it tallies the
+items.</p>
+<pre>counts = Counter(["E14", "E02", "E14"])
+print(counts["E14"])   # 2
+print(counts["E99"])   # 0</pre>
+<p>Reading a missing key returns <code>0</code> and stores nothing at all. The Counter's length does not
+move. That is the opposite of <code>defaultdict</code>, and the two live in the same module.</p>
+<p><code>counts.most_common(2)</code> returns the two highest tallies as a list of
+<code>(item, count)</code> pairs, highest first.</p>
+<p>One pair of names still needs care. <code>dict.update(other)</code> replaces values, the same as
+<code>Map.putAll</code>. <code>Counter.update(other)</code> adds them. Same method name, opposite
+arithmetic.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write five functions. <code>records</code> is a list of <code>(subsystem, code)</code> pairs, so a
+loop header of <code>for subsystem, code in records</code> unpacks both names at once.</p>
+<ul>
+<li><code>group_faults(records)</code> returns a <code>defaultdict(list)</code> mapping each subsystem
+to its codes, in the order the records arrive.</li>
+<li><code>tally_codes(records)</code> returns a <code>Counter</code> of the codes.</li>
+<li><code>top_two(counts)</code> returns the two most common entries.</li>
+<li><code>merge_report(base, extra)</code> takes two plain dicts and returns a pair. The first item is a
+<code>Counter</code> built from <code>base</code> and updated with <code>extra</code>, so the counts
+add. The second is a plain dict built from <code>base</code> and updated with <code>extra</code>, so
+the values are replaced. Neither result may change <code>base</code>, and building a new container from
+<code>base</code> leaves <code>base</code> alone.</li>
+<li><code>probe(groups, counts, key)</code> returns three tuples in order. The first holds the length of
+each container before you read anything. The second holds the value read from each container under
+<code>key</code>. The third holds the length of each container again. The tests pass a
+<code>key</code> that is in neither container, so the first and third tuples show you which container
+grew.</li>
+</ul>
+<p>Printing a <code>defaultdict</code> shows its factory, so expect
+<code>defaultdict(&lt;class 'list'&gt;, {...})</code> rather than plain braces. Wrap it in
+<code>dict(...)</code> when you want the tidy form.</p>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>The word <code>if</code> may not appear anywhere in your answer. The container decides what a missing key means.</li><li>Initialise no key by hand. No <code>d[k] = []</code> before the append, and no pre-seeding pass.</li><li>Count with a <code>Counter</code>. <code>+= 1</code> is banned.</li><li>Make the lengths from <code>probe</code> prove which of your two containers inserts on a read and which does not.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>30</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from collections import Counter, defaultdict
+
+
+def group_faults(records):
+    # TODO: a defaultdict(list), one append per record
+
+
+def tally_codes(records):
+    # TODO: collect the codes, then hand them to Counter
+
+
+def top_two(counts):
+    # TODO: one call to most_common
+
+
+def merge_report(base, extra):
+    # TODO: a Counter updated with extra, then a plain dict updated with extra
+
+
+def probe(groups, counts, key):
+    # TODO: both lengths, then one read from each, then both lengths again
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from collections import Counter, defaultdict
+
+
+def group_faults(records):
+    groups = defaultdict(list)
+    for subsystem, code in records:
+        groups[subsystem].append(code)
+    return groups
+
+
+def tally_codes(records):
+    codes = []
+    for subsystem, code in records:
+        codes.append(code)
+    return Counter(codes)
+
+
+def top_two(counts):
+    return counts.most_common(2)
+
+
+def merge_report(base, extra):
+    added = Counter(base)
+    added.update(extra)
+    replaced = dict(base)
+    replaced.update(extra)
+    return added, replaced
+
+
+def probe(groups, counts, key):
+    before = (len(groups), len(counts))
+    read = (groups[key], counts[key])
+    after = (len(groups), len(counts))
+    return before, read, after
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>records = [
+    ("radar", "E14"), ("power", "E02"), ("radar", "E14"),
+    ("power", "E77"), ("radar", "E02"), ("radar", "E14"),
+]
+groups = group_faults(records)
+print(dict(groups))
+print(groups)
+counts = tally_codes(records)
+print(counts)
+print(top_two(counts))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>{'radar': ['E14', 'E14', 'E02', 'E14'], 'power': ['E02', 'E77']}
+defaultdict(&lt;class 'list'&gt;, {'radar': ['E14', 'E14', 'E02', 'E14'], 'power': ['E02', 'E77']})
+Counter({'E14': 3, 'E02': 2, 'E77': 1})
+[('E14', 3), ('E02', 2)]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>base = {"E14": 3, "E02": 2}
+extra = {"E14": 2, "E99": 1}
+added, replaced = merge_report(base, extra)
+print(added)
+print(replaced)
+print(base)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>Counter({'E14': 5, 'E02': 2, 'E99': 1})
+{'E14': 2, 'E02': 2, 'E99': 1}
+{'E14': 3, 'E02': 2}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+import re
+whole = "".join(inspect.getsource(f) for f in (group_faults, tally_codes, top_two, merge_report, probe))
+assert not re.search(r"\bif\b", whole), "rule broken: the word if is banned"
+assert "+= 1" not in whole, "rule broken: count with a Counter"
+assert "] = []" not in whole and "] = 0" not in whole, "rule broken: no hand-initialised keys"
+assert "defaultdict(" in whole, "rule broken: use defaultdict"
+assert ".most_common(" in whole, "rule broken: use most_common"
+records = [("radar", "E14"), ("power", "E02")]
+groups = group_faults(records)
+counts = tally_codes(records)
+print(probe(groups, counts, "engine"))
+print(dict(groups))
+print(counts)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>((2, 2), ([], 0), (3, 2))
+{'radar': ['E14'], 'power': ['E02'], 'engine': []}
+Counter({'E14': 1, 'E02': 1})</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 10.4: The True 1.0 Impostor!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write six functions that show which dict keys collapse into one and what a keys view will let you do.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Put three keys in a Java <code>HashMap</code> and you get three entries.</p>
+<pre>Map&lt;Object, String&gt; m = new HashMap&lt;&gt;();
+m.put(1, "int one");
+m.put(1.0, "float one");
+m.put(Boolean.TRUE, "bool true");
+// m.size() == 3</pre>
+<p><code>Integer.equals(Double)</code> is false whatever the numbers are, and <code>Boolean</code> is a
+third type again. Python disagrees on every count. <code>1 == 1.0</code> is true,
+<code>True == 1</code> is true, and <code>bool</code> is a subclass of <code>int</code> in which
+<code>True</code> is <code>1</code>.</p>
+<p>A dict key needs two properties. It must support <code>hash()</code>, and equal objects must hash the
+same. That is the <code>hashCode</code> and <code>equals</code> contract you already know. Python
+honours it, so those three keys collapse into one entry.</p>
+<p>Which key survives, and which value? Assigning to a key that is already present overwrites the value
+and leaves the key object alone. The first key object stays. The last value wins. Looping over a dict
+gives its keys, so <code>list(d)</code> hands you those keys in insertion order.</p>
+<p>Only <b>hashable</b> objects may be keys. A <b>tuple</b> is the fixed sequence written with commas
+that you met in the tuples topic, and a tuple is hashable when its contents are. A list is mutable and
+is not hashable, so
+<code>hash([1, 2])</code> raises <code>TypeError</code>. Python declares this on the type itself.
+<code>list.__hash__</code> is <code>None</code>, where <code>tuple.__hash__</code> is a real
+function.</p>
+<p>A tuple key is how you build a composite key. Java would glue <code>row + "," + col</code> into a
+string. Do not do that here.</p>
+<pre>grid = {(0, 0): "nw", (0, 1): "ne"}
+print(grid[0, 1])   # ne</pre>
+<p>The subscript needs no inner brackets. A comma inside <code>[...]</code> already builds a tuple, as
+you saw in the tuples topic.</p>
+<p>Python dicts keep insertion order, so there is no separate <code>LinkedHashMap</code> to reach for.
+Overwriting a key leaves that key where it sits. Deleting a key and then re-inserting it sends the key
+to the end.</p>
+<p><code>del config[key]</code> removes an entry in place. Deleting while you iterate the same dict
+raises <code>RuntimeError</code> with the message
+<code>dictionary changed size during iteration</code>. Java throws
+<code>ConcurrentModificationException</code> here, so the shape is familiar. Take a snapshot first with
+<code>list(config.items())</code>, then delete from the dict while you walk the copy.</p>
+<p><code>config.keys()</code> returns a <b>view</b>. A view is a live window on the dict, not a copy.
+Insert a key and the view you are already holding shows it. Java's <code>keySet</code> is live too, but
+it writes through, so <code>keySet().remove(k)</code> deletes the entry. A Python view is read-only and
+has no <code>remove</code> at all. It does support <code>in</code> and the set operators.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write six functions.</p>
+<ul>
+<li><code>collapse()</code> takes no arguments. Build an empty dict, then assign to <code>1</code>,
+<code>1.0</code> and <code>True</code> in that order, with the values <code>int one</code>,
+<code>float one</code> and <code>bool true</code>. Return the dict, its length, the surviving key, and
+the name of that key's type. <code>type(x).__name__</code> gives you the name.</li>
+<li><code>grid_lookup(grid)</code> returns the entry at row <code>0</code>, column <code>1</code>, read
+with no inner brackets.</li>
+<li><code>hash_report()</code> takes no arguments. It returns <code>list.__hash__</code> and the text of
+the <code>TypeError</code> that <code>hash([1, 2])</code> raises. Catch that error with
+<code>try</code> and <code>except</code>, the way you caught <code>KeyError</code> earlier in this
+topic. <code>str(exc)</code> gives you the text.</li>
+<li><code>prune(config)</code> deletes every entry whose value is <code>FAIL</code>, in place, then
+stores <code>PASS</code> under the key <code>status</code>. It returns the resulting keys as a
+list.</li>
+<li><code>live_view(config)</code> takes the keys view and copies it into a list. It then inserts the key
+<code>added</code> with the value <code>0</code>. It returns the copy and the view object itself.
+Printing both shows you what a live view does.</li>
+<li><code>view_powers(config)</code> returns whether the view has a <code>remove</code> attribute,
+whether <code>alpha</code> is in the view, and the view intersected with <code>{"alpha"}</code>.
+<code>hasattr(obj, "name")</code> answers the first one.</li>
+</ul>
+<p>The caller keeps hold of <code>config</code>, so <code>prune</code> must change the dict it was
+handed. <code>status</code> starts out as a failure, so <code>prune</code> deletes it and then stores it
+again. Watch where that key lands in the returned order.</p>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Build composite keys from tuples. A <code>"row,col"</code> string is a Java workaround for a problem Python does not have. Stringify nothing to make it hashable.</li><li>Never delete from the container you are iterating. Snapshot the keys with <code>list()</code> first, or take the <code>RuntimeError</code>.</li><li>Prune in place. Do not build a replacement dict, because the caller is holding this one.</li><li>Do not call <code>.remove()</code> on a keys view. Find out instead what the view will and will not let you do.</li><li><code>sorted()</code> appears nowhere in your answer. Insertion order is the whole lesson.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>36</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def collapse():
+    # TODO: assign 1, then 1.0, then True. Return dict, length, key, type name.
+
+
+def grid_lookup(grid):
+    # TODO: one subscript, no inner brackets
+
+
+def hash_report():
+    # TODO: list.__hash__, and the text of the TypeError from hashing a list
+
+
+def prune(config):
+    # TODO: snapshot, delete the failures in place, store PASS under status
+
+
+def live_view(config):
+    # TODO: take the view, copy it, insert a key, return the copy and the view
+
+
+def view_powers(config):
+    # TODO: hasattr, membership, and the view intersected with a one-item set
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def collapse():
+    d = {}
+    d[1] = "int one"
+    d[1.0] = "float one"
+    d[True] = "bool true"
+    survivor = list(d)[0]
+    return d, len(d), survivor, type(survivor).__name__
+
+
+def grid_lookup(grid):
+    return grid[0, 1]
+
+
+def hash_report():
+    try:
+        hash([1, 2])
+    except TypeError as exc:
+        message = str(exc)
+    return list.__hash__, message
+
+
+def prune(config):
+    for key, value in list(config.items()):
+        if value == "FAIL":
+            del config[key]
+    config["status"] = "PASS"
+    return list(config)
+
+
+def live_view(config):
+    view = config.keys()
+    before = list(view)
+    config["added"] = 0
+    return before, view
+
+
+def view_powers(config):
+    view = config.keys()
+    return hasattr(view, "remove"), "alpha" in view, view & {"alpha"}
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(collapse())
+grid = {(0, 0): "nw", (0, 1): "ne", (1, 0): "sw"}
+print(grid_lookup(grid))
+print(hash_report())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>({1: 'bool true'}, 1, 1, 'int')
+ne
+(None, "unhashable type: 'list'")</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>config = {"alpha": "PASS", "beta": "FAIL", "gamma": "PASS", "status": "FAIL"}
+print(prune(config))
+print(config)
+before, after = live_view({"a": 1, "b": 2})
+print(before)
+print(after)
+print(view_powers({"alpha": 1, "beta": 2}))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>['alpha', 'gamma', 'status']
+{'alpha': 'PASS', 'gamma': 'PASS', 'status': 'PASS'}
+['a', 'b']
+dict_keys(['a', 'b', 'added'])
+(False, True, {'alpha'})</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (collapse, grid_lookup, hash_report, prune, live_view, view_powers))
+assert "sorted(" not in whole, "rule broken: no sorted()"
+assert "list(" in inspect.getsource(prune), "rule broken: snapshot the keys with list()"
+assert "del " in inspect.getsource(prune), "rule broken: delete in place"
+assert "return {" not in whole, "rule broken: do not build a replacement dict"
+assert "[0, 1]" in inspect.getsource(grid_lookup), "rule broken: read grid[0, 1] with no inner brackets"
+assert "str(" not in inspect.getsource(grid_lookup), "rule broken: composite keys are tuples"
+assert ".remove(" not in whole, "rule broken: do not call remove on a keys view"
+held = {"beta": "FAIL", "status": "FAIL"}
+same = held
+print(prune(held), same, same is held)
+d, size, survivor, kind = collapse()
+print(d[True], d[1.0], size, survivor, kind)
+victim = {"x": 1, "y": 2}
+try:
+    for key in victim:
+        del victim[key]
+except RuntimeError as exc:
+    print(exc)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>['status'] {'status': 'PASS'} True
+bool true bool true 1 1 int
+dictionary changed size during iteration</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 10.5: Set Phasers to Unique!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write five functions that answer permission questions with the set operators and key a dict with a frozenset.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java set algebra is a run of mutating calls on a defensive copy.</p>
+<pre>Set&lt;String&gt; missing = new HashSet&lt;&gt;(required);
+missing.removeAll(granted);
+Set&lt;String&gt; overlap = new HashSet&lt;&gt;(required);
+overlap.retainAll(granted);
+boolean covered = granted.containsAll(required);
+boolean apart = Collections.disjoint(required, granted);</pre>
+<p>Python gives each of those an operator, and every operator returns a new set. Nothing changes in
+place, so you need no defensive copy.</p>
+<ul>
+<li><code>a - b</code> is difference, the members of <code>a</code> that are not in <code>b</code>.</li>
+<li><code>a &amp; b</code> is intersection.</li>
+<li><code>a | b</code> is union.</li>
+<li><code>a ^ b</code> is symmetric difference, the members in one set but not in both.</li>
+<li><code>a &lt;= b</code> asks whether every member of <code>a</code> is in <code>b</code>. That is
+<code>b.containsAll(a)</code> read the other way round.</li>
+<li><code>a.isdisjoint(b)</code> replaces <code>Collections.disjoint(a, b)</code>.</li>
+</ul>
+<p>A <b>set</b> literal is a comma-separated run of values in braces, so <code>{"read", "write"}</code>
+is a set of two strings. That notation holds one trap, and every Python beginner meets it once.
+<code>{}</code> is an empty dict, not an empty set, because dicts claimed the braces first. Write
+<code>set()</code> when you want an empty set. Java's <code>Set.of()</code> has no such trap.</p>
+<p>A set is unordered and its members must be hashable. That is the same rule you met for dict keys
+earlier in this topic. Printing a set of several strings gives no order you can rely on, so the tests
+sort before they print.</p>
+<p>A <b>frozenset</b> is the immutable version of a set. Being immutable makes it hashable, so a
+frozenset can be a dict key where a plain set cannot. Java lets you use a <code>HashSet</code> as a map
+key and trusts you not to change it. Python refuses the mutable one instead. A list cannot be a key
+either, and
+<code>table[["read"]] = "x"</code> raises <code>TypeError</code> with the text
+<code>unhashable type: 'list'</code>. Two frozensets holding the same members are equal and hash the
+same, so the order you built them in does not affect a lookup.</p>
+<p>Java reaches for <code>LinkedHashSet</code> when it wants uniqueness and order together. Python has
+no ordered set. Use a dict, because dict keys are unique and dicts keep insertion order.
+<code>dict.fromkeys(tags)</code> builds a dict whose keys are the tags in first-seen order, and
+<code>list(...)</code> turns those keys back into a list.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write five functions.</p>
+<ul>
+<li><code>audit(required, granted)</code> returns four values in this order. The required permissions
+that were not granted. The granted permissions that were not required. The overlap. And whether
+<code>granted</code> covers <code>required</code>. Use one operator for each.</li>
+<li><code>conflicts(a, b)</code> returns whether the two sets share nothing, and their symmetric
+difference.</li>
+<li><code>dedupe(tags)</code> returns a list with duplicates removed and first-seen order kept.</li>
+<li><code>role_table()</code> takes no arguments. Build a dict with the frozenset of <code>read</code>
+and <code>write</code> as its key and <code>editor</code> as its value. Then try to store a value under
+the list <code>["read", "write"]</code> and catch the <code>TypeError</code>. Return the value looked up
+by an equal frozenset built in the opposite order, and the text of the error.</li>
+<li><code>empty_set()</code> takes no arguments. It returns an empty set and the name of the type of
+<code>{}</code>.</li>
+</ul>
+<p>The tests compare <code>dedupe</code> exactly, so return a list and not a set.</p>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>No <code>for</code>. No <code>if</code>. No <code>len()</code>. The set operators answer all four of the audit questions on their own.</li><li>Use the operators, not <code>.union()</code>, <code>.intersection()</code>, <code>.difference()</code> or <code>.issubset()</code>. <code>.isdisjoint()</code> is the one method you need.</li><li><code>{}</code> will not give you an empty set. Get that right on the first attempt.</li><li>Keep first-seen order in <code>dedupe</code>, and return a list.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>26</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def audit(required, granted):
+    # TODO: missing, extra, overlap, covered. One operator each.
+
+
+def conflicts(a, b):
+    # TODO: isdisjoint, then the symmetric difference operator
+
+
+def dedupe(tags):
+    # TODO: dict.fromkeys keeps first-seen order
+
+
+def role_table():
+    # TODO: a frozenset key, then catch the TypeError from a list key
+
+
+def empty_set():
+    # TODO: an empty set is not {}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def audit(required, granted):
+    missing = required - granted
+    extra = granted - required
+    overlap = required & granted
+    covered = required <= granted
+    return missing, extra, overlap, covered
+
+
+def conflicts(a, b):
+    return a.isdisjoint(b), a ^ b
+
+
+def dedupe(tags):
+    return list(dict.fromkeys(tags))
+
+
+def role_table():
+    table = {frozenset({"read", "write"}): "editor"}
+    try:
+        table[["read", "write"]] = "broken"
+    except TypeError as exc:
+        message = str(exc)
+    return table[frozenset({"write", "read"})], message
+
+
+def empty_set():
+    return set(), type({}).__name__
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>required = {"read", "write", "deploy"}
+granted = {"read", "write", "audit"}
+missing, extra, overlap, covered = audit(required, granted)
+print(sorted(missing), sorted(extra), sorted(overlap), covered)
+print(audit({"read"}, {"read", "write"}))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>['deploy'] ['audit'] ['read', 'write'] False
+(set(), {'write'}, {'read'}, True)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>disjoint, symmetric = conflicts({"a", "b"}, {"b", "c"})
+print(disjoint, sorted(symmetric))
+apart, both = conflicts({"read"}, {"deploy"})
+print(apart, sorted(both))
+print(dedupe(["radar", "power", "radar", "engine", "power"]))
+print(dedupe([]))
+print(role_table())
+print(empty_set())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>False ['a', 'c']
+True ['deploy', 'read']
+['radar', 'power', 'engine']
+[]
+('editor', "unhashable type: 'list'")
+(set(), 'dict')</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+import re
+whole = "".join(inspect.getsource(f) for f in (audit, conflicts, dedupe, role_table, empty_set))
+assert not re.search(r"\bfor\b", whole), "rule broken: no for"
+assert not re.search(r"\bif\b", whole), "rule broken: no if"
+assert "len(" not in whole, "rule broken: no len()"
+for banned in (".union(", ".intersection(", ".difference(", ".issubset(", ".symmetric_difference("):
+    assert banned not in whole, "rule broken: use the operators, not the named methods"
+assert "&lt;=" in inspect.getsource(audit), "rule broken: use the subset operator"
+assert "fromkeys" in inspect.getsource(dedupe), "rule broken: dedupe with dict.fromkeys"
+assert "frozenset(" in inspect.getsource(role_table), "rule broken: use a frozenset key"
+print(audit(set(), set()))
+print(dedupe(["a", "a", "a"]), type(dedupe(["a"])).__name__)
+print(empty_set()[0] == set(), empty_set()[0] == {})</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>(set(), set(), set(), True)
+['a'] list
+True False</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+</quiz>

@@ -1,0 +1,628 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 22.1: The Stream Detox!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A juice bar recipe lists each blend and its sugar count. During detox week, the printer needs only the low-sugar blends, and the board displays every sugar count at half its original value.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#For_range">For statements with range clause</a>. Find the table row for an array or slice. What does each iteration-value column contain? What is the type of each value?</li><li>Compare the opening sentence with the table's second value column. How does an iteration value reach its variable? What does that assignment do to a struct value?</li><li>Find the paragraph beginning "For an array, pointer to array, or slice value a". According to its last sentence, how many times does a nil slice iterate?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a stream chain, one stage per verb, with a null guard in front because a for-each over null throws. The second reflex is writing through the loop variable.</p><pre>return board.stream()
+        .filter(b -&gt; b.sugar() &lt; limit)
+        .map(Blend::slug)
+        .toList();</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>slices</code>. <b>Required:</b> <code>range</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>The table gives a slice two columns of iteration values, so decide which column <code>halve</code> must write through.</li><li>Search the section for the word nil and read the sentence around it, then decide what <code>clean(nil, 5)</code> returns.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>24</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "strings"
+
+// blend is one recipe on the detox board.
+type blend struct {
+	name  string
+	sugar int
+}
+
+func clean(board []blend, limit int) []string {
+	// TODO
+}
+
+func halve(board []blend) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "strings"
+
+// blend is one recipe on the detox board.
+type blend struct {
+	name  string
+	sugar int
+}
+
+// clean returns the slug of every blend under the sugar limit, in board order.
+func clean(board []blend, limit int) []string {
+	var slugs []string
+	for _, b := range board {
+		if b.sugar < limit {
+			slugs = append(slugs, strings.ReplaceAll(strings.ToLower(b.name), " ", "-"))
+		}
+	}
+	return slugs
+}
+
+// halve halves the sugar of every blend on the board.
+func halve(board []blend) {
+	for i := range board {
+		board[i].sugar /= 2
+	}
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "slices", "required": "range"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[board := []blend{{"Kale Cooler", 4}, {"Mango Rush", 9}, {"Celery Tonic", 2}}
+fmt.Println(clean(board, 5))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[kale-cooler celery-tonic]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[board := []blend{{"Kale Cooler", 5}, {"Mango Rush", 9}}
+fmt.Println(clean(board, 5))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[board := []blend{{"Kale Cooler", 4}, {"Mango Rush", 9}}
+fmt.Println(clean(board, 5))
+fmt.Println(board)
+halve(board)
+fmt.Println(board)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[kale-cooler]
+[{Kale Cooler 4} {Mango Rush 9}]
+[{Kale Cooler 2} {Mango Rush 4}]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[board := []blend{{"Kale Cooler", 5}, {"Mango Rush", 9}, {"Celery Tonic", 2}}
+fmt.Println(clean(board, 5))
+halve(board)
+fmt.Println(board)
+fmt.Println(clean(board, 4))
+fmt.Println(clean(nil, 5), len(clean([]blend{}, 5)))
+halve(nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[celery-tonic]
+[{Kale Cooler 2} {Mango Rush 4} {Celery Tonic 1}]
+[kale-cooler celery-tonic]
+[] 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 22.2: Yield of Dreams!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>After the last match, an announcer counts players off the field one at a time, from the highest number down to 1. The big screen stops the count as soon as it has enough names. The screen shows the first number under the floor it was given, and it shows <code>0</code> when no player is under the floor. When nobody is on the field, the announcer counts nobody off.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/iter#Seq">iter.Seq</a>. Read the type line and its two sentences. What does the iterator pass to yield? What does yield return? When must the iterator stop early?</li><li><a href="https://pkg.go.dev/iter">iter</a>, the Iterators section near the top. Which two events stop an iterator? What happens if it calls yield again?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is an <code>Iterator</code> with <code>hasNext</code> and <code>next</code>, where the consumer holds the loop and pulls each element. Go puts the loop on the other side, and the linked page says which side that is. The other reflex is building the whole sequence up front and handing back a list.</p><pre>Iterator&lt;Integer&gt; it = countdown(5);
+while (it.hasNext()) {
+    process(it.next());
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>append</code>, <code>make</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Search the iter overview for the word panics and read the sentence around it.</li><li>The same Iterators section has one worked iterator further down, so read the two lines inside its loop before you write your own.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>22</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "iter"
+
+func countdown(n int) iter.Seq[int] {
+	// TODO
+}
+
+func firstUnder(seq iter.Seq[int], floor int) int {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "iter"
+
+// countdown returns an iterator over n down to 1.
+func countdown(n int) iter.Seq[int] {
+	return func(yield func(int) bool) {
+		for i := n; i > 0; i-- {
+			if !yield(i) {
+				return
+			}
+		}
+	}
+}
+
+// firstUnder returns the first value under floor, or 0 when there is none.
+func firstUnder(seq iter.Seq[int], floor int) int {
+	for v := range seq {
+		if v < floor {
+			return v
+		}
+	}
+	return 0
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "append make"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[for v := range countdown(3) {
+	fmt.Println(v)
+}]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>3
+2
+1</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(firstUnder(countdown(5), 3))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[seen := 0
+for v := range countdown(5) {
+	seen++
+	if v == 3 {
+		break
+	}
+}
+fmt.Println(seen)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>3</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(firstUnder(countdown(0), 5), firstUnder(countdown(4), 1))
+for range countdown(0) {
+	fmt.Println("the field is not empty")
+}
+fmt.Println("last one out")]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 0
+last one out</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[handed := 0
+counted := func(yield func(int) bool) {
+	for v := range countdown(5) {
+		handed++
+		if !yield(v) {
+			return
+		}
+	}
+}
+fmt.Println(firstUnder(counted, 3), handed)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2 4</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 22.3: Collect Yourself!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>The stadium's lost property office has a bin of items but no inventory. Staff need the labels in ascending order and the total number of items, duplicates included. They also need to visit the labels handed in more than a given number of times without receiving the full list. <code>over</code> hands out those labels in the same ascending order as <code>labels</code> and stops as soon as the caller stops.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/maps#Keys">maps.Keys</a>. Read the signature and both sentences. What type does it return? In what order does it produce keys?</li><li><a href="https://pkg.go.dev/slices#Collect">slices.Collect</a>. Read both sentences. What argument does it accept? What does it return for an empty sequence?</li><li><a href="https://pkg.go.dev/slices#Sort">slices.Sort</a>. Read the first sentence and signature. Which slice is sorted? What does the call return?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>keySet</code>, which hands back a collection with a size that you can walk twice. The second reflex is trusting the order the map hands you, an order Java's own <code>HashMap</code> never promised either. Read the return type on each linked page before you assume any of the three is a list.</p><pre>List&lt;String&gt; labels = new ArrayList&lt;&gt;(counts.keySet());
+Collections.sort(labels);</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>slices.Collect</code>, <code>maps.Keys</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Of the three maps entries that hand back a sequence, pick the one whose values are the map's keys.</li><li>Reread slices.Collect for an empty bin, then the iter overview's Iterators section for what <code>over</code> owes a stopping caller.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>34</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	"iter"
+	"maps"
+	"slices"
+)
+
+// bin holds the lost property office's count of every item handed in.
+type bin struct {
+	counts map[string]int
+}
+
+func newBin() *bin {
+	// TODO
+}
+
+func (b *bin) hand(item string) {
+	// TODO
+}
+
+func (b *bin) labels() []string {
+	// TODO
+}
+
+func (b *bin) total() int {
+	// TODO
+}
+
+func (b *bin) over(n int) iter.Seq[string] {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"iter"
+	"maps"
+	"slices"
+)
+
+// bin holds the lost property office's count of every item handed in.
+type bin struct {
+	counts map[string]int
+}
+
+// newBin returns an empty bin.
+func newBin() *bin {
+	return &bin{counts: map[string]int{}}
+}
+
+// hand records one more of item.
+func (b *bin) hand(item string) {
+	b.counts[item]++
+}
+
+// labels returns every recorded label in ascending order.
+func (b *bin) labels() []string {
+	labels := slices.Collect(maps.Keys(b.counts))
+	slices.Sort(labels)
+	return labels
+}
+
+// total returns how many items the bin holds in all.
+func (b *bin) total() int {
+	sum := 0
+	for _, n := range b.counts {
+		sum += n
+	}
+	return sum
+}
+
+// over yields every label recorded more than n times, in ascending order.
+func (b *bin) over(n int) iter.Seq[string] {
+	return func(yield func(string) bool) {
+		for _, label := range b.labels() {
+			if b.counts[label] <= n {
+				continue
+			}
+			if !yield(label) {
+				return
+			}
+		}
+	}
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "slices.Collect maps.Keys"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[b := newBin()
+b.hand("scarf")
+b.hand("boot")
+b.hand("scarf")
+fmt.Println(b.labels(), b.total())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[boot scarf] 3</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[b := newBin()
+b.hand("glove")
+b.hand("glove")
+b.hand("hat")
+for label := range b.over(1) {
+	fmt.Println(label)
+}]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>glove</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[b := newBin()
+fmt.Println(b.labels() == nil, b.total(), len(b.labels()))
+for range b.over(0) {
+	fmt.Println("the bin is not empty")
+}
+fmt.Println("bin empty")]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true 0 0
+bin empty</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[b := newBin()
+for _, item := range []string{"whistle", "boot", "anorak", "scarf", "kite", "boot", "kite", "kite"} {
+	b.hand(item)
+}
+fmt.Println(b.labels(), b.total())
+seen := 0
+for label := range b.over(0) {
+	seen++
+	fmt.Println(label)
+	if label == "boot" {
+		break
+	}
+}
+fmt.Println(seen)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[anorak boot kite scarf whistle] 8
+anorak
+boot
+2</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 22.4: Cosplaying the Chain!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A costume hire shop asks its program for prices from a list of costumes. An AI returned Go code that imitates a Java stream. Every test passes, but each enquiry copies the full list before reading one price.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/slices#DeleteFunc">slices.DeleteFunc</a>. Read all three sentences. Which slice does it modify? What remains beyond the new length?</li><li><a href="https://pkg.go.dev/slices#Clone">slices.Clone</a>. Read all four sentences. What does Clone return? Why does the AI call it before DeleteFunc?</li><li><a href="https://pkg.go.dev/slices">slices</a>, the Index near the top. Is there an entry that converts every element to a different type? What does the answer tell you about where to write the conversion?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a stream chain, where each stage hands a fresh collection to the next and no stage touches the source. The AI's code keeps that shape, one named helper per verb, so it reads as familiar and safe. Check each of those calls against the linked docs before you trust the resemblance.</p><pre>return list.stream()
+        .filter(h -&gt; h.cost() &lt;= budget)
+        .map(Hire::costume)
+        .sorted()
+        .toList();</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>slices.Clone</code>, <code>slices.DeleteFunc</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Count how many times the AI's <code>affordable</code> walks the list, then write down the smallest number of walks the job needs.</li><li>Read the DeleteFunc sentence about elements past the new length, then say why the AI calls Clone first.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>32</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "slices"
+
+// The AI wrote this. It passes every test. Judge it, then rewrite it.
+
+// hire is one costume on the price list.
+type hire struct {
+	costume string
+	cost    int
+}
+
+// affordable returns the name of every costume within budget, in ascending order.
+func affordable(list []hire, budget int) []string {
+	kept := slices.Clone(list)
+	kept = slices.DeleteFunc(kept, func(h hire) bool { return h.cost > budget })
+	names := make([]string, len(kept))
+	for i, h := range kept {
+		names[i] = h.costume
+	}
+	slices.Sort(names)
+	return names
+}
+
+// spend returns the total cost of every costume within budget.
+func spend(list []hire, budget int) int {
+	kept := slices.Clone(list)
+	kept = slices.DeleteFunc(kept, func(h hire) bool { return h.cost > budget })
+	sum := 0
+	for _, h := range kept {
+		sum += h.cost
+	}
+	return sum
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "slices"
+
+// hire is one costume on the price list.
+type hire struct {
+	costume string
+	cost    int
+}
+
+// affordable returns the name of every costume within budget, in ascending order.
+func affordable(list []hire, budget int) []string {
+	var names []string
+	for _, h := range list {
+		if h.cost <= budget {
+			names = append(names, h.costume)
+		}
+	}
+	slices.Sort(names)
+	return names
+}
+
+// spend returns the total cost of every costume within budget.
+func spend(list []hire, budget int) int {
+	sum := 0
+	for _, h := range list {
+		if h.cost <= budget {
+			sum += h.cost
+		}
+	}
+	return sum
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "slices.Clone slices.DeleteFunc"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[list := []hire{{"cloak", 12}, {"crown", 30}, {"boots", 12}}
+fmt.Println(affordable(list, 12), spend(list, 12))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[boots cloak] 24</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[list := []hire{{"cloak", 12}, {"crown", 30}}
+fmt.Println(affordable(list, 5), spend(list, 5))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[] 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[list := []hire{{"crown", 30}, {"cloak", 12}, {"mask", 8}}
+fmt.Println(affordable(list, 12))
+fmt.Println(list, spend(list, 30))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[cloak mask]
+[{crown 30} {cloak 12} {mask 8}] 50</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(affordable(nil, 10), spend(nil, 10))
+list := []hire{{"wig", 5}, {"wig", 5}, {"cape", 20}}
+fmt.Println(affordable(list, 5), spend(list, 5), affordable(list, 4))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[] 0
+[wig wig] 10 []</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

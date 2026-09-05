@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>PROTOTYPE_go_testwriter</text></name>
+    <questiontext format="html"><text><![CDATA[<p>Prototype for Go test-writing WAT questions. The learner submits a complete Go test file containing <code>package main</code>, an import of <code>testing</code>, and their test functions, but no <code>main</code> function. Each test case's <code>extra</code> field holds one full implementation variant, <code>package main</code> plus the function under test. The first variant is correct and its expected output is <code>PASS</code>. The rest are mutants and their expected output is <code>FAIL</code>. The template runs <code>go test</code> once per variant with the learner's file alongside it. Template parameters (JSON), all optional and space-separated: <code>banned</code> tokens that must not appear, <code>required</code> tokens that must appear, and <code>limit</code> countable bounds. The scan matches the same way the <code>go_program</code> prototype does, on comment- and literal-stripped source, and a violation stops the run before the first <code>go test</code>.</p>]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_testwriter</coderunnertype>
+    <prototypetype>1</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>20</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template><![CDATA[import os
+import re
+import subprocess
+import sys
+
+# --- checks begin ---
+# Shared verbatim with prototype-go-testwriter.xml and executed by
+# tools/simulate-grader-go.py, which rejects any drift between the copies.
+TOKENS = re.compile(
+    r'`[^`]*`|"(?:\\.|[^"\\\n])*"|\'(?:\\.|[^\'\\\n])*\'|//[^\n]*|/\*.*?\*/', re.S)
+
+
+def _strip_all(src):
+    return TOKENS.sub(' ', src)
+
+
+def _strip_comments(src):
+    return TOKENS.sub(lambda m: m.group(0) if m.group(0)[0] in '"\'`' else ' ', src)
+
+
+OPERATORS = {
+    '==': r'(?<![=!<>])==(?!=)',
+    '!=': r'!=',
+    '+': r'(?<!\+)\+(?!\+)',
+    '&': r'(?<!&)&(?!&)',
+    '&&': r'&&',
+    '||': r'\|\|',
+    '!': r'!(?!=)',
+    '<-': r'<-',
+    ':=': r':=',
+    '%': r'(?<!%)%(?!=)',
+    '*': r'(?<![*/])\*(?![*/=])',
+    'nakedreturn': r'\breturn[ \t]*(?:\n|\})',
+}
+
+
+def _pattern(tok):
+    if tok in OPERATORS:
+        return OPERATORS[tok], 'stripped'
+    if re.fullmatch(r'\d+', tok):
+        return r'(?<![\w.])' + tok + r'(?![\w.])', 'comments'
+    if tok in ('"', "'", '`') or tok.startswith('%'):
+        return re.escape(tok), 'comments'
+    return r'\b' + re.escape(tok) + r'\b', 'stripped'
+
+
+def _max_body_lines(src):
+    worst = 0
+    for m in re.finditer(r'\bfunc\b[^{]*\{', src):
+        i, depth = m.end(), 1
+        while i < len(src) and depth:
+            if src[i] == '{':
+                depth += 1
+            elif src[i] == '}':
+                depth -= 1
+            i += 1
+        body = src[m.end():i - 1]
+        worst = max(worst, len([l for l in body.split('\n') if l.strip()]))
+    return worst
+
+
+def check_rules(student, banned, required, limit):
+    """Return None when every rule holds, else the failure message."""
+    views = {'stripped': _strip_all(student), 'comments': _strip_comments(student)}
+    for tok in banned:
+        pat, view = _pattern(tok)
+        if re.search(pat, views[view]):
+            return 'banned token present: ' + tok
+    for tok in required:
+        pat, view = _pattern(tok)
+        if not re.search(pat, views[view]):
+            return 'required token missing: ' + tok
+    for item in limit:
+        kind, _, n = item.partition('=')
+        if kind == 'return':
+            count = len(re.findall(r'\breturn\b', views['stripped']))
+        elif kind == 'bodylines':
+            count = _max_body_lines(views['stripped'])
+        else:
+            return 'unknown limit: ' + item
+        if count > int(n):
+            return 'limit exceeded: ' + item
+    return None
+# --- checks end ---
+
+student = """{{ STUDENT_ANSWER | e('py') }}"""
+banned = """{{ QUESTION.parameters.banned | default('') | e('py') }}""".split()
+required = """{{ QUESTION.parameters.required | default('') | e('py') }}""".split()
+limit = """{{ QUESTION.parameters.limit | default('') | e('py') }}""".split()
+
+variants = []
+{% for TEST in TESTCASES %}
+variants.append("""{{ TEST.extra | e('py') }}""")
+{% endfor %}
+
+SEP = "#<ab@17943918#@>#"
+
+failure = check_rules(student, banned, required, limit)
+if failure is not None:
+    print(failure)
+    for _ in variants[1:]:
+        print(SEP)
+    sys.exit(0)
+
+for i, impl in enumerate(variants):
+    d = 'v%d' % i
+    os.mkdir(d)
+    with open(os.path.join(d, 'go.mod'), 'w') as f:
+        f.write('module wat\n\ngo 1.27\n')
+    with open(os.path.join(d, 'impl.go'), 'w') as f:
+        f.write(impl)
+    with open(os.path.join(d, 'impl_test.go'), 'w') as f:
+        f.write(student)
+
+env = {
+    'GOCACHE': '/tmp/.go-cache',
+    'GOMAXPROCS': '1',
+    'PATH': '/usr/bin:/bin',
+    'HOME': '/tmp',
+}
+cp = subprocess.run(['go', 'test', '-p=1', '-vet=off', '-run', '^$', '.'], cwd='v0',
+                    env=env, capture_output=True, text=True)
+if cp.returncode != 0:
+    print('** Compilation failed **')
+    print(cp.stderr)
+    for _ in variants[1:]:
+        print(SEP)
+    sys.exit(0)
+
+for i in range(len(variants)):
+    r = subprocess.run(['go', 'test', '-p=1', '-vet=off', '.'], cwd='v%d' % i,
+                       env=env, capture_output=True, text=True)
+    print('PASS' if r.returncode == 0 else 'FAIL')
+    if i != len(variants) - 1:
+        print(SEP)
+]]></template>
+    <iscombinatortemplate>1</iscombinatortemplate>
+    <allowmultiplestdins>1</allowmultiplestdins>
+    <answer></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre><![CDATA[|#<ab@17943918#@>#\n|ms]]></testsplitterre>
+    <language>python3</language>
+    <acelang>go</acelang>
+    <sandbox></sandbox>
+    <grader>EqualityGrader</grader>
+    <cputimelimitsecs>20</cputimelimitsecs>
+    <memlimitmb>16000</memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+    </testcases>
+</question>
+</quiz>

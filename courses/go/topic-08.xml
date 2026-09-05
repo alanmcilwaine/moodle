@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 08.1: The Copy Machine!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A clerk uses a copy machine to duplicate a form while keeping the original. The registry's machine stamps only the copy. Find the stamp count on both forms afterwards. <code>stamp</code> returns the stamped copy, and <code>stampAndCount</code> returns that copy together with the count still on the original form.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Calls">Calls</a>. Find the paragraph beginning "In a function call". What does the call allocate after evaluating its arguments? According to the next sentence, what happens to the argument values?</li><li><a href="https://go.dev/ref/spec#Representation_of_values">Representation of values</a>. Read the first sentence. Which values are self-contained? What does a variable of one of those types store?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java developer might read the new count from the form passed by the caller. The stamping method returns void.</p><pre>void stamp(Form f) { f.stamps++; }
+
+stamp(mine);
+int now = mine.stamps;</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>&amp;</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find new storage in the Calls section. Which form can a call to <code>stamp</code> change?</li><li>Find self-contained under Representation of values. What does the submitted form contain after the call returns?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+type Form struct {
+	Applicant string
+	Stamps    int
+}
+
+func stamp(f Form) Form {
+	// TODO
+}
+
+func stampAndCount(f Form) (Form, int) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+type Form struct {
+	Applicant string
+	Stamps    int
+}
+
+func stamp(f Form) Form {
+	f.Stamps++
+	return f
+}
+
+func stampAndCount(f Form) (Form, int) {
+	stamped := stamp(f)
+	return stamped, f.Stamps
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "&"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(stamp(Form{"Ada Lovelace", 0}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{Ada Lovelace 1}</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(stamp(Form{"Alan Turing", 1}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{Alan Turing 2}</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[c, before := stampAndCount(Form{"Grace Hopper", 3})
+fmt.Println(c, before)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{Grace Hopper 4} 3</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[f := Form{"Edsger Dijkstra", 0}
+stamp(f)
+stamp(f)
+c, before := stampAndCount(f)
+fmt.Println(f == Form{"Edsger Dijkstra", 0}, c.Stamps, before)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true 1 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 08.2: Ampersand of Time!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A signal box controls railway lines and keeps a clock for each timetable. At shift change, two lines exchange timetables, but the clocks stay in place. Swap only the times shown on the clocks. Each clock shows 24-hour time, and <code>tick</code> moves it forward one minute, so 10:59 becomes 11:00 and 23:59 becomes 00:00.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Address_operators">Address operators</a>. Read the first paragraph and the paragraph beginning "For an operand x of pointer type". What does <code>&amp;x</code> produce? Which requirement does not apply to a composite literal? What does <code>*x</code> denote?</li><li><a href="https://go.dev/ref/spec#Selectors">Selectors</a>. Find the first rule after "The following rules apply to selectors". What two types can <code>x</code> have? In each case, what does <code>x.f</code> denote? The depth clause concerns embedding, which appears in topic 19.</li><li><a href="https://go.dev/ref/spec#Assignment_statements">Assignment statements</a>. Find the sentence beginning "Each left-hand side operand must be". Follow addressable to Address operators. Which operands can appear on the left of an assignment?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java method receives a copy of a reference. Reassigning two parameters therefore changes nothing held by the caller. The method can change only the fields of the referenced objects.</p><pre>static void swap(Clock a, Clock b) {
+    Clock t = a;
+    a = b;
+    b = t;
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>&amp;</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Before writing <code>newClock</code>, find composite literal under Address operators.</li><li>Check the signature of <code>swap</code>. What do Address operators say <code>*a</code> and <code>*b</code> denote?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>26</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+type Clock struct {
+	Hour, Minute int
+}
+
+func newClock(hour, minute int) *Clock {
+	// TODO
+}
+
+func tick(c *Clock) {
+	// TODO
+}
+
+func swap(a, b *Clock) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+type Clock struct {
+	Hour, Minute int
+}
+
+func newClock(hour, minute int) *Clock {
+	return &Clock{Hour: hour, Minute: minute}
+}
+
+func tick(c *Clock) {
+	c.Minute++
+	if c.Minute == 60 {
+		c.Minute = 0
+		c.Hour++
+	}
+	if c.Hour == 24 {
+		c.Hour = 0
+	}
+}
+
+func swap(a, b *Clock) {
+	*a, *b = *b, *a
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "&"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[c := newClock(9, 5)
+tick(c)
+fmt.Println(*c)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{9 6}</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[c := newClock(10, 59)
+tick(c)
+fmt.Println(*c)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{11 0}</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[up := newClock(6, 0)
+down := newClock(18, 30)
+watch := up
+swap(up, down)
+tick(watch)
+fmt.Println(*up, *down, *watch)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{18 31} {6 0} {18 31}</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[a := newClock(23, 59)
+b := newClock(23, 59)
+tick(a)
+fmt.Println(*a, *b, a == b, *a == *b)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{0 0} {23 59} false false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 08.3: Mutate or Copy, Choose!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A delivery robot stores its current position and the location of its charging dock. Each robot has its own position, but several robots can share one movable dock. Implement both kinds of update.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Pointer_types">Pointer types</a>. Read both sentences. What does a pointer reference? What value does a pointer hold before assignment?</li><li><a href="https://go.dev/ref/spec#Selectors">Selectors</a>. Find the sentence beginning "If x is of pointer type and has the value nil". What happens if the program reads a struct field through that pointer?</li><li><a href="https://go.dev/ref/spec#Representation_of_values">Representation of values</a>. Find the list beginning "Non-nil pointer, function, slice". What does a pointer value reference? According to the last paragraph, what can happen when two values share data?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java accesses every object through a reference, so a field that holds an object shares that object. An immutable record prevents changes to shared state. Go makes the choice explicit in the function signature and field type.</p><pre>record Position(int row, int col) {}
+class Robot { Position at; Dock home; }</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Read the second sentence under Pointer types. What does <code>Home</code> hold when the robot's composite literal omits that field?</li><li>Find the definition of a pointer value under Representation of values. What does a third robot sharing a dock observe after <code>swapHomes</code> runs?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>36</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+type Position struct {
+	Row, Col int
+}
+
+type Dock struct {
+	At Position
+}
+
+type Robot struct {
+	Name  string
+	At    Position
+	Trips int
+	Home  *Dock
+}
+
+func moved(p Position, rows, cols int) Position {
+	// TODO
+}
+
+func drive(r *Robot, rows, cols int) {
+	// TODO
+}
+
+func swapHomes(a, b *Robot) {
+	// TODO
+}
+
+func atHome(r *Robot) bool {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+type Position struct {
+	Row, Col int
+}
+
+type Dock struct {
+	At Position
+}
+
+type Robot struct {
+	Name  string
+	At    Position
+	Trips int
+	Home  *Dock
+}
+
+func moved(p Position, rows, cols int) Position {
+	p.Row += rows
+	p.Col += cols
+	return p
+}
+
+func drive(r *Robot, rows, cols int) {
+	r.At = moved(r.At, rows, cols)
+	r.Trips++
+}
+
+func swapHomes(a, b *Robot) {
+	a.Home, b.Home = b.Home, a.Home
+}
+
+func atHome(r *Robot) bool {
+	if r.Home == nil {
+		return false
+	}
+	return r.At == r.Home.At
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[r := Robot{Name: "R1", At: Position{0, 0}}
+drive(&r, 1, 2)
+drive(&r, 2, 0)
+fmt.Println(r.At, r.Trips)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{3 2} 2</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[d := Dock{At: Position{0, 0}}
+r := Robot{Name: "R2", At: Position{2, 1}, Home: &d}
+p := Position{1, 1}
+fmt.Println(moved(p, 2, 3), p)
+drive(&r, -2, -1)
+fmt.Println(r.At, r.Trips, atHome(&r))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{3 4} {1 1}
+{0 0} 1 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[r := Robot{Name: "R4", At: Position{4, 4}}
+drive(&r, -4, -4)
+fmt.Println(r.At, r.Trips, atHome(&r))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{0 0} 1 false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[a := Dock{At: Position{0, 0}}
+b := Dock{At: Position{5, 5}}
+r1 := Robot{Name: "R1", At: Position{0, 0}, Home: &a}
+r2 := Robot{Name: "R2", At: Position{5, 5}, Home: &b}
+r3 := Robot{Name: "R3", At: Position{0, 0}, Home: &a}
+swapHomes(&r1, &r2)
+fmt.Println(atHome(&r1), atHome(&r2), atHome(&r3))
+a.At = Position{3, 3}
+drive(&r2, -2, -2)
+fmt.Println(atHome(&r2), atHome(&r3), r2.Trips)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>false false true
+true false 1</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

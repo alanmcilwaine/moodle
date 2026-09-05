@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 09.1: ArrayList No More!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A goal log stores the score from every football match in a season. Add a new five-a-side result to the club's log and calculate the season total.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/slices-intro">Go Slices: usage and internals</a>. In "Growing slices (the copy and append functions)", find the <code>append</code> signature. What type does it return? Check the two following examples and the final <code>Filter</code> example. Where does each example store the returned value? What does <code>Filter</code> declare before its loop?</li><li>On the same page, find "Slices" and the sentence about a slice's zero value. What do <code>len</code> and <code>cap</code> return for that value?</li><li><a href="https://go.dev/ref/spec#For_range">For statements with range clause</a>. Find the table row for a slice. What is the first iteration value? What is the second?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, <code>goals.add(3)</code> returns nothing and changes the list in place. An enhanced for loop provides each element but not its position.</p><pre>List&lt;Integer&gt; goals = new ArrayList&lt;&gt;();
+goals.add(3);
+for (int g : goals) total += g;</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>append</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find the <code>Filter</code> example at the end of Growing slices. Use the form of the line that grows its result.</li><li>In the range table, which iteration value does a loop with one variable receive?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>14</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func record(goals []int, scored int) []int {
+	// TODO
+}
+
+func season(goals []int) int {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func record(goals []int, scored int) []int {
+	return append(goals, scored)
+}
+
+func season(goals []int) int {
+	total := 0
+	for _, g := range goals {
+		total += g
+	}
+	return total
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "append"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(record([]int{2, 1}, 3))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[2 1 3]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(season([]int{0, 1, 2, 3}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>6</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var goals []int
+goals = record(goals, 4)
+goals = record(goals, 0)
+fmt.Println(goals, len(goals), season(goals))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[4 0] 2 4</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[log := []int{3, 3, 0, 4}
+fmt.Println(season(log), season(nil), len(record(nil, 1)))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>10 0 1</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 09.2: The Warehouse Doubles Overnight!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A warehouse has a fixed number of shelves, but a delivery can contain any number of boxes. When a delivery does not fit, the night crew builds a larger warehouse and moves the existing stock into it. Make room for every delivery without losing stock.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/builtin#make">make</a>. Read the Slice line. What does the second integer argument set? What does <code>make([]int, 0, 10)</code> return?</li><li><a href="https://pkg.go.dev/builtin#append">append</a>. Read the first three sentences. What happens when the destination has enough capacity? What happens when its capacity is too small?</li><li><a href="https://go.dev/ref/spec#Passing_arguments_to_..._parameters">Passing arguments to ... parameters</a>. Read the opening paragraph. Inside the function, what type does a final <code>...T</code> parameter have? What does it hold if the call supplies no arguments? In the final example, what does the call with <code>s...</code> pass?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, <code>new ArrayList&lt;&gt;(shelves)</code> sets a capacity that the list does not report. The <code>size()</code> method reports the element count. Go reports both numbers.</p><pre>List&lt;String&gt; stock = new ArrayList&lt;&gt;(shelves);
+stock.addAll(List.of(boxes));</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>make</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find the <code>make</code> example where the array and slice have different sizes. Which number corresponds to <code>shelves</code>?</li><li>Find the type of <code>boxes</code> in the specification. The second <code>append</code> example shows how one call passes a complete slice.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func newWarehouse(shelves int) []string {
+	// TODO
+}
+
+func store(stock []string, boxes ...string) []string {
+	// TODO
+}
+
+func spare(stock []string) int {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func newWarehouse(shelves int) []string {
+	return make([]string, 0, shelves)
+}
+
+func store(stock []string, boxes ...string) []string {
+	return append(stock, boxes...)
+}
+
+func spare(stock []string) int {
+	return cap(stock) - len(stock)
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "make"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[w := newWarehouse(0)
+fmt.Println(len(w), spare(w))
+w = store(w, "bolts", "nuts")
+fmt.Println(w, len(w))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 0
+[bolts nuts] 2</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[w := newWarehouse(0)
+delivery := []string{"nuts", "washers"}
+w = store(w, "bolts")
+w = store(w, delivery...)
+fmt.Println(w, len(w))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[bolts nuts washers] 3</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[w := newWarehouse(3)
+fmt.Println(w, len(w), spare(w))
+w = store(w)
+fmt.Println(len(w), spare(w))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[] 0 3
+0 3</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[w := newWarehouse(4)
+w = store(w, "bolts", "nuts")
+same := store(w, "washers")
+grown := store(same, "screws", "rivets")
+fmt.Println(cap(same) == cap(w), cap(grown) == cap(w), len(grown), spare(same))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true false 5 1</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 09.3: Slice and Dice!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A row of cards stays in place while the dealer selects different sections of it. A cut, a hand, and a reveal each refer to part of the same row. <code>reveal</code> shows the first <code>n</code> cards from where a hand starts in the row. Do not stop at the hand's own length, because the row behind it may hold more cards.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Slice_expressions">Slice expressions</a>. Under "Simple slice expressions", find the example with <code>a := [5]int{1, 2, 3, 4, 5}</code>. What are the length and capacity of <code>s</code>? What is the default low index? What is the default high index?</li><li>In the same section, find the sentence beginning "For slices, the upper index bound". What is the bound? Find the paragraph beginning "If the sliced operand". What does a non-nil result share with its operand?</li><li><a href="https://go.dev/ref/spec#Slice_types">Slice types</a>. Find the sentence about integer indexes for slice elements. Which indexes are valid? In the last paragraph, what can differ between inner slices? What must you initialise separately?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, <code>deck.subList(from, to)</code> throws when <code>to</code> exceeds the list size. A Java developer might also make a defensive copy of the result. Go gives <code>to</code> a different bound, and this task forbids a copy.</p><pre>List&lt;String&gt; top = new ArrayList&lt;&gt;(deck.subList(0, at));</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>append</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Build the outer slice with <code>make</code> from WAT 09.2. Fill each inner slice by index.</li><li>Before adding a guard to <code>reveal</code>, check the upper index bound for slices.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>20</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func cut(deck []string, at int) ([]string, []string) {
+	// TODO
+}
+
+func deal(deck []string, hands, size int) [][]string {
+	// TODO
+}
+
+func reveal(hand []string, n int) []string {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func cut(deck []string, at int) ([]string, []string) {
+	return deck[:at], deck[at:]
+}
+
+func deal(deck []string, hands, size int) [][]string {
+	out := make([][]string, hands)
+	for i := range hands {
+		out[i] = deck[i*size : (i+1)*size]
+	}
+	return out
+}
+
+func reveal(hand []string, n int) []string {
+	return hand[:n]
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "append"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[top, rest := cut([]string{"A", "K", "Q", "J", "10"}, 2)
+fmt.Println(top, rest)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[A K] [Q J 10]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[deck := []string{"A", "K", "Q", "J", "10", "9"}
+fmt.Println(deal(deck, 2, 3))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[[A K Q] [J 10 9]]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[deck := []string{"A", "K", "Q", "J", "10"}
+top, rest := cut(deck, 1)
+fmt.Println(len(top), cap(top), len(rest), cap(rest))
+none, all := cut(deck, 0)
+whole, empty := cut(deck, 5)
+fmt.Println(len(none), all, whole, len(empty))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>1 5 4 4
+0 [A K Q J 10] [A K Q J 10] 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[deck := []string{"A", "K", "Q", "J", "10", "9", "8", "7"}
+hands := deal(deck, 2, 2)
+fmt.Println(reveal(hands[0], 4), len(hands[1]), cap(hands[1]), len(deal(deck, 0, 2)))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[A K Q J] 2 6 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

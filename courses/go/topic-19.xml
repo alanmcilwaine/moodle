@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 19.1: Extends Is Dead!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A haulage yard uses engines supplied by another company and cannot change the supplier's Engine type. Build a truck that uses the engine's existing behaviour and adds its own load.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Struct_types">Struct types</a>. Find the paragraph that defines EmbeddedField after the grammar box. What can you write as an embedded field? What name does that field receive?</li><li><a href="https://go.dev/ref/spec#Struct_types">Struct types, the example that follows that paragraph</a>. Compare the first four declarations with the next two. Which form creates an Engine field?</li><li><a href="https://go.dev/ref/spec#Struct_types">Struct types, the two bullets on promoted methods</a>. Which methods does S gain from an embedded T? Which more methods does *S gain?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>class Truck extends Engine</code>. When Go refuses that, the next reflex is a named field <code>engine Engine</code> and <code>t.engine.Start()</code> at every call site. Go has a third form, and the linked paragraph names the field for you.</p><pre>class Truck extends Engine {
+    int load;
+}</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If the truck literal in the first test fails to compile, reread which name an embedded field gets, because you do not choose that name.</li><li>If <code>t.Start()</code> fails to compile, compare the field you wrote with the four embedded fields in the spec's example struct.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>26</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "fmt"
+
+// Engine is fixed. It comes from the supplier, and nobody in the yard edits it.
+type Engine struct {
+	Power int
+}
+
+// Start is fixed. It reports the engine turning over.
+func (e Engine) Start() string {
+	return fmt.Sprintf("%d hp running", e.Power)
+}
+
+type Truck struct {
+	// TODO
+}
+
+func describe(t Truck) string {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+// Engine is fixed. It comes from the supplier, and nobody in the yard edits it.
+type Engine struct {
+	Power int
+}
+
+// Start is fixed. It reports the engine turning over.
+func (e Engine) Start() string {
+	return fmt.Sprintf("%d hp running", e.Power)
+}
+
+type Truck struct {
+	Engine
+	Load int
+}
+
+func describe(t Truck) string {
+	return fmt.Sprintf("%d hp, %d t", t.Power, t.Load)
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[t := Truck{Engine: Engine{Power: 300}, Load: 12}
+fmt.Println(t.Start())
+fmt.Println(describe(t))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>300 hp running
+300 hp, 12 t</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var t Truck
+t.Load = 4
+fmt.Println(t.Power, t.Load)
+fmt.Println(describe(t))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 4
+0 hp, 4 t</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[t := Truck{Engine: Engine{Power: 300}, Load: 12}
+t.Power = 450
+fmt.Println(t.Engine.Power)
+fmt.Println(t.Engine.Start())
+fmt.Printf("%+v\n", t)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>450
+450 hp running
+{Engine:{Power:450} Load:12}</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[t := Truck{Engine: Engine{Power: 250}, Load: 7}
+var s interface{ Start() string } = t
+fmt.Println(s.Start())
+var sp interface{ Start() string } = &t
+fmt.Println(sp.Start(), describe(t))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>250 hp running
+250 hp running 250 hp, 7 t</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 19.2: The Override That Never Fires!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A station announcement has a fixed format with a greeting at the start. The morning announcer's script is locked. Give the night shift the same format with an evening greeting.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Selectors">Selectors</a>. Find the paragraph beginning "A selector f may denote". What is the depth of f? What depth has a method on the outer type? What depth has a method on an embedded field?</li><li><a href="https://go.dev/ref/spec#Selectors">Selectors, the first of the numbered rules</a>. If both the outer and embedded types declare f, which method does x.f select?</li><li><a href="https://go.dev/ref/spec#Selectors">Selectors, the annotated calls at the end</a>. Which value receives M1 when p.M1() runs? Can that value access anything declared on T2?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is to override Greeting on the subclass and trust the inherited Announce to dispatch back to that override. Read the linked rules to see which value the receiver inside Announce holds. Embedding leaves you restating the body, and sharing it needs the greeting passed in as a field or an interface.</p><pre>class NightAnnouncer extends Announcer {
+    @Override String greeting() { return "Good evening"; }
+}</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If <code>Announce</code> still opens with Good morning, the annotated <code>p.M1()</code> line shows which value the receiver holds.</li><li>Work out the depth of <code>Greeting</code> and of <code>Announce</code> in <code>NightAnnouncer</code>, then reread the first rule using those depths.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>26</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+// Announcer is fixed. It is the morning announcer's locked script.
+type Announcer struct{}
+
+// Greeting is fixed. It opens every morning message.
+func (a Announcer) Greeting() string {
+	return "Good morning"
+}
+
+// Announce is fixed. It reads the greeting, then the message.
+func (a Announcer) Announce(msg string) string {
+	return a.Greeting() + ". " + msg
+}
+
+// Station is fixed. Every announcer here works at the one station.
+func (a Announcer) Station() string {
+	return "Wellington Central"
+}
+
+type NightAnnouncer struct {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+// Announcer is fixed. It is the morning announcer's locked script.
+type Announcer struct{}
+
+// Greeting is fixed. It opens every morning message.
+func (a Announcer) Greeting() string {
+	return "Good morning"
+}
+
+// Announce is fixed. It reads the greeting, then the message.
+func (a Announcer) Announce(msg string) string {
+	return a.Greeting() + ". " + msg
+}
+
+// Station is fixed. Every announcer here works at the one station.
+func (a Announcer) Station() string {
+	return "Wellington Central"
+}
+
+type NightAnnouncer struct {
+	Announcer
+}
+
+func (n NightAnnouncer) Greeting() string {
+	return "Good evening"
+}
+
+func (n NightAnnouncer) Announce(msg string) string {
+	return n.Greeting() + ". " + msg
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var n NightAnnouncer
+fmt.Println(n.Greeting())
+fmt.Println(n.Announcer.Greeting())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Good evening
+Good morning</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var a Announcer
+fmt.Println(a.Announce("The 9:15 to Wellington is delayed"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Good morning. The 9:15 to Wellington is delayed</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var n NightAnnouncer
+fmt.Println(n.Announce("Last train departs"))
+fmt.Println(n.Announcer.Announce("Last train departs"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Good evening. Last train departs
+Good morning. Last train departs</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[n := NightAnnouncer{}
+fmt.Println(n.Announce("The morning papers have arrived"))
+fmt.Println(n.Announcer.Greeting(), n.Greeting())
+fmt.Println(n.Station(), n.Announcer.Station())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Good evening. The morning papers have arrived
+Good morning Good evening
+Wellington Central Wellington Central</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 19.3: The Bufio Overcoat!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A dispatch ledger arrives as one block of text. The counting house needs to read it one line at a time and report the exact number of bytes read. Write a reader that counts the bytes, then wrap bufio around it.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/bufio#NewReader">bufio.NewReader</a>. Read the signature and documentation sentence. Which type does NewReader accept? What does it return? What must your constructor provide?</li><li><a href="https://pkg.go.dev/io#Reader">io.Reader</a>. Read the Read contract. Which two values does Read return? Which method must your type have before NewReader accepts it?</li><li><a href="https://pkg.go.dev/bufio#Reader.ReadString">bufio.Reader.ReadString</a>. Read the complete entry. If input ends without a newline, what value accompanies the error? What does the <code>err != nil</code> sentence promise about the delimiter?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The decorator reflex is a subclass of FilterReader that overrides read. The loop reflex is the one below, calling readLine until it returns null. Go's ReadString has a different contract, so read its entry before you copy that loop.</p><pre>BufferedReader br = new BufferedReader(reader);
+String line;
+while ((line = br.readLine()) != null) {
+    lines.add(line);
+}</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If the last line vanishes or the count comes up short, reread the ReadString sentence that begins "If ReadString encounters an error".</li><li>If the count is 0 after a read, check <code>Read</code> against the pointer-or-value receiver rule from topic 12.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>44</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	"bufio"
+	"errors"
+	"io"
+	"strings"
+)
+
+// ledger is fixed. It opens a block of text for reading.
+func ledger(text string) *strings.Reader {
+	return strings.NewReader(text)
+}
+
+type CountingReader struct {
+	// TODO
+}
+
+func NewCountingReader(r io.Reader) *CountingReader {
+	// TODO
+}
+
+// TODO: Read, with the signature io.Reader asks for.
+
+func (c *CountingReader) Count() int {
+	// TODO
+}
+
+func lines(text string) ([]string, int, error) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"bufio"
+	"errors"
+	"io"
+	"strings"
+)
+
+// ledger is fixed. It opens a block of text for reading.
+func ledger(text string) *strings.Reader {
+	return strings.NewReader(text)
+}
+
+type CountingReader struct {
+	r io.Reader
+	n int
+}
+
+func NewCountingReader(r io.Reader) *CountingReader {
+	return &CountingReader{r: r}
+}
+
+func (c *CountingReader) Read(p []byte) (int, error) {
+	n, err := c.r.Read(p)
+	c.n += n
+	return n, err
+}
+
+func (c *CountingReader) Count() int {
+	return c.n
+}
+
+func lines(text string) ([]string, int, error) {
+	counted := NewCountingReader(ledger(text))
+	br := bufio.NewReader(counted)
+	var out []string
+	for {
+		line, err := br.ReadString('\n')
+		if err == nil {
+			out = append(out, strings.TrimSuffix(line, "\n"))
+			continue
+		}
+		if !errors.Is(err, io.EOF) {
+			return nil, 0, err
+		}
+		if line != "" {
+			out = append(out, line)
+		}
+		return out, counted.Count(), nil
+	}
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ls, n, err := lines("alpha\nbeta\n")
+fmt.Printf("%q %d %v\n", ls, n, err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>["alpha" "beta"] 11 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ls, n, err := lines("")
+fmt.Printf("%q %d %v\n", ls, n, err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[] 0 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ls, n, err := lines("alpha\nbeta")
+fmt.Printf("%q %d %v\n", ls, n, err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>["alpha" "beta"] 10 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[c := NewCountingReader(ledger("kūmara"))
+buf := make([]byte, 4)
+n, err := c.Read(buf)
+fmt.Println(n, err == nil, c.Count())
+n, err = c.Read(buf)
+fmt.Println(n, err == nil, c.Count())
+n, err = c.Read(buf)
+fmt.Println(n, err == nil, c.Count())
+ls, total, err := lines("kūmara\n\nkai")
+fmt.Printf("%q %d %v\n", ls, total, err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>4 true 4
+3 true 7
+0 false 7
+["kūmara" "" "kai"] 12 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

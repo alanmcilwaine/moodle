@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 01.1: Braces Are Back!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>At an event entrance, a gate printer prints a ticket for each visitor. The spacing and line breaks on the tickets are wrong. Write <code>welcome</code> so that every ticket prints correctly on its own line.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/fmt#Println">fmt.Println</a>. Find the import line for this package. Read the first two sentences under <code>Println</code>. What separates the operands? What comes after the last one?</li><li><a href="https://pkg.go.dev/fmt#Print">fmt.Print</a>. Read the second sentence. When does this function add a space? Do the operands in this task meet that condition?</li><li><a href="https://pkg.go.dev/fmt#Printf">fmt.Printf</a>. Read the first sentence. What argument does this function require that the other two do not?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, you might build one string with <code>+</code> before printing it. In Go, <code>+</code> can join two strings but cannot join a string and an int. That expression does not compile.</p><pre>System.out.println("Ticket " + ticket + " for " + name);</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>Printf</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Work out what each permitted function prints for the four operands. Compare each result with the first visible test.</li><li>The hidden test prints two tickets in a row. Which function ends its output so that the next ticket starts on a new line?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>12</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	// TODO the package that prints
+)
+
+func welcome(name string, ticket int) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+func welcome(name string, ticket int) {
+	fmt.Println("Ticket", ticket, "for", name)
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "Printf"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[welcome("Ada", 7)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Ticket 7 for Ada</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[welcome("Grace Hopper", 12)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Ticket 12 for Grace Hopper</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[welcome("Ada", 7)
+welcome("Linus", 8)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Ticket 7 for Ada
+Ticket 8 for Linus</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 01.2: The Unused Variable Police!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>An evidence room records each item as staff book it into storage. Its program should print one line per item, but it does not compile. Make it compile without changing that line.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Import_declarations">Import declarations</a>. Find the paragraph after the table. Which clause applies to the starter file?</li><li><a href="https://go.dev/ref/spec#Variable_declarations">Variable declarations</a>. Read the last sentence. Which variables does it restrict? Where does the restriction apply?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, an unused import and an unused local variable produce IDE warnings. The program still compiles, so a Java developer might leave them for later.</p><pre>import java.util.List;   // unused, still builds
+
+String note;             // unused, still builds</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>_</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Search the Import declarations section for the word "illegal".</li><li>Compare each declaration with both clauses of the implementation restriction in the Variable declarations section.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>14</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	"fmt"
+	"strings"
+)
+
+func book(item string, count int, shelf, officer string) {
+	var note string
+	fmt.Println("Booked", count, "of", item, "on shelf", shelf)
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+func book(item string, count int, shelf, officer string) {
+	fmt.Println("Booked", count, "of", item, "on shelf", shelf)
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "_"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[book("knife", 1, "B4", "Rangi")]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Booked 1 of knife on shelf B4</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[book("phones", 3, "B4", "Mere")]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Booked 3 of phones on shelf B4</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[book("bag of coins", 0, "C2", "Tane")]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Booked 0 of bag of coins on shelf C2</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 01.3: Miles to Go!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A roadside signpost tells drivers how far remains and gives advice for the journey. Write <code>signpost</code> to print the distance and the advice on separate lines. Say <code>Keep driving</code> for 10 miles or more, <code>Nearly there</code> below that, and <code>You have arrived</code> at 0 miles.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#If_statements">If statements</a>. Find the <code>IfStmt</code> line. Which parts are optional? What must follow the condition? In the second example, what can follow <code>else</code>? Where does <code>else</code> appear relative to the closing brace?</li><li><a href="https://go.dev/ref/spec#Comparison_operators">Comparison operators</a>. Read the first sentence and the table. Which operators return a value that an <code>if</code> statement can use as its condition?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, you can put parentheses around the condition and omit braces for a one-line body. Go's grammar does not require those parentheses, and gofmt removes them. Go always requires the braces.</p><pre>if (miles == 0) System.out.println("You have arrived");</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Start with the structure of the first example under the <code>IfStmt</code> line.</li><li>Three cases require two decisions. Check the <code>IfStmt</code> line. What can follow <code>else</code>?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>16</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "fmt"
+
+func signpost(miles int) {
+	fmt.Println(miles, "miles to go")
+	// TODO the second line
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+func signpost(miles int) {
+	fmt.Println(miles, "miles to go")
+	if miles == 0 {
+		fmt.Println("You have arrived")
+	} else if miles < 10 {
+		fmt.Println("Nearly there")
+	} else {
+		fmt.Println("Keep driving")
+	}
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[signpost(250)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>250 miles to go
+Keep driving</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[signpost(3)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>3 miles to go
+Nearly there</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[signpost(0)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 miles to go
+You have arrived</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[signpost(10)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>10 miles to go
+Keep driving</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

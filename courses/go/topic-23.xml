@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 23.1: Go Means Go!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A regatta is a series of boat races. At the Ōtaki regatta, the starter says go once and both crews begin at that signal. The timekeeper records the result only after both crews finish.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Go_statements">Go statements</a>. Read the section and its examples. What expression can follow <code>go</code>? What happens to the called function's return value?</li><li><a href="https://pkg.go.dev/sync#WaitGroup">sync.WaitGroup</a>. Read the type documentation, both examples, and <code>Add</code>, <code>Done</code>, and <code>Wait</code>. Which counter does <code>Wait</code> observe? Where must each <code>Add</code> call occur?</li></ul></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>go</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>The Go statements section opens by naming what a <code>go</code> statement starts and closes by saying what becomes of anything the called function returns. Read both ends before you decide where each crew's number is stored.</li><li>The WaitGroup page carries two code blocks that solve the same problem. Only the second one starts its goroutines with the word <code>go</code>.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text><![CDATA[<p>This WAT asks for the <code>go</code> statement on purpose, so that the goroutine is written out in full at least once. WAT 23.2 moves to <code>WaitGroup.Go</code>, the shorter form the standard library now tells callers to prefer.</p>]]></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>26</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "sync"
+
+func row(rate, minutes int) int {
+	// TODO
+}
+
+func regatta(rateOne, rateTwo, minutes int) (int, int) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "sync"
+
+func row(rate, minutes int) int {
+	return rate * minutes
+}
+
+func regatta(rateOne, rateTwo, minutes int) (int, int) {
+	var wg sync.WaitGroup
+	var one, two int
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		one = row(rateOne, minutes)
+	}()
+	go func() {
+		defer wg.Done()
+		two = row(rateTwo, minutes)
+	}()
+	wg.Wait()
+	return one, two
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "go"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(row(25, 2))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>50</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(row(0, 7))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(regatta(30, 30, 4))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>120 120</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(regatta(34, 28, 3))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>102 84</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[a, b := regatta(0, 41, 6)
+c, d := regatta(41, 0, 6)
+fmt.Println(a, b, c, d)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 246 246 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 23.2: Wait for the Group!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A tramping party splits into smaller groups at a mountain saddle. One member walks to each hut, and the leader waits at the road end until everyone returns.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/sync#WaitGroup">sync.WaitGroup</a>. Read the type documentation and both examples. Which method starts each task in the first example? How does the second example start it?</li><li><a href="https://pkg.go.dev/sync#WaitGroup.Go">WaitGroup.Go</a>. Read every paragraph. What does each <code>Go</code> call add to the counter? When does the counter decrease? Where does the supplied function run?</li><li><a href="https://go.dev/ref/spec#For_range">For statements with range clause</a>. Find the sentence about short declarations for iteration variables. For a list of six huts, how many index variables does the loop declare?</li></ul></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>Add</code>, <code>Done</code>. <b>Required:</b> <code>sync.WaitGroup</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Two goroutines writing the same slot of one slice is a fault these tests can miss. Give each walker its own index, and build the slice at full length before the walk starts.</li><li>If the sheet comes back blank, check whether <code>Wait</code> runs before or after the loop that sends the walkers off.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>30</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+type Hut struct {
+	Name  string
+	Bunks int
+}
+
+func entry(h Hut) string {
+	// TODO
+}
+
+func sheet(huts []Hut) []string {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+type Hut struct {
+	Name  string
+	Bunks int
+}
+
+func entry(h Hut) string {
+	return fmt.Sprintf("%s: %d", h.Name, h.Bunks)
+}
+
+func sheet(huts []Hut) []string {
+	lines := make([]string, len(huts))
+	var wg sync.WaitGroup
+	for i, h := range huts {
+		wg.Go(func() {
+			lines[i] = entry(h)
+		})
+	}
+	wg.Wait()
+	return lines
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "Add Done", "required": "sync.WaitGroup"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(entry(Hut{Name: "Waiopehu", Bunks: 16}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Waiopehu: 16</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Printf("%q\n", sheet([]Hut{{Name: "Te Matawai", Bunks: 10}, {Name: "Ōhau", Bunks: 6}}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>["Te Matawai: 10" "Ōhau: 6"]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Printf("%q %q\n", sheet([]Hut{{"Ōhau", 2}, {"Ōhau", 6}, {"Ōhau", 6}}), sheet(nil))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>["Ōhau: 2" "Ōhau: 6" "Ōhau: 6"] []</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Printf("%q\n", sheet([]Hut{{"Ōhau", 6}, {"Waiopehu", 16}, {"Te Matawai", 10}, {"Waiotauru", 8}, {"Anderson", 12}, {"Ōhau", 2}}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>["Ōhau: 6" "Waiopehu: 16" "Te Matawai: 10" "Waiotauru: 8" "Anderson: 12" "Ōhau: 2"]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 23.3: Fan Out, Fall In!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A search team assigns one member to each area of a valley. The team's base camp waits until every member reports back. It sorts the radio log alphabetically before filing it.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/sync#WaitGroup">sync.WaitGroup</a>. Read the type documentation and all four methods. Which method both starts a goroutine and changes the counter?</li><li><a href="https://pkg.go.dev/sync#WaitGroup.Wait">WaitGroup.Wait</a>. Read its documentation and the memory-model paragraph for the method above. What work has finished when <code>Wait</code> returns? Why is it then safe for the caller to read every slot?</li></ul></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>Add</code>, <code>Done</code>. <b>Required:</b> <code>sync.WaitGroup</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Work out how long a sweep takes when four searchers set off together and finish at four different times. Adding the four times gives the wrong answer.</li><li>The searchers come back in no fixed order, so sort the slice after the wait.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>42</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+type Sector struct {
+	Name     string
+	Hectares int
+	Rate     int
+}
+
+// TODO: give Sector its Minutes method.
+
+func sweep(sectors []Sector) []string {
+	// TODO
+}
+
+func longest(sectors []Sector) int {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"fmt"
+	"slices"
+	"sync"
+)
+
+type Sector struct {
+	Name     string
+	Hectares int
+	Rate     int
+}
+
+func (s Sector) Minutes() int {
+	return s.Hectares * s.Rate
+}
+
+func sweep(sectors []Sector) []string {
+	lines := make([]string, len(sectors))
+	var wg sync.WaitGroup
+	for i, s := range sectors {
+		wg.Go(func() {
+			lines[i] = fmt.Sprintf("%s %d", s.Name, s.Minutes())
+		})
+	}
+	wg.Wait()
+	slices.Sort(lines)
+	return lines
+}
+
+func longest(sectors []Sector) int {
+	worst := 0
+	for _, s := range sectors {
+		if m := s.Minutes(); m > worst {
+			worst = m
+		}
+	}
+	return worst
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "Add Done", "required": "sync.WaitGroup"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(Sector{Name: "Ridge", Hectares: 12, Rate: 5}.Minutes())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>60</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[pair := []Sector{{"Ridge", 12, 5}, {"Creek", 4, 3}}
+fmt.Printf("%q\n", sweep(pair))
+fmt.Println(longest(pair))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>["Creek 12" "Ridge 60"]
+60</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Printf("%q %d\n", sweep(nil), longest(nil))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[] 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[valley := []Sector{{"Tops", 9, 7}, {"Bush", 20, 2}, {"Creek", 4, 3}, {"Ridge", 12, 5}, {"Flat", 0, 9}}
+fmt.Printf("%q\n", sweep(valley))
+fmt.Println(longest(valley))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>["Bush 40" "Creek 12" "Flat 0" "Ridge 60" "Tops 63"]
+63</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

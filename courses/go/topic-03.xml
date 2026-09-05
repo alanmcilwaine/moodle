@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 03.1: Change and Verdict Together!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A ticket clerk gives each traveller both a ticket and any money owed as change. When the payment covers the fare, the traveller gets the change and a ticket, reported as <code>true</code>. When the payment falls short, the clerk refuses, so the change is <code>0</code> and the ticket verdict is <code>false</code>. A concession traveller pays half the fare, rounded down to a whole penny, under the same rule. Write the two functions used at the window. Each function returns both results.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Return_statements">Return statements</a>. Find the first of the three ways to return values and its two examples. How does a function list two results? What must be true of each expression? Find the second way. What single item can replace the complete expression list?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java method returns one value. Returning two results requires a record, and refusing a sale requires an exception. Go requires neither.</p><pre>record Sale(int change, boolean issued) {}
+
+return new Sale(paid - fare, true);</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>:=</code>, <code>var</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>The second example under the first list item returns two values on one line.</li><li>In the example for the second form, what appears between <code>return</code> and the closing brace?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>14</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func issue(paid, fare int) (int, bool) {
+	// TODO
+}
+
+func concession(paid, fare int) (int, bool) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func issue(paid, fare int) (int, bool) {
+	if paid < fare {
+		return 0, false
+	}
+	return paid - fare, true
+}
+
+func concession(paid, fare int) (int, bool) {
+	return issue(paid, fare/2)
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": ":= var"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(issue(300, 250))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>50 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(concession(300, 250))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>175 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(concession(62, 125))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(issue(249, 250))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 03.2: The Naked Return Ban!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A lido is a public outdoor swimming pool. Its bylaw admits swimmers from age 8, so the attendant refuses anyone younger, and the result shows lane <code>0</code> and <code>false</code>. An admitted swimmer with a pace above 40 goes to lane 1, and every other admitted swimmer goes to lane 2. Make every return in the lane allocator carry its values.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Return_statements">Return statements</a>. Find the third way to return values. What can the function do with named results before returning them? Find the sentence beginning "Regardless of how they are declared". What value does each result hold when the function starts?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java rejects a read of a local variable before assignment, and a method returns one unnamed value. A Java solution therefore declares one temporary for each result, assigns every branch, and returns both values at the end.</p><pre>int lane = 0;
+boolean admitted = false;
+if (age >= 8) {
+    admitted = true;
+    lane = pace > 40 ? 1 : 2;
+}
+return new Allocation(lane, admitted);</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>nakedreturn</code>, <code>0</code>, <code>false</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find "zero values" in the section. What does that sentence mean for <code>lane</code> and <code>admitted</code> before any assignment?</li><li>Find "ordinary local variables" and read that sentence.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>16</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func allocate(age, pace int) (lane int, admitted bool) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func allocate(age, pace int) (lane int, admitted bool) {
+	if age < 8 {
+		return lane, admitted
+	}
+	admitted = true
+	lane = 2
+	if pace > 40 {
+		lane = 1
+	}
+	return lane, admitted
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "nakedreturn 0 false"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(allocate(30, 55))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>1 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(allocate(12, 25))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(allocate(7, 20))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(allocate(8, 40))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 03.3: Swap Meet!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A swap meet is a market where traders exchange goods. Here, traders exchange numbered stalls without an empty stall to use during the move. Write three functions that record their final positions. <code>order</code> returns two stall numbers with the lower number first. <code>bounds</code> returns the lowest and the highest of three stall numbers, and <code>span</code> returns the distance between those two.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Assignment_statements">Assignment statements</a>. Find the paragraph on tuple assignment and its two forms. What can appear on the right-hand side of the first form? Find the two lines under "blank identifier". What can replace a name whose value you do not need? Find the example with the comment "exchange". According to the preceding paragraph, what happens first?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, exchanging two values requires a third variable. Java also has no method that returns two values. The missing spare stall represents that third variable.</p><pre>int spare = a;
+a = b;
+b = spare;</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Limit:</b> four lines per function body</div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find "exchange" in the section. Read that line using your own parameter names.</li><li>Find "blank identifier" and read its two example lines before writing <code>bounds</code>.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>22</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func order(first, second int) (int, int) {
+	// TODO
+}
+
+func bounds(a, b, c int) (int, int) {
+	// TODO
+}
+
+func span(a, b, c int) int {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func order(first, second int) (int, int) {
+	if first > second {
+		first, second = second, first
+	}
+	return first, second
+}
+
+func bounds(a, b, c int) (int, int) {
+	lo, hi := order(a, b)
+	lo, _ = order(lo, c)
+	_, hi = order(hi, c)
+	return lo, hi
+}
+
+func span(a, b, c int) int {
+	lo, hi := bounds(a, b, c)
+	return hi - lo
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"limit": "bodylines=4"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(order(9, 4))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>4 9</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(bounds(4, 9, 2))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2 9</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(bounds(4, 2, 9))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2 9</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(span(9, 1, 5))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>8</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

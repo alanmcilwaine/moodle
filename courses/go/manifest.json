@@ -1,0 +1,195 @@
+{
+  "course": {
+    "fullname": "Go",
+    "shortname": "go",
+    "section": "Topics"
+  },
+  "prototypes": [
+    "prototype-go-program.xml",
+    "prototype-go-testwriter.xml"
+  ],
+  "modules": [
+    {
+      "file": "topic-01.xml",
+      "title": "Topic 1: First lines: package main, gofmt, compile errors",
+      "from": 1,
+      "to": 1,
+      "questions": 3
+    },
+    {
+      "file": "topic-02.xml",
+      "title": "Topic 2: Variables, zero values, := and const",
+      "from": 2,
+      "to": 2,
+      "questions": 3
+    },
+    {
+      "file": "topic-03.xml",
+      "title": "Topic 3: Functions and multiple returns",
+      "from": 3,
+      "to": 3,
+      "questions": 3
+    },
+    {
+      "file": "topic-04.xml",
+      "title": "Topic 4: Reading Go documentation",
+      "from": 4,
+      "to": 4,
+      "questions": 3
+    },
+    {
+      "file": "topic-05.xml",
+      "title": "Topic 5: Flow control: for, switch, and if with a short statement",
+      "from": 5,
+      "to": 5,
+      "questions": 3
+    },
+    {
+      "file": "topic-06.xml",
+      "title": "Topic 6: Strings, runes, and fmt verbs",
+      "from": 6,
+      "to": 6,
+      "questions": 3
+    },
+    {
+      "file": "topic-07.xml",
+      "title": "Topic 7: Structs and composite literals",
+      "from": 7,
+      "to": 7,
+      "questions": 3
+    },
+    {
+      "file": "topic-08.xml",
+      "title": "Topic 8: Pointers and value semantics",
+      "from": 8,
+      "to": 8,
+      "questions": 3
+    },
+    {
+      "file": "topic-09.xml",
+      "title": "Topic 9: Slices: views, len, cap, append",
+      "from": 9,
+      "to": 9,
+      "questions": 3
+    },
+    {
+      "file": "topic-10.xml",
+      "title": "Topic 10: Slice aliasing and copying",
+      "from": 10,
+      "to": 10,
+      "questions": 4
+    },
+    {
+      "file": "topic-11.xml",
+      "title": "Topic 11: Maps and comma-ok",
+      "from": 11,
+      "to": 11,
+      "questions": 3
+    },
+    {
+      "file": "topic-12.xml",
+      "title": "Topic 12: Methods and receivers",
+      "from": 12,
+      "to": 12,
+      "questions": 3
+    },
+    {
+      "file": "topic-13.xml",
+      "title": "Topic 13: Interfaces, implicit and small",
+      "from": 13,
+      "to": 13,
+      "questions": 4
+    },
+    {
+      "file": "topic-14.xml",
+      "title": "Topic 14: Errors as values",
+      "from": 14,
+      "to": 14,
+      "questions": 3
+    },
+    {
+      "file": "topic-15.xml",
+      "title": "Topic 15: Error wrapping and the nil trap",
+      "from": 15,
+      "to": 15,
+      "questions": 4
+    },
+    {
+      "file": "topic-16.xml",
+      "title": "Topic 16: Testing with go test",
+      "from": 16,
+      "to": 16,
+      "questions": 3
+    },
+    {
+      "file": "topic-17.xml",
+      "title": "Topic 17: defer, panic, recover",
+      "from": 17,
+      "to": 17,
+      "questions": 3
+    },
+    {
+      "file": "topic-18.xml",
+      "title": "Topic 18: Functions as values and closures",
+      "from": 18,
+      "to": 18,
+      "questions": 3
+    },
+    {
+      "file": "topic-19.xml",
+      "title": "Topic 19: Embedding and composition",
+      "from": 19,
+      "to": 19,
+      "questions": 3
+    },
+    {
+      "file": "topic-20.xml",
+      "title": "Topic 20: Type switches and closed sets",
+      "from": 20,
+      "to": 20,
+      "questions": 3
+    },
+    {
+      "file": "topic-21.xml",
+      "title": "Topic 21: Generics",
+      "from": 21,
+      "to": 21,
+      "questions": 4
+    },
+    {
+      "file": "topic-22.xml",
+      "title": "Topic 22: Iterators and the slices and maps packages",
+      "from": 22,
+      "to": 22,
+      "questions": 4
+    },
+    {
+      "file": "topic-23.xml",
+      "title": "Topic 23: Goroutines and WaitGroup",
+      "from": 23,
+      "to": 23,
+      "questions": 3
+    },
+    {
+      "file": "topic-24.xml",
+      "title": "Topic 24: Channels and select",
+      "from": 24,
+      "to": 24,
+      "questions": 3
+    },
+    {
+      "file": "topic-25.xml",
+      "title": "Topic 25: Concurrency discipline and context",
+      "from": 25,
+      "to": 25,
+      "questions": 3
+    },
+    {
+      "file": "topic-26.xml",
+      "title": "Topic 26: Capstone: options and a package in miniature",
+      "from": 26,
+      "to": 26,
+      "questions": 2
+    }
+  ]
+}

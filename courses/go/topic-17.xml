@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 17.1: Defer of Duty!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A night sentry records each patrol by signing a gate book on entry and again on exit. The sentry must always sign out after entering. A name missing from the roster never enters, so it needs no exit signature. A post recorded as <code>breach</code> ends the patrol before the sentry checks it, and the sentry still signs out. The patrol then reports the error <code>breach at post 2</code> when the breach is the second post, counted from 1.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/defer-panic-and-recover">Defer, Panic, and Recover</a>. Read the first three paragraphs. What does a defer statement save? When do the saved calls run?</li><li>In the second <code>CopyFile</code> listing, which comes first for each file, the error check or the <code>defer</code>?</li><li>Read the three numbered rules. Which rule defines when a deferred call runs? Does an early return change that timing?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a finally clause wrapped around the whole patrol, or try-with-resources on the gate. Go has no try and no finally, and <code>signIn</code> and <code>signOut</code> are plain functions.</p><pre>signIn(name);
+try {
+    for (String post : posts) { ... }
+} finally {
+    signOut(name);
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>defer</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Trace the <code>CopyFile</code> path where <code>os.Open</code> fails. Does execution reach <code>defer src.Close()</code>?</li><li>Count the return statements in <code>patrol</code>. Apply the second numbered rule to each one.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>30</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+var ErrNoName = errors.New("no name on the roster")
+
+// signIn is fixed. It writes the sentry into the gate book.
+func signIn(name string) error {
+	if name == "" {
+		return ErrNoName
+	}
+	fmt.Println(name, "on duty")
+	return nil
+}
+
+// signOut is fixed. It closes the sentry's entry in the gate book.
+func signOut(name string) {
+	fmt.Println(name, "off duty")
+}
+
+func patrol(name string, posts []string) error {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+var ErrNoName = errors.New("no name on the roster")
+
+// signIn is fixed. It writes the sentry into the gate book.
+func signIn(name string) error {
+	if name == "" {
+		return ErrNoName
+	}
+	fmt.Println(name, "on duty")
+	return nil
+}
+
+// signOut is fixed. It closes the sentry's entry in the gate book.
+func signOut(name string) {
+	fmt.Println(name, "off duty")
+}
+
+func patrol(name string, posts []string) error {
+	if err := signIn(name); err != nil {
+		return err
+	}
+	defer signOut(name)
+	for i, post := range posts {
+		if post == "breach" {
+			return fmt.Errorf("breach at post %d", i+1)
+		}
+		fmt.Println("checking", post)
+	}
+	return nil
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "defer"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[err := patrol("Ada", []string{"east gate", "north wall"})
+fmt.Println(err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Ada on duty
+checking east gate
+checking north wall
+Ada off duty
+true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[err := patrol("Cy", nil)
+fmt.Println(err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Cy on duty
+Cy off duty
+true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(patrol("Bo", []string{"east gate", "breach", "west gate"}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Bo on duty
+checking east gate
+Bo off duty
+breach at post 2</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[err := patrol("", []string{"east gate"})
+fmt.Println(err == ErrNoName)
+fmt.Println(patrol("Di", []string{"breach"}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true
+Di on duty
+Di off duty
+breach at post 1</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 17.2: The LIFO Parade!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A dead-end storage shed has one door, so the last parade float inside must leave first. The foreman also runs a dispatch where each float enters and leaves before the next arrives. <code>parade</code> returns the number of floats standing in the shed as its return statement runs. That count includes its own floats and any float parked before the call. A float named <code>stall</code> turns back at the door, so <code>parade</code> sends in nothing after it and returns at once.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Defer_statements">Defer statements</a>. Find the paragraph beginning "Each time a defer statement executes". When are the call's parameters evaluated? In what order do deferred calls run?</li><li>In the sentence beginning "That is", does an explicit return set result parameters before or after deferred calls run?</li><li>Inspect the code example. What does its loop print? Does anything print while the loop is running?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is try-with-resources inside the loop body, so the block releases each float at the end of its own iteration. Read the linked paragraph on when a deferred call runs before you copy that shape.</p><pre>for (String name : floats) {
+    try (Slot slot = depot.enter(name)) {
+        ...
+    }
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>defer</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li><code>leave</code> refuses a float that is not at the door, so compare the order your calls run in against the sentence on order.</li><li>If <code>dispatch</code> prints every entry before any exit, reread which function a deferred call waits for.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>36</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "fmt"
+
+// Depot is fixed. It is a dead-end shed. Floats reverse in one at a time, so
+// the float nearest the door is the only one that can leave.
+type Depot struct {
+	inside []string
+}
+
+// enter is fixed. It parks name at the door end of the shed.
+func (d *Depot) enter(name string) {
+	d.inside = append(d.inside, name)
+	fmt.Println(name, "enters")
+}
+
+// leave is fixed. Only the float at the door can leave.
+func (d *Depot) leave(name string) {
+	last := len(d.inside) - 1
+	if last < 0 || d.inside[last] != name {
+		fmt.Println(name, "is blocked in")
+		return
+	}
+	fmt.Println(name, "leaves")
+	d.inside = d.inside[:last]
+}
+
+func parade(d *Depot, floats []string) int {
+	// TODO
+}
+
+func dispatch(d *Depot, floats []string) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+// Depot is fixed. It is a dead-end shed. Floats reverse in one at a time, so
+// the float nearest the door is the only one that can leave.
+type Depot struct {
+	inside []string
+}
+
+// enter is fixed. It parks name at the door end of the shed.
+func (d *Depot) enter(name string) {
+	d.inside = append(d.inside, name)
+	fmt.Println(name, "enters")
+}
+
+// leave is fixed. Only the float at the door can leave.
+func (d *Depot) leave(name string) {
+	last := len(d.inside) - 1
+	if last < 0 || d.inside[last] != name {
+		fmt.Println(name, "is blocked in")
+		return
+	}
+	fmt.Println(name, "leaves")
+	d.inside = d.inside[:last]
+}
+
+func parade(d *Depot, floats []string) int {
+	for _, name := range floats {
+		if name == "stall" {
+			break
+		}
+		d.enter(name)
+		defer d.leave(name)
+	}
+	return len(d.inside)
+}
+
+func dispatch(d *Depot, floats []string) {
+	for _, name := range floats {
+		d.enter(name)
+		d.leave(name)
+	}
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "defer"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[d := &Depot{}
+parade(d, []string{"Brass Band", "Dragon", "Fire Engine"})]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Brass Band enters
+Dragon enters
+Fire Engine enters
+Fire Engine leaves
+Dragon leaves
+Brass Band leaves</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[d := &Depot{}
+dispatch(d, []string{"Brass Band", "Dragon"})]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Brass Band enters
+Brass Band leaves
+Dragon enters
+Dragon leaves</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[d := &Depot{}
+n := parade(d, []string{"Brass Band", "Dragon", "Fire Engine"})
+fmt.Println(n, len(d.inside))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Brass Band enters
+Dragon enters
+Fire Engine enters
+Fire Engine leaves
+Dragon leaves
+Brass Band leaves
+3 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[d := &Depot{}
+d.enter("Mayor")
+dispatch(d, []string{"Dragon"})
+fmt.Println(parade(d, nil), len(d.inside))
+fmt.Println(parade(d, []string{"Fire Engine"}), len(d.inside))
+d.leave("Mayor")]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Mayor enters
+Dragon enters
+Dragon leaves
+1 1
+Fire Engine enters
+Fire Engine leaves
+2 1
+Mayor leaves</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[d := &Depot{}
+n := parade(d, []string{"Brass Band", "stall", "Dragon"})
+fmt.Println(n, len(d.inside))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Brass Band enters
+Brass Band leaves
+1 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 17.3: Recover, Not Catch!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A matching engine processes trading orders one at a time. Another team wrote the engine, and a bad order makes it panic. Record that failure and continue with the remaining orders. A failed order takes the error's own text as its line in the list <code>session</code> returns. <code>quote</code> applies the engine's price rule and never panics. It returns 0 with <code>unknown symbol ZZZ</code> for a symbol not in the book and <code>zero quantity for AAPL</code> for a quantity of 0.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Handling_panics">Handling panics</a>. Find the paragraph beginning "Suppose a function G defers a function D". After D returns normally, what happens to G? Where does execution resume?</li><li>In the next paragraph, which two situations make <code>recover</code> return nil?</li><li><a href="https://go.dev/blog/defer-panic-and-recover">Defer, Panic, and Recover</a>. Find the paragraph about the json package. What does its external API return when the package uses panic internally?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a try block around the engine call and a catch that carries on inside the same method. Read the linked section on where execution resumes before you copy that shape.</p><pre>try {
+    cost = engine.price(book, order);
+} catch (RuntimeException e) {
+    return new Fill(0, "fill " + order.symbol() + ": " + e.getMessage());
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>nakedreturn</code>. <b>Required:</b> <code>recover</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find the spec's <code>protect</code> example, then compare where its call to <code>recover</code> sits with where yours sits.</li><li><code>settle</code> runs on every fill, successful ones included, so reread the paragraph on when <code>recover</code> returns nil.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>44</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "fmt"
+
+// Order is fixed. It is one instruction from the trading floor.
+type Order struct {
+	Symbol string
+	Qty    int
+}
+
+// price is fixed. It belongs to a matching engine nobody on the floor can
+// edit. It charges the book price per share plus each share's part of a 12
+// fee, rounded down by integer division, and it panics on a symbol missing
+// from the book.
+func price(book map[string]int, o Order) int {
+	p, ok := book[o.Symbol]
+	if !ok {
+		panic("unknown symbol " + o.Symbol)
+	}
+	perShare := p + 12/o.Qty
+	return perShare * o.Qty
+}
+
+func fill(book map[string]int, o Order) (cost int, err error) {
+	// TODO
+}
+
+func settle(symbol string, err *error) {
+	// TODO
+}
+
+func session(book map[string]int, orders []Order) []string {
+	// TODO
+}
+
+func quote(book map[string]int, o Order) (int, error) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+// Order is fixed. It is one instruction from the trading floor.
+type Order struct {
+	Symbol string
+	Qty    int
+}
+
+// price is fixed. It belongs to a matching engine nobody on the floor can
+// edit. It charges the book price per share plus each share's part of a 12
+// fee, rounded down by integer division, and it panics on a symbol missing
+// from the book.
+func price(book map[string]int, o Order) int {
+	p, ok := book[o.Symbol]
+	if !ok {
+		panic("unknown symbol " + o.Symbol)
+	}
+	perShare := p + 12/o.Qty
+	return perShare * o.Qty
+}
+
+func fill(book map[string]int, o Order) (cost int, err error) {
+	defer settle(o.Symbol, &err)
+	return price(book, o), nil
+}
+
+func settle(symbol string, err *error) {
+	if r := recover(); r != nil {
+		*err = fmt.Errorf("fill %s: %v", symbol, r)
+	}
+}
+
+func session(book map[string]int, orders []Order) []string {
+	var lines []string
+	for _, o := range orders {
+		cost, err := fill(book, o)
+		if err != nil {
+			lines = append(lines, err.Error())
+			continue
+		}
+		lines = append(lines, fmt.Sprintf("%s x%d = %d", o.Symbol, o.Qty, cost))
+	}
+	return lines
+}
+
+func quote(book map[string]int, o Order) (int, error) {
+	p, ok := book[o.Symbol]
+	if !ok {
+		return 0, fmt.Errorf("unknown symbol %s", o.Symbol)
+	}
+	if o.Qty == 0 {
+		return 0, fmt.Errorf("zero quantity for %s", o.Symbol)
+	}
+	perShare := p + 12/o.Qty
+	return perShare * o.Qty, nil
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "recover", "banned": "nakedreturn"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[book := map[string]int{"AAPL": 150, "MSFT": 400}
+cost, err := fill(book, Order{Symbol: "ZZZ", Qty: 5})
+fmt.Println(cost, err)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 fill ZZZ: unknown symbol ZZZ</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[book := map[string]int{"AAPL": 150, "MSFT": 400}
+orders := []Order{{Symbol: "AAPL", Qty: 2}, {Symbol: "MSFT", Qty: 3}}
+for _, line := range session(book, orders) {
+	fmt.Println(line)
+}]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>AAPL x2 = 312
+MSFT x3 = 1212</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[book := map[string]int{"AAPL": 150, "MSFT": 400}
+cost, err := fill(book, Order{Symbol: "AAPL", Qty: 2})
+fmt.Println(cost, err == nil)
+cost, err = fill(book, Order{Symbol: "MSFT", Qty: 0})
+fmt.Println(cost, err)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>312 true
+0 fill MSFT: runtime error: integer divide by zero</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var e error
+settle("AAPL", &e)
+fmt.Println(e == nil)
+func() {
+	defer func() { fmt.Println(e) }()
+	defer settle("BOOM", &e)
+	panic("engine down")
+}()
+book := map[string]int{"AAPL": 150, "MSFT": 400}
+orders := []Order{{Symbol: "AAPL", Qty: 4}, {Symbol: "ZZZ", Qty: 1}, {Symbol: "MSFT", Qty: 0}, {Symbol: "MSFT", Qty: 1}}
+for _, line := range session(book, orders) {
+	fmt.Println(line)
+}
+cost, err := quote(book, Order{Symbol: "MSFT", Qty: 0})
+fmt.Println(cost, err)
+cost, err = quote(book, Order{Symbol: "ZZZ", Qty: 1})
+fmt.Println(cost, err)
+cost, err = quote(book, Order{Symbol: "AAPL", Qty: 4})
+fmt.Println(cost, err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true
+fill BOOM: engine down
+AAPL x4 = 612
+fill ZZZ: unknown symbol ZZZ
+fill MSFT: runtime error: integer divide by zero
+MSFT x1 = 412
+0 zero quantity for MSFT
+0 unknown symbol ZZZ
+612 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

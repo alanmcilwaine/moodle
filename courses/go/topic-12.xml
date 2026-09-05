@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 12.1: Methods Without Classes!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A bell tower rota records when each bell ringer starts, using minutes after midnight. Every displayed time needs four digits and a colon. Add methods without creating classes.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Method_declarations">Method declarations</a>. Read the first sentence and the paragraph beginning "The receiver is specified". Where does the receiver appear in a declaration? Which types can it have?</li><li><a href="https://go.dev/tour/methods/3">Methods continued</a> in the Tour. Which types can have methods? Where must the type be declared? Can you add a method to <code>int</code>?</li><li><a href="https://go.dev/ref/spec#Method_expressions">Method expressions</a>. Read the first sentence and five equivalent calls. What is <code>T.Mv</code>? What does its first argument contain?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java would use a record for the struct and a static helper for the number. Java declares methods inside classes and records, so an <code>int</code> cannot have its own method.</p><pre>record Ring(String bell, int start, int length) {
+    int end() { return start + length; }
+}
+static String clock(int minutes) { ... }</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li><code>Clock</code> needs a leading zero when the hour is one digit. The fmt package overview has a flags table, and one of its entries is about padding.</li><li>In Method expressions, the five equivalent invocations all use <code>Mv</code>. Read the sentence beginning "The final case" to see why <code>Mp</code> is missing from that list.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>20</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "fmt"
+
+type Minutes int
+
+type Ring struct {
+	Bell   string
+	Start  Minutes
+	Length Minutes
+}
+
+// TODO: declare Clock on Minutes and End on Ring
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+type Minutes int
+
+type Ring struct {
+	Bell   string
+	Start  Minutes
+	Length Minutes
+}
+
+func (m Minutes) Clock() string {
+	return fmt.Sprintf("%02d:%02d", m/60, m%60)
+}
+
+func (r Ring) End() Minutes {
+	return r.Start + r.Length
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(Minutes(425).Clock())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>07:05</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[r := Ring{Bell: "tenor", Start: 425, Length: 40}
+fmt.Println(r.End(), r.End().Clock())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>465 07:45</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(Minutes.Clock(1439), Ring.End(Ring{"treble", 1380, 59}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>23:59 1439</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var m Minutes
+r := Ring{Bell: "sanctus", Start: 600, Length: 45}
+p := &r
+fmt.Println(m.Clock(), p.End(), p.End().Clock())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>00:00 645 10:45</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 12.2: The Receiver Will See You Now!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A clinic visit card stores how many times a patient has attended. The desk adds one visit and returns the updated card. The card the patient handed over keeps its old count. The desk also decides whether the patient is a regular. A patient with three or more stamped visits counts as a regular.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Method_declarations">Method declarations</a>. Find the paragraph beginning "The receiver is specified". How is the receiver declared?</li><li><a href="https://go.dev/ref/spec#Calls">Calls</a>. Find the paragraph beginning "In a function call, the function value and arguments are evaluated". What happens to each argument before the function body starts?</li><li><a href="https://go.dev/tour/methods/4">Pointer receivers</a> in the Tour. Read the last paragraph. If the receiver is a value, what does <code>Scale</code> operate on?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java instance methods use <code>this</code>. Because <code>this</code> refers to the caller's object, the method can change that object. Java has no value receiver.</p><pre>void stamp() { visits++; }</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>The Pointer receivers page has a paragraph beginning "Try removing the *". Make that change to <code>Scale</code> in your head and work out what each receiver kind does to the caller's variable.</li><li>A receiver is passed the same way as any other argument. Read the Calls paragraph beginning "In a function call" and say what the body of <code>Stamped</code> is adding to.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+type Card struct {
+	Patient string
+	Visits  int
+}
+
+// TODO: declare Stamped and Regular on Card
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+type Card struct {
+	Patient string
+	Visits  int
+}
+
+func (c Card) Stamped() Card {
+	c.Visits++
+	return c
+}
+
+func (c Card) Regular() bool {
+	return c.Visits >= 3
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[c := Card{Patient: "Ada", Visits: 0}
+c = c.Stamped()
+fmt.Println(c, c.Regular())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{Ada 1} false</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[c := Card{Patient: "Bob", Visits: 2}
+d := c.Stamped()
+fmt.Println(d, d.Regular())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{Bob 3} true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[c := Card{Patient: "Cy", Visits: 2}
+d := c.Stamped()
+fmt.Println(c, d)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{Cy 2} {Cy 3}</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var c Card
+d := c.Stamped()
+fmt.Println(c, d, c.Regular())
+e := Card{Patient: "Ed", Visits: 2}
+g := e.Stamped()
+fmt.Println(e.Regular(), g.Regular(), e.Visits)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{ 0} { 1} false
+false true 2</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 12.3: Pointer or Value, Pick One!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A water meter stores the amount of water used at one property. The board reads every meter on Tui Street each quarter. Update the physical meter as well as the clerk's total. Last year's program changed only a copy. A search for an ID that no meter on the street carries returns <code>nil</code>.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Method_sets">Method sets</a>. Read the first two list items. Which methods can a <code>Meter</code> value call? Which can a <code>*Meter</code> call?</li><li><a href="https://go.dev/ref/spec#Calls">Calls</a>. Find the sentence beginning "If x is addressable". What does <code>x.m()</code> mean when <code>m</code> needs a pointer? Whose address does the shorthand use?</li><li><a href="https://go.dev/ref/spec#For_range">For statements with range clause</a>. Find "For each entry it assigns" and the following table. What two values does a slice iteration produce? What does the range clause do with them for each entry?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java enhanced for loop gives the body a reference to each element. A change through that reference appears in the list.</p><pre>for (Meter m : meters) m.advance(units);</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>In <code>AdvanceAll</code>, ask what <code>&amp;m</code> points at when <code>m</code> came out of a range clause. The For range table lists both iteration values for a slice, and the section shows the form that leaves the second one out.</li><li><code>Find</code> must return a pointer to a meter the street holds. Address operators, from WAT 08.2, lists which operands <code>&amp;</code> accepts.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>36</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "fmt"
+
+type Meter struct {
+	ID    string
+	Units int
+}
+
+type Street struct {
+	Name   string
+	Meters []Meter
+}
+
+// TODO: declare Advance and Reading on Meter
+// TODO: declare AdvanceAll, Total, and Find on Street
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+type Meter struct {
+	ID    string
+	Units int
+}
+
+type Street struct {
+	Name   string
+	Meters []Meter
+}
+
+func (m *Meter) Advance(units int) {
+	m.Units += units
+}
+
+func (m *Meter) Reading() string {
+	return fmt.Sprintf("%s reads %d", m.ID, m.Units)
+}
+
+func (s *Street) AdvanceAll(units int) {
+	for i := range s.Meters {
+		s.Meters[i].Advance(units)
+	}
+}
+
+func (s *Street) Total() int {
+	total := 0
+	for _, m := range s.Meters {
+		total += m.Units
+	}
+	return total
+}
+
+func (s *Street) Find(id string) *Meter {
+	for i := range s.Meters {
+		if s.Meters[i].ID == id {
+			return &s.Meters[i]
+		}
+	}
+	return nil
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[m := Meter{ID: "M1", Units: 10}
+m.Advance(5)
+fmt.Println(m.Reading(), m.Units)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>M1 reads 15 15</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[s := Street{Name: "Tui", Meters: []Meter{{"M1", 10}, {"M2", 20}}}
+fmt.Println(s.Total(), s.Find("M1").Reading())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>30 M1 reads 10</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[s := Street{Name: "Tui", Meters: []Meter{{"M1", 10}, {"M2", 20}, {"M3", 0}}}
+s.AdvanceAll(5)
+fmt.Println(s.Total(), s.Meters)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>45 [{M1 15} {M2 25} {M3 5}]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[s := Street{Name: "Kea", Meters: []Meter{{"M1", 10}, {"M2", 20}}}
+p := s.Find("M2")
+p.Advance(7)
+s.Find("M1").Advance(1)
+fmt.Println(s.Total(), s.Meters, p.Reading(), s.Find("M9") == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>38 [{M1 11} {M2 27}] M2 reads 27 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

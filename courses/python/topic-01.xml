@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 01.1: Print or Perish!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write a Python file that binds three names and prints a four line station report.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>In Java the smallest program that prints a line still needs a class and a <code>main</code> method.</p>
+<pre>public class Logger {
+    public static void main(String[] args) {
+        String site = "Kaikoura";
+        System.out.println("Site: " + site);
+    }
+}</pre>
+<p>Python needs none of that. The file itself is the program. Every line you write at the left margin runs from top to bottom the moment you run the file.</p>
+<pre>site = "Kaikoura"
+print("Site:", site)</pre>
+<p>Four things changed. Read them one at a time.</p>
+<ul>
+<li>Java declares a variable by putting a type in front of the name. Python writes the name, an <code>=</code>, and the value. There is no type, no <code>var</code>, and no keyword. <code>channels = 3</code> is the whole declaration. Python calls this <b>binding a name</b>.</li>
+<li>No line ends with a semicolon. You write one statement per line, and the newline ends it.</li>
+<li><code>print</code> is Python's <code>System.out.println</code>. It takes several values separated by commas, puts one space between them, and adds a newline at the end. You never join the values with <code>+</code>.</li>
+<li><code>#</code> starts a comment that runs to the end of the line, the way <code>//</code> does in Java.</li>
+</ul>
+<p>Python names its types differently. Text in quotes is a <b>str</b>, short for string. A whole number is an <b>int</b>. A number with a decimal point is a <b>float</b>. You never write any of those three words in your code. Python reads the value and works out the type for you.</p>
+<p>Python names variables differently too. Words go in lower case and join with underscores, so Java's <code>sampleRate</code> becomes <code>sample_rate</code>.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><ul><li>Bind <code>site</code> to the string <code>Kaikoura</code>.</li><li>Bind <code>channels</code> to the int <code>3</code>.</li><li>Bind <code>sample_rate</code> to the float <code>2.5</code>.</li><li>Print the four lines below with one call to <code>print</code> for each. The third line is blank, and a bare <code>print()</code> with no arguments prints a blank line.</li></ul><pre>SEISMIC LOGGER
+==============
+
+Site: Kaikoura Channels: 3 Rate: 2.5</pre><p>You pass when your output matches character for character, blank line included. The tests print extra lines underneath your output, so expect your banner at the top of every result.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not write a semicolon anywhere in the file. The checker rejects it on sight.</li><li>Do not write a type before a name. <code>channels = 3</code> is the whole declaration.</li><li>Do not write a type after a name either. <code>channels: int = 3</code> fails the same checker.</li><li>Pass the three names to <code>print</code>. Do not retype their values as literals inside the call.</li><li>Build the summary with one call to <code>print</code> and commas between the arguments.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>12</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[# The file is the program. Write at the left margin, with no class and no main.
+# TODO: bind site, channels and sample_rate, then print the banner and the summary line.
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[# Station details
+site = "Kaikoura"
+channels = 3
+sample_rate = 2.5
+
+print("SEISMIC LOGGER")
+print("==============")
+print()
+print("Site:", site, "Channels:", channels, "Rate:", sample_rate)
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print("--- end of report ---")</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>SEISMIC LOGGER
+==============
+
+Site: Kaikoura Channels: 3 Rate: 2.5
+--- end of report ---</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(type(site).__name__, type(channels).__name__, type(sample_rate).__name__)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>str int float</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(site.upper())
+print(channels * 2)
+print(sample_rate * 2)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>KAIKOURA
+6
+5.0</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect, sys
+src = inspect.getsource(sys.modules['__main__'])
+assert chr(59) not in src, "rule broken: no semicolons"
+colon = chr(58)
+for word in ("int", "str", "float", "bool"):
+    assert colon + " " + word not in src, "rule broken: no type before or after a name"
+print(site, channels, sample_rate)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>Kaikoura 3 2.5</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 01.2: The Curly Brace Famine!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write the body of a <code>classify</code> function that prints one word for a pressure reading.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>The first tier of this topic gave you <code>print</code> and name binding. Those same statements now move inside a block.</p>
+<p>Java marks a block with braces. The indentation is there for the reader, and the compiler ignores it.</p>
+<pre>if (pressure &lt;= 0 || pressure &gt; 2000) {
+    System.out.println("FAULT");
+} else if (pressure &lt; 900) {
+    System.out.println("LOW");
+} else {
+    System.out.println("HIGH");
+}</pre>
+<p>Python has no braces. The indentation is the block, and the parser enforces it.</p>
+<pre>if pressure &lt;= 0 or pressure &gt; 2000:
+    print("FAULT")
+elif pressure &lt; 900:
+    print("LOW")
+else:
+    print("HIGH")</pre>
+<p>Five differences matter here.</p>
+<ul>
+<li>The header line ends with a colon. Leave the colon off and Python reports a <code>SyntaxError</code>.</li>
+<li>The condition takes no parentheses.</li>
+<li>Java's <code>else if</code> becomes one word, <code>elif</code>.</li>
+<li>The boolean operators are words. Write <code>and</code>, <code>or</code> and <code>not</code>. The symbols <code>&amp;&amp;</code>, <code>||</code> and <code>!</code> are not part of Python.</li>
+<li>Indent every line of one block by the same amount. Four spaces is the convention. A line indented by the wrong amount raises an <code>IndentationError</code> before any of your code runs.</li>
+</ul>
+<p>In Python <code>def</code> starts a function, so the line <code>def classify(pressure):</code> declares a function called <code>classify</code> that takes one argument named <code>pressure</code>.</p>
+<p>Once the tests pass, take one line of your block and add a single extra space in front of it. Run it again and read the <code>IndentationError</code>. Then put the line back. Java ignores that space. Python treats it as the structure of your program.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><ul><li>Write the body of <code>classify(pressure)</code> indented four spaces under the header already in the answer box. Print exactly one word for each pressure value, testing the branches in the order below.</li><li>Print <code>FAULT</code> when the pressure is 0 or below, or above 2000. Write that branch as one condition joined with <code>or</code>.</li><li>Print <code>LOW</code> when the pressure is below 900.</li><li>Print <code>NORMAL</code> when the pressure is 900 to 1100 inclusive.</li><li>Print <code>HIGH</code> for anything else.</li></ul><p>You pass when each call prints one of those four words and nothing else.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not type <code>{</code> or <code>}</code> anywhere in your answer.</li><li>Do not put parentheses round a condition.</li><li>Spell the operators out as words. The checker fails on <code>&amp;&amp;</code> and <code>||</code>.</li><li>Write <code>elif</code>. A nested <code>if</code> inside the <code>else</code> passes the tests and fails this exercise.</li><li>Indent with four spaces and never press Tab. Mixing the two raises <code>TabError</code>, not a style warning.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>12</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def classify(pressure):
+    # TODO: print FAULT, LOW, NORMAL or HIGH with an if, elif, elif, else chain
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def classify(pressure):
+    if pressure <= 0 or pressure > 2000:
+        print("FAULT")
+    elif pressure < 900:
+        print("LOW")
+    elif pressure <= 1100:
+        print("NORMAL")
+    else:
+        print("HIGH")
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>classify(850)
+classify(1000)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>LOW
+NORMAL</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>classify(1500)
+classify(-5)
+classify(2001)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>HIGH
+FAULT
+FAULT</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>classify(899)
+classify(900)
+classify(1100)
+classify(1101)
+classify(0)
+classify(2000)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>LOW
+NORMAL
+NORMAL
+HIGH
+FAULT
+HIGH</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+src = inspect.getsource(classify)
+amp = chr(38)
+assert "elif" in src, "rule broken: use elif, not a nested if"
+assert amp + amp not in src, "rule broken: spell out and"
+assert "||" not in src, "rule broken: spell out or"
+assert "{" not in src and "}" not in src, "rule broken: no braces"
+assert "\t" not in src, "rule broken: four spaces, never a tab"
+assert "if (" not in src, "rule broken: no parentheses round the condition"
+classify(42)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>LOW</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 01.3: The Station Report Reckoning!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write the body of a <code>station_report</code> function that grades a pressure, works out a status, and prints a report block.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>A Java method that builds a report declares its variables first, assigns to them inside a branch, and glues the output together with <code>+</code>.</p>
+<pre>static void stationReport(String site, int pressure, int channels, int days) {
+    String grade;
+    if (pressure &lt;= 0 || pressure &gt; 2000) {
+        grade = "FAULT";
+    } else if (pressure &lt; 900) {
+        grade = "LOW";
+    } else {
+        grade = "OK";
+    }
+    System.out.println("Pressure: " + pressure + " " + grade);
+}</pre>
+<p>Python drops the declaration line. A name comes into being the moment you assign to it, and a name assigned inside a branch is still there after the branch ends.</p>
+<pre>if pressure &lt;= 0 or pressure &gt; 2000:
+    grade = "FAULT"
+else:
+    grade = "OK"
+
+print("Pressure:", pressure, grade)</pre>
+<p>Three things to carry into this exercise.</p>
+<ul>
+<li>Assigning inside a branch is the whole declaration. Python has nothing to match Java's bare <code>String grade;</code> line, and you do not want one.</li>
+<li><code>==</code> between two strings compares the characters. Java's <code>==</code> compares references, which is why Java makes you write <code>grade.equals("FAULT")</code>. In Python <code>grade == "FAULT"</code> is the right form and the only one.</li>
+<li>A bare <code>print()</code> prints a blank line. <code>print("Status:", status)</code> puts one space between the two values, so you never join them with <code>+</code>.</li>
+</ul>
+<p>Order decides the answer twice over. A station on 2001 with six healthy channels comes out <code>OFFLINE</code>, because the grade is settled before the channel count is looked at. A station on 899 with three channels calibrated 30 days ago comes out <code>LOW</code> and <code>ONLINE</code>. Neither boundary trips, because 30 is not more than 30 and 3 is not fewer than 3.</p>
+<p>The earlier tiers of this topic supply everything you need. Name binding and <code>print</code> came from the first tier, and the colon header with its indented block came from the second.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><ul><li>Write the body of <code>station_report(site, pressure, channels, days_since_calibration)</code> indented four spaces under the header already in the answer box.</li><li>Work out the grade from the pressure and bind it to a name, testing these branches in order.<ul><li><code>FAULT</code> when the pressure is 0 or below, or above 2000.</li><li><code>LOW</code> when the pressure is below 900.</li><li><code>NORMAL</code> when the pressure is 900 to 1100 inclusive.</li><li><code>HIGH</code> for anything else.</li></ul></li><li>Work out the status from the grade you bound and the other two values, testing these branches in order too.<ul><li><code>OFFLINE</code> when the grade is <code>FAULT</code>, or the station has 0 channels or fewer.</li><li><code>DEGRADED</code> when the last calibration was more than 30 days ago, or the station has fewer than 3 channels.</li><li><code>ONLINE</code> for anything else.</li></ul></li><li>Print the report shown below. The first block is a call, the second is the exact output of that call, and the sixth line of it is blank.</li><li>Print the third block underneath the status line when the status is anything other than <code>ONLINE</code>.</li></ul><pre>station_report("Kaikoura", 1000, 4, 12)</pre><pre>STATION REPORT
+==============
+Site: Kaikoura
+Pressure: 1000 NORMAL
+Channels: 4
+
+Status: ONLINE</pre><pre>Action: CHECK THE STATION</pre><p>An <code>ONLINE</code> report runs to seven lines. Every other report runs to eight. You pass when each call prints exactly those lines and nothing else.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Bind the grade to a name, then test that name for the status. Do not run the pressure test a second time.</li><li>Do not type <code>{</code> or <code>}</code>. That rules out an f-string as well as a brace.</li><li>Join nothing with <code>+</code>. Hand the values to <code>print</code> and let the commas place the spaces.</li><li>Spell the operators out as words. The checker fails on <code>&amp;&amp;</code> and <code>||</code>.</li><li>Write <code>elif</code> in both chains, with no parentheses round a condition and no Tab characters.</li><li>Write no loop and no second function. Straight-line branching is the whole exercise.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>24</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def station_report(site, pressure, channels, days_since_calibration):
+    # TODO: bind grade from the pressure, bind status from the grade, then print the report
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def station_report(site, pressure, channels, days_since_calibration):
+    if pressure <= 0 or pressure > 2000:
+        grade = "FAULT"
+    elif pressure < 900:
+        grade = "LOW"
+    elif pressure <= 1100:
+        grade = "NORMAL"
+    else:
+        grade = "HIGH"
+
+    if grade == "FAULT" or channels <= 0:
+        status = "OFFLINE"
+    elif days_since_calibration > 30 or channels < 3:
+        status = "DEGRADED"
+    else:
+        status = "ONLINE"
+
+    print("STATION REPORT")
+    print("==============")
+    print("Site:", site)
+    print("Pressure:", pressure, grade)
+    print("Channels:", channels)
+    print()
+    print("Status:", status)
+    if status != "ONLINE":
+        print("Action: CHECK THE STATION")
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>station_report("Kaikoura", 1000, 4, 12)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>STATION REPORT
+==============
+Site: Kaikoura
+Pressure: 1000 NORMAL
+Channels: 4
+
+Status: ONLINE</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>station_report("Rotorua", 1500, 2, 5)
+station_report("Taupo", 0, 6, 3)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>STATION REPORT
+==============
+Site: Rotorua
+Pressure: 1500 HIGH
+Channels: 2
+
+Status: DEGRADED
+Action: CHECK THE STATION
+STATION REPORT
+==============
+Site: Taupo
+Pressure: 0 FAULT
+Channels: 6
+
+Status: OFFLINE
+Action: CHECK THE STATION</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>station_report("Napier", 899, 3, 30)
+station_report("Gisborne", 2001, 0, 60)
+station_report("Wanaka", 1101, 3, 31)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>STATION REPORT
+==============
+Site: Napier
+Pressure: 899 LOW
+Channels: 3
+
+Status: ONLINE
+STATION REPORT
+==============
+Site: Gisborne
+Pressure: 2001 FAULT
+Channels: 0
+
+Status: OFFLINE
+Action: CHECK THE STATION
+STATION REPORT
+==============
+Site: Wanaka
+Pressure: 1101 HIGH
+Channels: 3
+
+Status: DEGRADED
+Action: CHECK THE STATION</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+src = inspect.getsource(station_report)
+amp = chr(38)
+assert "elif" in src, "rule broken: use elif, not a nested if"
+assert amp + amp not in src, "rule broken: spell out and"
+assert "||" not in src, "rule broken: spell out or"
+assert "{" not in src and "}" not in src, "rule broken: no braces and no f-string"
+assert "\t" not in src, "rule broken: four spaces, never a tab"
+assert "if (" not in src, "rule broken: no parentheses round the condition"
+assert '" +' not in src, "rule broken: commas, not concatenation"
+assert '+ "' not in src, "rule broken: commas, not concatenation"
+station_report("Ohakune", 2000, 8, 1)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>STATION REPORT
+==============
+Site: Ohakune
+Pressure: 2000 HIGH
+Channels: 8
+
+Status: ONLINE</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+</quiz>

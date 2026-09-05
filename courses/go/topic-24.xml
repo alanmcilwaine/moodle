@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 24.1: Don't Share, Communicate!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A crayfish boat and the wharf communicate by radio, one catch at a time. Neither end can store a message until the other is ready to receive it.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Channel_types">Channel types</a>. Read the paragraph about <code>make</code> and the following paragraph. For a channel without capacity, what must both sides do before a send succeeds? In what order do values arrive?</li><li><a href="https://go.dev/ref/spec#Receive_operator">Receive operator</a>. Read the first paragraph and four examples. How does code receive a channel value? What happens if no value is available?</li></ul></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>chan</code>, <code>&lt;-</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>A goroutine is a function that runs alongside its caller rather than after it. The grader starts <code>send</code> in a goroutine, so <code>send</code> and <code>take</code> run at the same time.</li><li>In the Channel types section, find the three example declarations under ChannelType, then compare them with the four examples under Receive operator. Which side of the operator does the channel name sit on in each?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func send(words []string, out chan string) {
+	// TODO
+}
+
+func take(n int, in chan string) []string {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func send(words []string, out chan string) {
+	for _, word := range words {
+		out <- word
+	}
+}
+
+func take(n int, in chan string) []string {
+	got := make([]string, 0, n)
+	for range n {
+		got = append(got, <-in)
+	}
+	return got
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "chan <-"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ch := make(chan string)
+go send([]string{"paua", "kina"}, ch)
+fmt.Println(take(2, ch))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[paua kina]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ch := make(chan string)
+go send([]string{"toheroa"}, ch)
+fmt.Println(take(1, ch))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[toheroa]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ch := make(chan string)
+go send([]string{"kina", "paua", "kina", "cockle", "pipi", "kina"}, ch)
+fmt.Println(take(6, ch))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[kina paua kina cockle pipi kina]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ch := make(chan string)
+go send([]string{"pipi", "tuatua", "cockle"}, ch)
+fmt.Println(take(0, ch))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 24.2: Range and Close!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A bakery passes each loaf through a hatch to a waiting queue. After the final loaf, the baker closes the hatch. The queue must still collect every loaf that already passed through.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/builtin#close">close</a>. Read all four sentences. Who should call it? Who should not? What does a two-value receive report after closure?</li><li><a href="https://go.dev/ref/spec#For_range">For statements with range clause</a>. Find the channel row and the following channel paragraph. What stops a range loop over a channel?</li><li><a href="https://go.dev/ref/spec#Channel_types">Channel types</a>. Read the ChannelType production and three examples. What differs between the declarations? Which channel can only receive?</li></ul></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>close</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>A range over a channel keeps going until one call records that no more values will be sent. The builtin page names that call and says which side should make it.</li><li>Check the capacity paragraph in Channel types. What must both sides do before an unbuffered send completes? What else must be running when <code>bake</code> sends?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>22</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func bake(loaves []string) <-chan string {
+	// TODO
+}
+
+func collect(in <-chan string) []string {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func bake(loaves []string) <-chan string {
+	hatch := make(chan string)
+	go func() {
+		defer close(hatch)
+		for _, loaf := range loaves {
+			hatch <- loaf
+		}
+	}()
+	return hatch
+}
+
+func collect(in <-chan string) []string {
+	var got []string
+	for loaf := range in {
+		got = append(got, loaf)
+	}
+	return got
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "close"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(collect(bake([]string{"rye", "oat"})))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[rye oat]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(collect(bake([]string{"sourdough"})))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[sourdough]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(collect(bake(nil)))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[hatch := bake([]string{"rye", "oat"})
+first, ok1 := <-hatch
+second, ok2 := <-hatch
+third, ok3 := <-hatch
+fmt.Printf("%q %v %q %v %q %v\n", first, ok1, second, ok2, third, ok3)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>"rye" true "oat" true "" false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 24.3: Select Committee!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A committee receives motions until the chair rings a bell to end the meeting. The clerk also needs to report whether a motion is available now without waiting for another one.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Select_statements">Select statements</a>. Read the numbered steps. If several communications can proceed, which case runs? If none can proceed, which case runs?</li><li><a href="https://go.dev/ref/spec#Receive_operator">Receive operator</a>. Read about closed channels and the two-result assignment form. Does receiving from a closed channel wait? What does the second result mean?</li></ul></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>select</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Read step two under Select statements. Which case in <code>poll</code> is the fallback?</li><li>Find the two-result assignment form under Receive operator. What does its boolean report? For <code>sit</code>, what should a select without a default do after recording each motion?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>24</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func poll(in <-chan string) (string, bool) {
+	// TODO
+}
+
+func sit(motions <-chan string, done <-chan struct{}) []string {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func poll(in <-chan string) (string, bool) {
+	select {
+	case motion, ok := <-in:
+		return motion, ok
+	default:
+		return "", false
+	}
+}
+
+func sit(motions <-chan string, done <-chan struct{}) []string {
+	var heard []string
+	for {
+		select {
+		case motion := <-motions:
+			heard = append(heard, motion)
+		case <-done:
+			return heard
+		}
+	}
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "select"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[tray := make(chan string, 1)
+tray <- "levy"
+first, ok1 := poll(tray)
+second, ok2 := poll(tray)
+fmt.Printf("%q %v %q %v\n", first, ok1, second, ok2)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>"levy" true "" false</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[motions := make(chan string)
+done := make(chan struct{})
+go func() {
+	motions <- "levy"
+	motions <- "bylaw"
+	close(done)
+}()
+fmt.Println(sit(motions, done))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[levy bylaw]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[shut := make(chan string)
+close(shut)
+value, ok := poll(shut)
+fmt.Printf("%q %v\n", value, ok)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>"" false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[motions := make(chan string)
+done := make(chan struct{})
+close(done)
+fmt.Println(sit(motions, done))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

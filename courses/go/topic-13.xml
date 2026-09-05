@@ -1,0 +1,637 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 13.1: No Implements Needed!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A pond warden keeps a list of anything that can quack, including mallards and a wind-up toy. Some entries in the list are empty. Empty entries stay silent. The chorus lists one call per quacker present, in list order, and skips the gaps. Do this without registering types or writing adapters.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Interface_types">Interface types</a>. Read the first paragraph. What puts a type in an interface's type set? What value does an interface variable have before assignment? In the <code>File</code> example, what appears between the braces? In the <code>Locker</code> declaration, what appears before those braces?</li><li><a href="https://go.dev/ref/spec#Interface_types">The same section</a>, the paragraph beginning "More than one type may implement an interface". Can <code>S1</code> and <code>S2</code> have other methods? Where does the example use the word <code>implements</code>?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>implements Quacker</code> on the duck, plus a <code>ToyAdapter</code> so the toy counts too. Go has no <code>implements</code> keyword. The tests build a <code>[]Quacker</code> straight from a <code>Duck</code> and a <code>Toy</code>.</p><pre>class Duck implements Quacker { ... }
+class ToyAdapter implements Quacker {
+    private final Toy toy;
+    public String quack() { return toy.squeak(); }
+}</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If the interface declaration fails, compare it with the <code>Locker</code> declaration.</li><li>Find the initial value of an interface variable in the first paragraph. Compare each pond member with that value.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>22</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+type Duck struct{}
+
+type Toy struct{}
+
+// TODO: declare Quacker, then give Duck and Toy a Quack method.
+
+func chorus(pond []Quacker) []string {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+type Duck struct{}
+
+type Toy struct{}
+
+type Quacker interface {
+	Quack() string
+}
+
+func (d Duck) Quack() string {
+	return "quack"
+}
+
+func (t Toy) Quack() string {
+	return "squeak"
+}
+
+func chorus(pond []Quacker) []string {
+	var out []string
+	for _, q := range pond {
+		if q == nil {
+			continue
+		}
+		out = append(out, q.Quack())
+	}
+	return out
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var q Quacker = Duck{}
+fmt.Println(q.Quack(), Toy{}.Quack())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>quack squeak</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(chorus([]Quacker{Duck{}, Toy{}, Duck{}}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[quack squeak quack]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var pond [3]Quacker
+pond[1] = Toy{}
+fmt.Println(chorus(pond[:]), pond[0] == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[squeak] true</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[pond := make([]Quacker, 2)
+fmt.Println(len(chorus(pond)), chorus(nil))
+pond[0], pond[1] = Toy{}, Duck{}
+fmt.Println(chorus(pond))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 []
+[squeak quack]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 13.2: Small Interface, Big Abstraction!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A weather station can accept readings from several kinds of instrument. Its display averages their readings, and its log prints each reading beside the instrument's name. The porch dial has no nameplate, and the hall nameplate takes no readings. An empty display averages to <code>0</code>. The log prints each reading with <code>%v</code>, so a whole-number reading of 998 prints as <code>998</code>.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/io#Reader">io.Reader</a>. Count the declared methods and read the first documentation sentence. What does <code>Reader</code> wrap? Which method gives the interface its name?</li><li><a href="https://pkg.go.dev/io#ReadWriter">io.ReadWriter</a>. How does <code>ReadWriter</code> include both <code>Read</code> and <code>Write</code> without repeating their signatures?</li><li><a href="https://go.dev/ref/spec#Implementing_an_interface">Implementing an interface</a>. Read the two bullet points. When can a value of one interface type be assigned to another interface type?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is one fat <code>Instrument</code> interface beside the hardware, so a dial that only samples needs stub methods. In Go each consumer declares only the methods it calls. A Java Strategy needs an interface and a class per policy, and that consumer interface is the whole pattern.</p><pre>interface Instrument {
+    double sample();
+    String name();
+    Instrument calibrated(double offset);
+}</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If a hidden test will not compile, count the methods on the smallest starter type and compare that count with your <code>Sampler</code>.</li><li>Compare your <code>Instrument</code> body with <code>ReadWriter</code>'s, which has two lines and no parentheses.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>34</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "fmt"
+
+// The four types below are fixed. Do not change them.
+
+type Thermometer struct {
+	Celsius float64
+}
+
+func (t Thermometer) Sample() float64 { return t.Celsius }
+
+func (t Thermometer) Name() string { return "thermometer" }
+
+func (t Thermometer) Calibrated(offset float64) Thermometer {
+	return Thermometer{Celsius: t.Celsius + offset}
+}
+
+type Barometer struct {
+	Millibars float64
+}
+
+func (b Barometer) Sample() float64 { return b.Millibars }
+
+func (b Barometer) Name() string { return "barometer" }
+
+type Dial struct {
+	Value float64
+}
+
+func (d Dial) Sample() float64 { return d.Value }
+
+type Nameplate struct {
+	Label string
+}
+
+func (n Nameplate) Name() string { return n.Label }
+
+// TODO: declare Sampler, Namer, and Instrument.
+
+func mean(ss []Sampler) float64 {
+	// TODO
+}
+
+func entry(in Instrument) string {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+type Thermometer struct {
+	Celsius float64
+}
+
+func (t Thermometer) Sample() float64 { return t.Celsius }
+
+func (t Thermometer) Name() string { return "thermometer" }
+
+func (t Thermometer) Calibrated(offset float64) Thermometer {
+	return Thermometer{Celsius: t.Celsius + offset}
+}
+
+type Barometer struct {
+	Millibars float64
+}
+
+func (b Barometer) Sample() float64 { return b.Millibars }
+
+func (b Barometer) Name() string { return "barometer" }
+
+type Dial struct {
+	Value float64
+}
+
+func (d Dial) Sample() float64 { return d.Value }
+
+type Nameplate struct {
+	Label string
+}
+
+func (n Nameplate) Name() string { return n.Label }
+
+type Sampler interface {
+	Sample() float64
+}
+
+type Namer interface {
+	Name() string
+}
+
+type Instrument interface {
+	Sampler
+	Namer
+}
+
+func mean(ss []Sampler) float64 {
+	total := 0.0
+	n := 0.0
+	for _, s := range ss {
+		total += s.Sample()
+		n++
+	}
+	if n == 0 {
+		return 0
+	}
+	return total / n
+}
+
+func entry(in Instrument) string {
+	return fmt.Sprintf("%s: %v", in.Name(), in.Sample())
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(mean([]Sampler{Thermometer{Celsius: 21}, Barometer{Millibars: 1013}}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>517</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(entry(Thermometer{Celsius: 18.5}))
+fmt.Println(entry(Barometer{Millibars: 1009.5}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>thermometer: 18.5
+barometer: 1009.5</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var s Sampler = Dial{Value: 3.5}
+_, isNamer := s.(Namer)
+fmt.Println(s.Sample(), isNamer, mean([]Sampler{s, Dial{}, Thermometer{Celsius: 21}}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>3.5 false 8.166666666666666</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var in Instrument = Barometer{Millibars: 998}
+var n Namer = in
+var s Sampler = in
+var plate Namer = Nameplate{Label: "porch"}
+fmt.Println(entry(in), n.Name(), s.Sample(), mean(nil), plate.Name())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>barometer: 998 barometer 998 0 porch</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 13.3: The Stringer Quartet!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>An orchestra programme identifies each player by instrument and seat. The quartet's printer must write "viola" wherever a viola seat appears. The box office still counts those seats as plain numbers.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/fmt#Stringer">fmt.Stringer</a>. Read the interface and documentation. Which method must a type provide? Which formats make <code>fmt</code> call it?</li><li><a href="https://pkg.go.dev/fmt#hdr-Printing">fmt, the Printing section of the overview</a>. Find the numbered rules that <code>fmt</code> applies before printing an operand. Which of <code>%v</code>, <code>%s</code>, <code>%q</code>, <code>%d</code>, and <code>%T</code> reach the rule for a <code>String</code> method?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>@Override public String toString()</code>, which every Java print path honours. The second reflex is expecting <code>String.format("%d", seat)</code> to throw when handed an object. Go's <code>fmt</code> decides verb by verb whether to call your method.</p><pre>@Override
+public String toString() { return name + " (" + seat + ")"; }</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>String</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If <code>Println(Viola)</code> still prints 2, compare your method's name, receiver, and signature against the one line inside the <code>Stringer</code> declaration.</li><li>For the <code>seat N</code> case, decide from the rule list whether formatting the seat with <code>%d</code> inside <code>String</code> would call <code>String</code> again.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>28</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "fmt"
+
+type Seat int
+
+const (
+	FirstViolin Seat = iota
+	SecondViolin
+	Viola
+	Cello
+)
+
+type Player struct {
+	Name string
+	Seat Seat
+}
+
+// TODO: give Seat and Player a String method.
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+type Seat int
+
+const (
+	FirstViolin Seat = iota
+	SecondViolin
+	Viola
+	Cello
+)
+
+type Player struct {
+	Name string
+	Seat Seat
+}
+
+func (s Seat) String() string {
+	switch s {
+	case FirstViolin:
+		return "first violin"
+	case SecondViolin:
+		return "second violin"
+	case Viola:
+		return "viola"
+	case Cello:
+		return "cello"
+	}
+	return fmt.Sprintf("seat %d", s)
+}
+
+func (p Player) String() string {
+	return fmt.Sprintf("%s (%v)", p.Name, p.Seat)
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "String"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(Viola, Cello)
+fmt.Printf("%v|%s|%q\n", FirstViolin, FirstViolin, FirstViolin)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>viola cello
+first violin|first violin|"first violin"</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[p := Player{Name: "Ana", Seat: Viola}
+fmt.Println(p)
+fmt.Printf("%s\n", p)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Ana (viola)
+Ana (viola)</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Printf("%d %v %T\n", Cello, Cello, Cello)
+fmt.Println(Seat(7), Player{Name: "Bo", Seat: Seat(7)})]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>3 cello main.Seat
+seat 7 Bo (seat 7)</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[quartet := []Player{{"Cy", FirstViolin}, {"Di", SecondViolin}, {"Ana", Viola}, {"Bo", Cello}}
+fmt.Println(quartet)
+type desk struct {
+	Seat  Seat
+	spare Seat
+}
+fmt.Println(desk{Viola, Cello})]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[Cy (first violin) Di (second violin) Ana (viola) Bo (cello)]
+{viola 3}</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 13.4: The Impl Impostor!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A store interface lists the operations that other code can use. An AI produced a five-method <code>Store</code> interface and a <code>StoreImpl</code>, although the only reader calls one method. Every test passes. Name the one-method interface <code>Getter</code> and make <code>render</code> accept it. Keep every store method reachable from the value <code>NewStore</code> returns.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/io">io</a>. Read the first two overview sentences. Which package declares the interfaces? Where do their implementations live?</li><li><a href="https://pkg.go.dev/io">The same page</a>, the Index. Open <code>Reader</code>, <code>ReadWriter</code>, and <code>ReadWriteCloser</code>. How many methods does each declare? How does each interface get its name? Does any type use the word <code>Impl</code>?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>StoreService</code> beside <code>StoreServiceImpl</code> in one package, with every public method mirrored in the interface. A factory returns the interface, so the interface belongs to the package that implements it. Every consumer then depends on all five methods.</p><pre>public interface StoreService { String get(String k); void put(String k, String v); ... }
+public class StoreServiceImpl implements StoreService { ... }</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>StoreImpl</code>, <code>Store</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Read the first two overview sentences. Is <code>render</code> more like package <code>io</code> or package <code>os</code>?</li><li>Count the methods <code>render</code> calls. Name the interface as <code>Reader</code> is named after <code>Read</code>.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>44</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "slices"
+
+// The AI wrote this. It passes every test. Judge it, then rewrite it.
+
+// Store is everything a store can do.
+type Store interface {
+	Get(key string) string
+	Put(key, value string)
+	Delete(key string)
+	Keys() []string
+	Len() int
+}
+
+// StoreImpl implements Store with a map.
+type StoreImpl struct {
+	data map[string]string
+}
+
+// NewStore returns an empty Store.
+func NewStore() Store {
+	return &StoreImpl{data: map[string]string{}}
+}
+
+func (s *StoreImpl) Get(key string) string { return s.data[key] }
+
+func (s *StoreImpl) Put(key, value string) { s.data[key] = value }
+
+func (s *StoreImpl) Delete(key string) { delete(s.data, key) }
+
+func (s *StoreImpl) Keys() []string {
+	var keys []string
+	for k := range s.data {
+		keys = append(keys, k)
+	}
+	slices.Sort(keys)
+	return keys
+}
+
+func (s *StoreImpl) Len() int { return len(s.data) }
+
+// render returns one line per key, as key=value.
+func render(s Store, keys []string) []string {
+	var lines []string
+	for _, k := range keys {
+		lines = append(lines, k+"="+s.Get(k))
+	}
+	return lines
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "slices"
+
+// MemStore keeps props in a map.
+type MemStore struct {
+	data map[string]string
+}
+
+// NewStore returns an empty MemStore.
+func NewStore() *MemStore {
+	return &MemStore{data: map[string]string{}}
+}
+
+func (s *MemStore) Get(key string) string { return s.data[key] }
+
+func (s *MemStore) Put(key, value string) { s.data[key] = value }
+
+func (s *MemStore) Delete(key string) { delete(s.data, key) }
+
+func (s *MemStore) Keys() []string {
+	var keys []string
+	for k := range s.data {
+		keys = append(keys, k)
+	}
+	slices.Sort(keys)
+	return keys
+}
+
+func (s *MemStore) Len() int { return len(s.data) }
+
+// Getter is what render needs from a store.
+type Getter interface {
+	Get(key string) string
+}
+
+// render returns one line per key, as key=value.
+func render(s Getter, keys []string) []string {
+	var lines []string
+	for _, k := range keys {
+		lines = append(lines, k+"="+s.Get(k))
+	}
+	return lines
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "StoreImpl Store"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[s := NewStore()
+s.Put("ana", "viola")
+s.Put("bo", "cello")
+fmt.Println(render(s, []string{"bo", "ana"}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[bo=cello ana=viola]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[s := NewStore()
+s.Put("cy", "violin")
+fmt.Println(s.Keys(), s.Len(), s.Get("cy"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[cy] 1 violin</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[s := NewStore()
+s.Put("di", "violin")
+s.Put("ana", "viola")
+s.Delete("di")
+s.Delete("zed")
+var g Getter = s
+fmt.Println(render(g, []string{"di", "ana"}), s.Keys(), s.Len())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[di= ana=viola] [ana] 1</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[a := NewStore()
+b := NewStore()
+a.Put("ana", "viola")
+b.Put("ana", "cello")
+b.Put("bo", "bass")
+fmt.Println(render(a, nil), render(b, []string{"ana"}), a.Len()+b.Len(), b.Keys())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[] [ana=cello] 3 [ana bo]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

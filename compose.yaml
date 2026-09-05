@@ -1,0 +1,67 @@
+services:
+  postgres:
+    image: postgres:16.15-bookworm@sha256:bb3e1a57e5407e0a5280b4211980a5e537f4abd234a87014ac979849a78dd825
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: moodle
+      POSTGRES_USER: moodle
+      POSTGRES_PASSWORD: ${MOODLE_DB_PASSWORD:?set MOODLE_DB_PASSWORD in .env}
+    volumes:
+      - postgres:/var/lib/postgresql
+    networks:
+      - database
+
+  moodle:
+    image: erseco/alpine-moodle:v5.2.2@sha256:9c4d96b3deaf5b6362b1ed34acc035b180f731a411231dc12c4e7154f47433f9
+    restart: unless-stopped
+    environment:
+      SITE_URL: https://moodle.alanjam.com
+      DB_TYPE: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: moodle
+      DB_USER: moodle
+      DB_PASS: ${MOODLE_DB_PASSWORD:?set MOODLE_DB_PASSWORD in .env}
+      MOODLE_USERNAME: admin
+      MOODLE_PASSWORD: ${MOODLE_ADMIN_PASSWORD:?set MOODLE_ADMIN_PASSWORD in .env}
+      MOODLE_EMAIL: ${MOODLE_ADMIN_EMAIL:?set MOODLE_ADMIN_EMAIL in .env}
+      MOODLE_SITENAME: Moodle
+      MOODLE_LANGUAGE: en
+      REVERSEPROXY: "false"
+      SSLPROXY: "true"
+    ports:
+      - "10.0.0.2:8080:8080"
+    volumes:
+      - moodledata:/var/www/moodledata
+      - ./plugins/coderunner:/var/www/html/public/question/type/coderunner:ro
+      - ./plugins/adaptive_adapted_for_coderunner:/var/www/html/public/question/behaviour/adaptive_adapted_for_coderunner:ro
+    networks:
+      - edge
+      - database
+      - jobe
+    depends_on:
+      - postgres
+
+  jobe:
+    build: jobe
+    image: jobe-go:1.27.1
+    restart: unless-stopped
+    networks:
+      - jobe
+
+networks:
+  edge:
+  database:
+    internal: true
+  jobe:
+    internal: true
+    ipam:
+      # Moodle's default cURL blocklist rejects the private ranges Docker
+      # normally assigns. The CGNAT range is not blocked and is not routable,
+      # so CodeRunner can reach the jobe service with the blocklist intact.
+      config:
+        - subnet: 100.64.100.0/24
+
+volumes:
+  postgres:
+  moodledata:

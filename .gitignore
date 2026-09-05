@@ -1,0 +1,16 @@
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+
+# IDE
+.idea/
+*.iml
+
+# Operating system
+.DS_Store
+Thumbs.db

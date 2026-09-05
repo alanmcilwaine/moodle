@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 11.1: HashMap Goes on a Diet!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A canteen calorie board stores one number for each dish. Staff add, correct, and remove dishes during the week. Water remains a valid entry with a calorie count of zero.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/maps">Go maps in action</a>. Under "Declaration and initialization", what value does an uninitialised map variable have? What happens if you write to it? Which two forms create a writable map?</li><li>In the same section, find what kind of type a map is. If a caller passes a map to <code>post</code>, what can the function change?</li><li>Under "Working with maps", how do you read a value? What do you get for a missing key? Which built-in removes an entry? What happens if that key is absent?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java uses <code>new HashMap&lt;&gt;()</code>, followed by methods such as <code>put</code>, <code>getOrDefault</code>, and <code>remove</code>. The separate <code>get</code> method returns null for a missing key.</p><pre>Map&lt;String, Integer&gt; board = new HashMap&lt;&gt;();
+board.put("soup", 120);
+int kcal = board.getOrDefault("cake", 0);
+board.remove("water");</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If <code>newBoard</code> panics, check the value of <code>m</code> under "Declaration and initialization".</li><li>Find <code>delete</code> on the page and read the sentence after its example.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func newBoard() map[string]int {
+	// TODO
+}
+
+func post(board map[string]int, dish string, kcal int) {
+	// TODO
+}
+
+func lookup(board map[string]int, dish string) int {
+	// TODO
+}
+
+func strike(board map[string]int, dish string) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func newBoard() map[string]int {
+	return map[string]int{"water": 0}
+}
+
+func post(board map[string]int, dish string, kcal int) {
+	board[dish] = kcal
+}
+
+func lookup(board map[string]int, dish string) int {
+	return board[dish]
+}
+
+func strike(board map[string]int, dish string) {
+	delete(board, dish)
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[b := newBoard()
+post(b, "soup", 120)
+fmt.Println(b, lookup(b, "soup"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>map[soup:120 water:0] 120</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[b := newBoard()
+post(b, "roll", 210)
+post(b, "roll", 190)
+strike(b, "water")
+fmt.Println(b, len(b))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>map[roll:190] 1</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[b := newBoard()
+strike(b, "cake")
+fmt.Println(lookup(b, "cake"), lookup(b, "water"), len(b))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 0 1</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 11.2: The Comma-OK Corral!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A cattle brand is a registered mark that identifies a herd. The district brand book stores the number of cattle for each brand. A sold-out herd has a count of zero, while an unregistered brand has no entry. Registering a brand that is already in the book leaves its count alone. A new brand starts at zero head.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Index_expressions">Index expressions</a>. Find "For a of map type M". What is <code>a[x]</code> when the map has no entry for <code>x</code>? What is <code>a[x]</code> when the map is nil?</li><li>Below the type parameter rules, find the special assignment form for a map index. What extra value does it produce? When is that value true?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java code might use <code>book.get(brand) == null</code> or <code>containsKey</code>. The <code>get</code> method distinguishes a missing key from a stored zero by returning null. Go has neither method.</p><pre>Integer head = book.get(brand);
+if (head == null) return "unregistered";</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>len</code>, <code>range</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>The special assignment form fits in the short statement of an <code>if</code>, as in WAT 05.2.</li><li>Find the sentence beginning "The value of ok is". Which returned value distinguishes each case in <code>status</code>?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "fmt"
+
+func status(book map[string]int, brand string) string {
+	// TODO
+}
+
+func register(book map[string]int, brand string) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+func status(book map[string]int, brand string) string {
+	head, ok := book[brand]
+	if !ok {
+		return "unregistered"
+	}
+	if head == 0 {
+		return "registered, no stock"
+	}
+	return fmt.Sprintf("registered, %d head", head)
+}
+
+func register(book map[string]int, brand string) {
+	if _, ok := book[brand]; !ok {
+		book[brand] = 0
+	}
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "len range"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[book := map[string]int{"lazy-k": 12}
+fmt.Println(status(book, "lazy-k"))
+fmt.Println(status(book, "bar-x"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>registered, 12 head
+unregistered</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[book := map[string]int{}
+register(book, "bar-x")
+fmt.Println(book, status(book, "bar-x"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>map[bar-x:0] registered, no stock</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[book := map[string]int{"lazy-k": 12, "bar-x": 0}
+register(book, "lazy-k")
+register(book, "bar-x")
+fmt.Println(status(book, "bar-x"))
+fmt.Println(status(book, "lazy-k"), book)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>registered, no stock
+registered, 12 head map[bar-x:0 lazy-k:12]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var book map[string]int
+fmt.Println(status(book, "lazy-k"), status(book, "bar-x"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>unregistered unregistered</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 11.3: Sorted, Because Random!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A raffle gives each buyer one or more numbered tickets. The village records each buyer's name and ticket count. On Friday, the notice board must list them in the same order on every run.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/slices#Sort">slices.Sort</a>. Read the signature and first sentence. What does the call return? In which order does it leave <code>x</code>?</li><li><a href="https://go.dev/blog/maps">Go maps in action</a>, section "Iteration order". In what order does a range loop visit map keys? Can the next loop use a different order?</li><li><a href="https://go.dev/ref/spec#Comparison_operators">Comparison operators</a>. Find how Go compares two strings. Based on that rule, does capital B come before or after lowercase a?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java offers <code>new TreeMap&lt;&gt;(tickets)</code> for a sorted view. Another option is <code>keySet().stream().sorted()</code> when the map must remain a <code>HashMap</code>. Go's standard library has no sorted map type.</p><pre>for (String name : new TreeMap&lt;&gt;(tickets).keySet())
+    System.out.println(name + " x" + tickets.get(name));</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>slices.Sort</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Check the "Iteration order" example. Replace its sorting call with the one named on the red line.</li><li><code>holders</code> already sorts the names. Let <code>notice</code> loop over the result from <code>holders</code> instead of the map.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>24</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	"fmt"
+	"slices"
+)
+
+func tally(buyers []string) map[string]int {
+	// TODO
+}
+
+func holders(tickets map[string]int) []string {
+	// TODO
+}
+
+func notice(tickets map[string]int) []string {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"fmt"
+	"slices"
+)
+
+func tally(buyers []string) map[string]int {
+	tickets := make(map[string]int)
+	for _, name := range buyers {
+		tickets[name]++
+	}
+	return tickets
+}
+
+func holders(tickets map[string]int) []string {
+	var names []string
+	for name := range tickets {
+		names = append(names, name)
+	}
+	slices.Sort(names)
+	return names
+}
+
+func notice(tickets map[string]int) []string {
+	var lines []string
+	for _, name := range holders(tickets) {
+		lines = append(lines, fmt.Sprintf("%s x%d", name, tickets[name]))
+	}
+	return lines
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "slices.Sort"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[t := tally([]string{"ann", "bob", "ann"})
+fmt.Println(t, holders(t))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>map[ann:2 bob:1] [ann bob]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[for _, line := range notice(map[string]int{"cole": 3, "ana": 1}) {
+	fmt.Println(line)
+}]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>ana x1
+cole x3</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[t := map[string]int{"maia": 1, "cole": 3, "rangi": 2, "ana": 1, "tui": 5, "hemi": 2}
+fmt.Println(holders(t))
+for _, line := range notice(t) {
+	fmt.Println(line)
+}]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[ana cole hemi maia rangi tui]
+ana x1
+cole x3
+hemi x2
+maia x1
+rangi x2
+tui x5</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[t := tally([]string{"Zoe", "adam", "Bob", "adam"})
+fmt.Println(holders(t), holders(nil), len(notice(nil)))
+for _, line := range notice(t) {
+	fmt.Println(line)
+}]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[Bob Zoe adam] [] 0
+Bob x1
+Zoe x1
+adam x2</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

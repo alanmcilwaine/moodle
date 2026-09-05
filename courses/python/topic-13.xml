@@ -1,0 +1,884 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 13.1: Brackets Beat the Stream!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write four functions that each turn one list into a new list with a single comprehension.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java gives you two ways to build a list out of another list. The first is the loop you reach for
+without thinking.</p>
+<pre>List&lt;Integer&gt; doubled = new ArrayList&lt;&gt;();
+for (int value : values) {
+    doubled.add(value * 2);
+}</pre>
+<p>The second is the stream pipeline.</p>
+<pre>List&lt;Integer&gt; doubled = values.stream()
+        .filter(value -&gt; value &gt; 0)
+        .map(value -&gt; value * 2)
+        .collect(Collectors.toList());</pre>
+<p>Python replaces both with one piece of syntax, the <b>list comprehension</b>.</p>
+<pre>doubled = [value * 2 for value in values]</pre>
+<p>That is the whole thing. There is no builder to declare, no stream to open, no collector to close,
+and no boxing between <code>int</code> and <code>Integer</code>. This is the most Python-shaped
+construct in the language, and a reader who knows Python expects to see it wherever one list becomes
+another.</p>
+<h4>The three parts</h4>
+<p>Every comprehension has an output expression and a <code>for</code> clause. The filter on the end is
+optional.</p>
+<pre>[ value * 2   for value in values   if value &gt; 0 ]
+  ---------   -------------------   ------------
+  output      for clause            filter
+  expression                        optional
+  runs once   binds each item       decides which
+  per item    to a name             items survive</pre>
+<p>The <code>for value in values</code> part is the same <code>for</code> header you already write as a
+statement, so it takes each item of <code>values</code> in turn and binds it to <code>value</code>. The
+expression in front of the <code>for</code> then runs once for each item, and whatever it produces
+becomes one item of the new list. The input list is never touched, and what you get back is a new
+list.</p>
+<h4>Turning your loop into one</h4>
+<p>Any loop that starts with an empty list and appends one item per pass converts mechanically. Three
+lines go in, one comes out.</p>
+<pre>doubled = []                       # throw this line away
+for value in values:               # this becomes the for clause
+    doubled.append(value * 2)      # what you append becomes the output expression
+
+doubled = [value * 2 for value in values]</pre>
+<p>Do that transformation on paper the first few times. The pieces never move about, they only change
+places. The thing being appended goes to the front, and the loop header follows it.</p>
+<h4>The filter</h4>
+<p>Put an <code>if</code> on the end and items start getting dropped.</p>
+<pre>positives = [value for value in values if value &gt; 0]</pre>
+<p>An item that fails the test never reaches the expression at the front, so that one word does the
+entire job of <code>.filter(...)</code>. It sits last, where Java puts <code>filter</code> first. When
+the stream order helps you, read the Python right to left. Take the values, keep the ones above zero,
+double whatever is left.</p>
+<p>Look at what the output expression is doing in that line. It is the loop variable on its own,
+because you want the item unchanged. <code>[value for value in values ...]</code> reads as though
+somebody typed the same word twice by mistake. It is correct. The first <code>value</code> is what
+gets built, and the second is what gets bound.</p>
+<h4>An expression, not a statement</h4>
+<p>A Java <code>for</code> loop is a statement and produces nothing, so a method that builds a list
+needs a local variable to catch the result. A comprehension is an <b>expression</b>, which means it
+produces a value. It fits straight after a <code>return</code> with no variable in between.</p>
+<pre>def doubled(values: list[int]) -&gt; list[int]:
+    return [value * 2 for value in values]</pre>
+<p>The first test prints the input list after <code>doubled</code> has run, so you can see for yourself
+that the original survived.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<ul>
+<li><code>doubled(values)</code> returns a new list holding every value multiplied by two. The answer
+box already holds the loop version. Delete its three lines and write the comprehension.</li>
+<li><code>positives(values)</code> returns only the values above zero, unchanged. Output expression and
+filter, no arithmetic.</li>
+<li><code>shouted(words)</code> returns every word in upper case. <code>word.upper()</code> hands you
+an upper case copy, from the strings topic.</li>
+<li><code>long_shouts(words)</code> returns the words of five characters or more, in upper case. All
+three parts at once.</li>
+</ul>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not write the word <code>append</code> anywhere. A hidden test looks for it.</li><li>Do not call <code>map()</code> or <code>filter()</code>. The comprehension is what replaced them.</li><li>One <code>def</code> line and one <code>return</code> line per function, and nothing else. A hidden test counts them.</li><li>Annotate every signature, parameters and return alike. Write <code>list[int]</code>, never <code>List[int]</code>, because the capitalised spelling has been dead since Python 3.9.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>16</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def doubled(values: list[int]) -> list[int]:
+    result = []
+    for value in values:
+        result.append(value * 2)
+    return result
+    # TODO: delete the four lines above and return one list comprehension
+
+
+def positives(values: list[int]) -> list[int]:
+    # TODO: output expression and a trailing if, no arithmetic
+
+
+def shouted(words: list[str]) -> list[str]:
+    # TODO: one comprehension calling word.upper()
+
+
+def long_shouts(words: list[str]) -> list[str]:
+    # TODO: upper case, filtered to words of five characters or more
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def doubled(values: list[int]) -> list[int]:
+    return [value * 2 for value in values]
+
+
+def positives(values: list[int]) -> list[int]:
+    return [value for value in values if value > 0]
+
+
+def shouted(words: list[str]) -> list[str]:
+    return [word.upper() for word in words]
+
+
+def long_shouts(words: list[str]) -> list[str]:
+    return [word.upper() for word in words if len(word) >= 5]
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>readings = [3, -1, 7, 0, -4]
+print(doubled(readings))
+print(positives(readings))
+print(readings)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[6, -2, 14, 0, -8]
+[3, 7]
+[3, -1, 7, 0, -4]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>words = ["pump", "valve", "on", "sensor"]
+print(shouted(words))
+print(long_shouts(words))
+print(doubled([]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>['PUMP', 'VALVE', 'ON', 'SENSOR']
+['VALVE', 'SENSOR']
+[]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+for fn in (doubled, positives, shouted, long_shouts):
+    src = inspect.getsource(fn)
+    body = [ln for ln in src.splitlines() if ln.strip() and not ln.strip().startswith("#")]
+    assert len(body) == 2, "rule broken: one def line and one return line, nothing else"
+    assert "append(" not in src, "rule broken: the word append must not appear"
+    assert "map(" not in src, "rule broken: do not call map()"
+    assert "filter(" not in src, "rule broken: do not call filter()"
+print(positives([-2, -1]))
+print(shouted([]))
+print(long_shouts(["short", "tiny"]))
+print(doubled([0]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[]
+[]
+['SHORT']
+[0]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 13.2: One Line to Rule Them All!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write four functions that each use one list comprehension over a list of readings.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java gives you two ways to build a list out of another list. The loop.</p>
+<pre>List&lt;Integer&gt; result = new ArrayList&lt;&gt;();
+for (int r : readings) {
+    result.add(r * 10);
+}</pre>
+<p>And the stream.</p>
+<pre>List&lt;Integer&gt; result = readings.stream()
+        .map(r -&gt; r * 10)
+        .collect(Collectors.toList());</pre>
+<p>Python replaces both with one piece of syntax. It is called a <b>list comprehension</b>. It is an
+expression rather than a statement, so it produces a value and fits on the right of an <code>=</code>
+or straight after a <code>return</code>.</p>
+<pre>result = [r * 10 for r in readings]</pre>
+<p>Read it left to right. The square brackets build a list. The <code>for r in readings</code> part
+takes each item of <code>readings</code> in turn and binds it to <code>r</code>, exactly as the
+<code>for</code> statement from the loops topic does. The expression sitting in front of the <code>for</code>
+builds one item per pass. You get a new list back and <code>readings</code> is left alone. There is no
+stream to open, no collector to close, and no boxing between <code>int</code> and
+<code>Integer</code>.</p>
+<p>Put an <code>if</code> at the end and the comprehension filters.</p>
+<pre>result = [r * 10 for r in readings if r &gt;= 0]</pre>
+<p>The trailing <code>if</code> decides which items survive. An item that fails the test never reaches
+the expression at the front. That one word does the whole job of <code>.filter(...)</code>, and it
+comes last where Java's <code>filter</code> comes first.</p>
+<p>A filter throws items away. Sometimes you want to keep every item and change some of them. Java
+writes that choice with the ternary operator.</p>
+<pre>int safe = r &lt; 0 ? 0 : r;</pre>
+<p>Python writes the same choice with words, in a different order.</p>
+<pre>safe = 0 if r &lt; 0 else r</pre>
+<p>Java puts the condition first. Python puts the value you want first, then the condition, then the
+alternative. Say it out loud as "zero if the reading is negative, otherwise the reading" and the order
+stops surprising you. This form is called a <b>conditional expression</b>. You met it in the truth and None topic. It
+produces a value, so it goes in front of the <code>for</code>.</p>
+<pre>result = [0 if r &lt; 0 else r for r in readings]</pre>
+<p>Two <code>if</code> words, two different jobs. An <code>if</code> before the <code>for</code>
+chooses a value and keeps every item. An <code>if</code> after the <code>for</code> drops items. Write
+a bare filter at the front and Python raises <code>SyntaxError</code>.</p>
+<p>One more difference, and it catches people in real code. A plain Python <code>for</code> statement
+leaves its variable behind after the loop ends. In the lines below, <code>pass</code> is Python's
+do-nothing statement. It is there because every block needs a body.</p>
+<pre>for r in readings:
+    pass
+print(r)              # prints the last reading</pre>
+<p>Java never does that. A variable declared in a <code>for</code> header dies with the loop. A Python
+comprehension behaves the way you expect from Java. Its variable lives inside the brackets and goes
+when they close. Ask for it afterwards and Python raises <code>NameError</code>. The last function
+below makes you prove it.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Readings arrive as a list of whole numbers.</p>
+<ul>
+<li><code>scaled(readings)</code> returns a new list holding every reading multiplied by 10. The answer
+box already holds a working loop. Delete all four of its lines and write one comprehension.</li>
+<li><code>in_range(readings)</code> returns only the readings from 0 to 100 inclusive. Anything outside
+that band is dropped.</li>
+<li><code>floored(readings)</code> keeps every reading, but a reading below 0 becomes <code>0</code>.
+Nothing is dropped, so the returned list is always as long as the input.</li>
+<li><code>leak_check(readings)</code> builds <code>[n * n for n in readings]</code> into a variable
+called <code>squares</code>, then proves that <code>n</code> is gone. Read <code>n</code> inside a
+<code>try</code> block. Catch the failure with <code>except NameError as problem</code>. Return
+<code>f"{squares} and n is gone: {problem}"</code>. Name the comprehension variable <code>n</code> or
+the printed text will not match.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p>
+</div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Write <code>scaled</code>, <code>in_range</code> and <code>floored</code> as one <code>return</code> line each. A hidden test counts the lines.</li><li>Do not write the word <code>append</code> anywhere.</li><li>Do not call <code>map()</code> or <code>filter()</code>. The comprehension is what replaced them.</li><li>Do not write an <code>if</code> statement. The trailing filter and the <code>a if cond else b</code> form are the only <code>if</code> words allowed.</li><li>Annotate every signature you write, parameters and return alike. Write <code>list[int]</code>, never <code>List[int]</code>, because the capitalised spelling has been dead since Python 3.9.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def scaled(readings: list[int]) -> list[int]:
+    result = []
+    for r in readings:
+        result.append(r * 10)
+    return result
+    # TODO: delete the four lines above and return one list comprehension
+
+
+def in_range(readings: list[int]) -> list[int]:
+    # TODO: one comprehension with a trailing if that keeps 0 to 100 inclusive
+
+
+def floored(readings: list[int]) -> list[int]:
+    # TODO: one comprehension with a conditional expression that turns a negative into 0
+
+
+def leak_check(readings: list[int]) -> str:
+    squares = [n * n for n in readings]
+    # TODO: read n in a try, catch NameError as problem, return the f-string
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def scaled(readings: list[int]) -> list[int]:
+    return [r * 10 for r in readings]
+
+
+def in_range(readings: list[int]) -> list[int]:
+    return [r for r in readings if 0 <= r <= 100]
+
+
+def floored(readings: list[int]) -> list[int]:
+    return [0 if r < 0 else r for r in readings]
+
+
+def leak_check(readings: list[int]) -> str:
+    squares = [n * n for n in readings]
+    try:
+        n
+    except NameError as problem:
+        return f"{squares} and n is gone: {problem}"
+    return f"{squares} and n leaked"
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>readings = [-5, 0, 42, 100, 130]
+print(scaled(readings))
+print(in_range(readings))
+print(floored(readings))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[-50, 0, 420, 1000, 1300]
+[0, 42, 100]
+[0, 0, 42, 100, 130]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(leak_check([3, 4]))
+print(scaled([]))
+print(in_range([]))
+print(floored([]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[9, 16] and n is gone: name 'n' is not defined
+[]
+[]
+[]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+for fn in (scaled, in_range, floored):
+    src = inspect.getsource(fn)
+    body = [ln for ln in src.splitlines() if ln.strip() and not ln.strip().startswith("#")]
+    assert len(body) == 2, "rule broken: one def line and one return line, nothing else"
+    assert "append(" not in src, "rule broken: the word append must not appear"
+    assert "map(" not in src, "rule broken: do not call map()"
+    assert "filter(" not in src, "rule broken: do not call filter()"
+print(scaled([-1, 7]))
+print(in_range([-1, 0, 100, 101]))
+print(floored([-9, -1, 0, 1]))
+print(leak_check([2]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[-10, 70]
+[0, 100]
+[0, 0, 0, 1]
+[4] and n is gone: name 'n' is not defined</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 13.3: Invert the Universe!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write five functions that each build a dict or a set with one comprehension.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>In Java you build a map with a loop and <code>put</code>.</p>
+<pre>Map&lt;String, String&gt; flipped = new HashMap&lt;&gt;();
+for (Map.Entry&lt;String, String&gt; entry : codes.entrySet()) {
+    flipped.put(entry.getValue(), entry.getKey());
+}</pre>
+<p>Python has a <b>dict comprehension</b>. It works the same way as the list comprehension in the earlier tiers of this topic,
+with two changes. The outer brackets are braces, and the item you build is a <code>key: value</code>
+pair.</p>
+<pre>flipped = {name: code for code, name in codes.items()}</pre>
+<p><code>codes.items()</code> hands you one <code>(key, value)</code> tuple per entry, as you saw in the
+dictionaries and sets topic. The two names <code>code, name</code> in the header take that tuple apart and bind each half to
+a name. Taking a sequence apart into names is unpacking, from the tuples topic. No <code>entrySet</code>, no
+<code>getKey</code>, no <code>getValue</code>.</p>
+<p>Drop the colon and the braces build a <b>set</b> instead. A set holds distinct values in no
+particular order, and you met it alongside dictionaries.</p>
+<pre>units = {record["unit"] for record in records}</pre>
+<p>One warning about braces. Empty braces <code>{}</code> mean an empty dict, never an empty set. A set
+comprehension with nothing to collect still gives you a set, so the trap catches you only when you type
+the empty literal yourself.</p>
+<p>Now the part that costs people data. Java's <code>Collectors.toMap</code> refuses to guess.</p>
+<pre>codes.entrySet().stream()
+     .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+// IllegalStateException: Duplicate key sensor</pre>
+<p>Java makes you supply a merge function before it will accept a collision. Python does not ask. When
+two entries produce the same key, the later one overwrites the earlier one and nothing is raised. You
+saw the same last-wins rule when a repeated key overwrote its own entry. An inversion is where it hurts most. A mapping of three codes to
+two names inverts into two entries, and the third code is gone.</p>
+<p>The honest repair is to make the value a list. Then every key keeps everything that mapped to it.</p>
+<pre>{name: [code for code, other in mapping.items() if other == name]
+ for name in mapping.values()}</pre>
+<p>Look at the outer <code>for</code>. It walks <code>mapping.values()</code>, which repeats a value
+once per code. That repeat is harmless. It rebuilds the same key with the same list, so the second
+write stores what the first write stored. You get one entry per distinct value, in the order the values
+first appeared. Yes, this is a comprehension inside a comprehension. The inner one runs once for every
+pass of the outer one.</p>
+<p>The tests print the size of a mapping before and after <code>invert</code>. The loss shows up on
+screen as a number rather than as a bug you find in production.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<ul>
+<li><code>index_of(names)</code> takes a list of names and returns <code>{name: position}</code>, where
+the first name maps to 0. You need the position, and your only tool for that so far is
+<code>range(len(names))</code> from the loops topic. So walk the positions and index the list inside the braces.
+Remember how clumsy this feels. The next exercise deletes it forever.</li>
+<li><code>distinct_units(records)</code> takes a list of dicts, each with an <code>"id"</code> key and
+a <code>"unit"</code> key, and returns the set of distinct units.</li>
+<li><code>by_id(records)</code> returns a dict mapping each record's <code>"id"</code> to the whole
+record.</li>
+<li><code>invert(mapping)</code> takes a <code>{code: name}</code> dict and returns
+<code>{name: code}</code>. Write the lossy version. Do not defend it.</li>
+<li><code>group_by_value(mapping)</code> takes the same kind of dict and returns
+<code>{name: [codes]}</code>, keeping every code. The codes stay in the order they appear in the input.
+</li>
+</ul>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Write every answer as one expression whose outer brackets are braces.</li><li>Do not call <code>dict()</code>, <code>set()</code> or <code>zip()</code>.</li><li>Do not create an empty dict and fill it in a loop. If a line other than a <code>def</code> line ends with a colon, start again.</li><li>Do not make <code>invert</code> safe. Let it lose the duplicate, then keep everything in <code>group_by_value</code>.</li><li>Annotate every signature. A function that hands back <code>dict[str, list[str]]</code> should say so on its first line, not leave you to read the comprehension and guess.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def index_of(names: list[str]) -> dict[str, int]:
+    # TODO: {name: position} using range(len(names))
+
+
+def distinct_units(records: list[dict[str, str]]) -> set[str]:
+    # TODO: a set comprehension over the "unit" key
+
+
+def by_id(records: list[dict[str, str]]) -> dict[str, dict[str, str]]:
+    # TODO: {record id: whole record}
+
+
+def invert(mapping: dict[str, str]) -> dict[str, str]:
+    # TODO: {name: code} from {code: name}. Lossy on purpose
+
+
+def group_by_value(mapping: dict[str, str]) -> dict[str, list[str]]:
+    # TODO: {name: [every code that maps to it]}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def index_of(names: list[str]) -> dict[str, int]:
+    return {names[i]: i for i in range(len(names))}
+
+
+def distinct_units(records: list[dict[str, str]]) -> set[str]:
+    return {record["unit"] for record in records}
+
+
+def by_id(records: list[dict[str, str]]) -> dict[str, dict[str, str]]:
+    return {record["id"]: record for record in records}
+
+
+def invert(mapping: dict[str, str]) -> dict[str, str]:
+    return {name: code for code, name in mapping.items()}
+
+
+def group_by_value(mapping: dict[str, str]) -> dict[str, list[str]]:
+    return {name: [code for code, other in mapping.items() if other == name] for name in mapping.values()}
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>names = ["alpha", "bravo", "charlie"]
+print(index_of(names))
+records = [{"id": "S1", "unit": "degC"}, {"id": "S2", "unit": "kPa"}, {"id": "S3", "unit": "degC"}]
+print(sorted(distinct_units(records)))
+print(by_id(records))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>{'alpha': 0, 'bravo': 1, 'charlie': 2}
+['degC', 'kPa']
+{'S1': {'id': 'S1', 'unit': 'degC'}, 'S2': {'id': 'S2', 'unit': 'kPa'}, 'S3': {'id': 'S3', 'unit': 'degC'}}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>codes = {"E01": "sensor", "E02": "valve"}
+print(invert(codes))
+faults = {"E01": "sensor", "E02": "valve", "E03": "sensor"}
+flipped = invert(faults)
+print(f"{len(faults)} codes in, {len(flipped)} names out")
+print(flipped)
+print(group_by_value(faults))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>{'sensor': 'E01', 'valve': 'E02'}
+3 codes in, 2 names out
+{'sensor': 'E03', 'valve': 'E02'}
+{'sensor': ['E01', 'E03'], 'valve': ['E02']}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (index_of, distinct_units, by_id, invert, group_by_value))
+assert "dict(" not in whole, "rule broken: no dict()"
+assert "set(" not in whole, "rule broken: no set()"
+assert "zip(" not in whole, "rule broken: no zip()"
+assert "append(" not in whole, "rule broken: no append"
+for line in whole.splitlines():
+    text = line.strip()
+    assert not text.endswith(":") or text.startswith("def "), "rule broken: no loop body, no colon ending a line"
+print(index_of([]))
+print(sorted(distinct_units([])))
+print(group_by_value({}))
+print(group_by_value({"a": 1, "b": 1, "c": 2}))
+print(invert({"a": 1, "b": 1}))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>{}
+[]
+{}
+{1: ['a', 'b'], 2: ['c']}
+{1: 'b'}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 13.4: Death to range(len)!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write four functions that walk lists with <code>enumerate</code> and <code>zip</code> instead of an index.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java keeps the index loop alive for one reason. You need the position.</p>
+<pre>for (int i = 0; i &lt; lines.size(); i++) {
+    System.out.println((i + 1) + ": " + lines.get(i));
+}</pre>
+<p>Python hands you the position and the item together, through <code>enumerate</code>.</p>
+<pre>for position, line in enumerate(lines, start=1):
+    print(f"{position}: {line}")</pre>
+<p><code>enumerate(lines)</code> produces a <code>(position, item)</code> tuple for every item.
+<code>start=1</code> says the first position is 1 instead of 0. The two names in the header unpack the
+tuple. Nothing is indexed and no counter is added by hand, so a position can never drift out of step
+with the item beside it.</p>
+<p>Java gives you no way to walk two collections side by side. You index both and you keep the bounds
+right yourself.</p>
+<pre>for (int i = 0; i &lt; channels.size(); i++) {
+    table.put(channels.get(i), readings.get(i));
+}</pre>
+<p>Python has <code>zip</code>. It takes two or more <b>iterables</b> and produces one tuple per
+position. An iterable is anything you can put after <code>in</code> in a <code>for</code> statement, so
+a list, a tuple, a dict and a <code>range</code> all qualify.</p>
+<pre>table = {channel: reading for channel, reading in zip(channels, readings)}</pre>
+<p>Read the next sentence twice. <code>zip</code> stops at the shortest input and says nothing. Pass
+three channels and two readings and you get a table of two rows, no error, no warning. In a safety
+system that is a reading that disappeared between the sensor and the report.</p>
+<p>Since Python 3.10 you can refuse that behaviour.</p>
+<pre>zip(channels, readings, strict=True)</pre>
+<p>With <code>strict=True</code>, a length mismatch raises <code>ValueError</code> the moment
+<code>zip</code> runs off the end of the shorter input. Loud beats quiet. Every <code>zip</code> in this
+exercise passes it.</p>
+<p><code>zip</code> also transposes. Put a star in front of a list of rows. Each row then arrives as a
+separate argument. That is the starred call from the tuples topic.</p>
+<pre>rows = [[1, 2, 3], [4, 5, 6]]
+zip(*rows, strict=True)        # same as zip([1, 2, 3], [4, 5, 6], strict=True)</pre>
+<p>The first item of every row groups together, then the second item of every row, and so on. That is a
+transpose. Each group comes back as a tuple, so wrap it in <code>list(...)</code> when you want
+lists.</p>
+<p>Last piece. A comprehension can carry more than one <code>for</code> clause, and the clauses read in
+the same order as nested loops.</p>
+<pre>flat = [value for row in rows for value in row]</pre>
+<p>The first <code>for</code> takes a row. The second walks that row. The expression at the front sees
+the innermost variable. Beginners often write nested brackets here and get a list of lists back. The
+brackets stay on the outside and only the <code>for</code> clauses repeat.</p>
+<p>One test calls <code>pair</code> with a readings list one item short. It prints the name of the
+exception instead of the two rows a silent <code>zip</code> would have produced.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<ul>
+<li><code>numbered(lines)</code> takes a list of alert lines and returns a list of strings of the form
+<code>"1: pressure high"</code>, numbered from 1.</li>
+<li><code>pair(channels, readings)</code> returns a dict mapping each channel to its reading. Pass
+<code>strict=True</code>.</li>
+<li><code>flatten(rows)</code> takes a list of rows and returns one flat list of every value, row by
+row.</li>
+<li><code>transpose(rows)</code> returns a list of lists where the first inner list holds the first
+value of every row, the second holds the second, and so on.</li>
+</ul>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>The characters <code>range(len(</code> must never appear.</li><li>Do not increment a counter of your own. <code>enumerate</code> owns the position now.</li><li>Pass <code>strict=True</code> to every <code>zip</code> call. Silent truncation is a defect, not a convenience.</li><li>Do not index with square brackets. Unpack both values in the loop header instead.</li><li>Flatten with one comprehension holding two <code>for</code> clauses. Do not nest brackets and do not call <code>sum()</code>.</li><li>Annotate every signature, and both of <code>pair</code>'s parameters. Nobody should have to run the tests to find out that <code>transpose</code> hands back <code>list[list[int]]</code>.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>16</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def numbered(lines: list[str]) -> list[str]:
+    # TODO: one comprehension over enumerate(lines, start=1)
+
+
+def pair(channels: list[str], readings: list[int]) -> dict[str, int]:
+    # TODO: one dict comprehension over zip(channels, readings, strict=True)
+
+
+def flatten(rows: list[list[int]]) -> list[int]:
+    # TODO: one comprehension with two for clauses
+
+
+def transpose(rows: list[list[int]]) -> list[list[int]]:
+    # TODO: one comprehension over zip(*rows, strict=True)
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def numbered(lines: list[str]) -> list[str]:
+    return [f"{position}: {line}" for position, line in enumerate(lines, start=1)]
+
+
+def pair(channels: list[str], readings: list[int]) -> dict[str, int]:
+    return {channel: reading for channel, reading in zip(channels, readings, strict=True)}
+
+
+def flatten(rows: list[list[int]]) -> list[int]:
+    return [value for row in rows for value in row]
+
+
+def transpose(rows: list[list[int]]) -> list[list[int]]:
+    return [list(column) for column in zip(*rows, strict=True)]
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>lines = ["pressure high", "valve stuck", "temp drift"]
+for line in numbered(lines):
+    print(line)
+print(pair(["ch1", "ch2", "ch3"], [12, 7, 30]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>1: pressure high
+2: valve stuck
+3: temp drift
+{'ch1': 12, 'ch2': 7, 'ch3': 30}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>try:
+    print(pair(["ch1", "ch2", "ch3"], [12, 7]))
+except ValueError as problem:
+    print("strict caught it:", type(problem).__name__)
+matrix = [[1, 2, 3], [4, 5, 6]]
+print(flatten(matrix))
+print(transpose(matrix))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>strict caught it: ValueError
+[1, 2, 3, 4, 5, 6]
+[[1, 4], [2, 5], [3, 6]]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (numbered, pair, flatten, transpose))
+assert "range(len(" not in whole, "rule broken: range(len( is banned"
+assert "+= 1" not in whole, "rule broken: do not increment a counter of your own"
+assert "sum(" not in whole, "rule broken: sum(rows, []) is not flattening"
+assert whole.count("zip(") == whole.count("strict=True"), "rule broken: every zip passes strict=True"
+assert inspect.getsource(flatten).count(" for ") == 2, "rule broken: one comprehension, two for clauses"
+print(numbered([]))
+print(numbered(["only"]))
+print(flatten([[9]]))
+print(flatten([]))
+print(transpose([[1, 2], [3, 4], [5, 6]]))
+print(pair([], []))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[]
+['1: only']
+[9]
+[]
+[[1, 3, 5], [2, 4, 6]]
+{}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+</quiz>

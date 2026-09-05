@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 07.1: Records Without the Ceremony!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>An inn records a guest's name and stay length when it accepts a booking. The Lighthouse Inn assigns the room only when the guest arrives. Record a booking before it has a room number.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Struct_types">Struct types</a>. Read the first paragraph. What does a struct contain? Skip the grammar box and inspect the Go example. How does it declare one field?</li><li><a href="https://go.dev/ref/spec#Composite_literals">Composite literals</a>. Read the first paragraph and find Struct literals. What does a key identify inside a struct literal?</li><li><a href="https://go.dev/ref/spec#Composite_literals">Composite literals</a>, the same heading. Find the rule for an element list with keys. What value does an omitted field receive?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java record's canonical constructor requires every component. An unknown room therefore needs a value such as -1 or null. Go has no null value for an int.</p><pre>record Booking(String guest, int nights, int room) {}
+Booking b = new Booking("Ada", 3, -1);</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Read the rule about keyed struct literals before adding any placeholder value.</li><li>The declarations above the Struct literals examples show how to name a struct type.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>16</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+// TODO: declare Booking here
+
+func book(guest string, nights int) Booking {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+type Booking struct {
+	Guest  string
+	Nights int
+	Room   int
+}
+
+func book(guest string, nights int) Booking {
+	return Booking{Guest: guest, Nights: nights}
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[b := book("Ada Lovelace", 3)
+fmt.Println(b.Guest, b.Nights)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Ada Lovelace 3</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(book("Grace Hopper", 1).Nights)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>1</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Printf("%+v\n", book("Alan Turing", 2))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{Guest:Alan Turing Nights:2 Room:0}</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[b := book("Linus", 7)
+fmt.Println(b.Room, b)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 {Linus 7 0}</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 07.2: Equal by Value!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A theatre ticket identifies the performance and seat that a visitor bought. The Playhouse usher compares two tickets at the door and rejects duplicates. The box office also keeps unused blank tickets. Write checks for both cases.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Comparison_operators">Comparison operators</a>. Find the bullet about struct types. Which struct types are comparable? When are two struct values equal? Which fields does Go compare?</li><li><a href="https://go.dev/ref/spec#Composite_literals">Composite literals</a>. Read the rules above Struct literals. What value does a literal with no elements produce?</li><li><a href="https://go.dev/ref/spec#Composite_literals">Composite literals</a>, the paragraph about a parsing ambiguity. What must you add when a composite literal appears between <code>if</code> and the opening brace?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java developer might use a record's <code>equals</code> and <code>hashCode</code>, or compare two <code>toString</code> results. A Go struct has no <code>equals</code> method to override.</p><pre>record Ticket(String holder, String seat, boolean paid) {}
+boolean same = a.toString().equals(b.toString());</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>==</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find corresponding in the struct bullet. How does Go pair the fields of <code>a</code> with those of <code>b</code>?</li><li>For <code>blank</code>, find the Composite literals rule for a literal without an element list.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>20</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+// TODO: declare Ticket here
+
+func sameTicket(a, b Ticket) bool {
+	// TODO
+}
+
+func blank(t Ticket) bool {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+type Ticket struct {
+	Holder string
+	Seat   string
+	Paid   bool
+}
+
+func sameTicket(a, b Ticket) bool {
+	return a == b
+}
+
+func blank(t Ticket) bool {
+	return t == Ticket{}
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "=="}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[a := Ticket{Holder: "Ada Lovelace", Seat: "B4", Paid: true}
+b := Ticket{Holder: "Ada Lovelace", Seat: "B4", Paid: true}
+fmt.Println(sameTicket(a, b))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[a := Ticket{Holder: "Ada Lovelace", Seat: "B4"}
+b := Ticket{Holder: "Ada Lovelace", Seat: "B5"}
+fmt.Println(sameTicket(a, b), blank(a))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>false false</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[a := Ticket{Holder: "Ada Lovelace", Seat: "B4", Paid: true}
+b := Ticket{Holder: "Ada", Seat: "Lovelace B4", Paid: true}
+fmt.Println(a, b, sameTicket(a, b))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{Ada Lovelace B4 true} {Ada Lovelace B4 true} false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[a := Ticket{Holder: "Grace Hopper", Seat: "C1", Paid: true}
+b := Ticket{Holder: "Grace Hopper", Seat: "C1"}
+fmt.Println(sameTicket(a, b), blank(Ticket{Paid: true}), blank(b), blank(Ticket{}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>false false false true</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 07.3: The NewFoo Convention!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A shelf tag shows the stored details for one product. Nuts and Bolts Ltd prints one for every product, but names entered by hand often produce incorrect tags. Create one function that prepares every product before printing. It strips the spaces around the name and records an empty unit as <code>each</code>. It also spells out <code>mm</code>, <code>m</code>, <code>kg</code>, and <code>g</code> as <code>millimetre</code>, <code>metre</code>, <code>kilogram</code>, and <code>gram</code>, with a space before the word. On the tag, an <code>each</code> product reads <code>sold singly</code> and aisle 0 reads <code>not yet shelved</code>.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/strings#NewReplacer">strings.NewReplacer</a>. Read the signature and first sentence. What prefix starts the function name? What type does the call return? How do you supply an old string and its replacement?</li><li><a href="https://pkg.go.dev/strings#NewReplacer">strings.NewReplacer</a>, the same doc comment. If two old strings match at the same position, which one does the Replacer use?</li><li><a href="https://pkg.go.dev/strings#TrimSpace">strings.TrimSpace</a>. Which characters does it remove? From which ends of the string?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java constructor might assign <code>this.name = name.trim()</code> and store replacements in a <code>Map</code> with no meaningful entry order. Go has no constructors and no <code>this</code>.</p><pre>public Product(String name, String unit, int aisle) {
+    this.name = expand(name.trim());
+    this.unit = unit.isEmpty() ? "each" : unit;
+}</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find argument order in the NewReplacer documentation. Which of the abbreviations in the Goal start with the same letter?</li><li>Find where TrimSpace looks for white space. Which space in the finished tag must the Replacer add?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>30</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "strings"
+
+// TODO: declare Product here
+
+func newProduct(name, unit string, aisle int) Product {
+	// TODO
+}
+
+func describe(p Product) string {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"fmt"
+	"strings"
+)
+
+type Product struct {
+	Name  string
+	Unit  string
+	Aisle int
+}
+
+var unitNames = strings.NewReplacer("mm", " millimetre", "m", " metre", "kg", " kilogram", "g", " gram")
+
+func newProduct(name, unit string, aisle int) Product {
+	if unit == "" {
+		unit = "each"
+	}
+	return Product{
+		Name:  unitNames.Replace(strings.TrimSpace(name)),
+		Unit:  unit,
+		Aisle: aisle,
+	}
+}
+
+func describe(p Product) string {
+	sold := "sold by the " + p.Unit
+	if p.Unit == "each" {
+		sold = "sold singly"
+	}
+	where := fmt.Sprintf("aisle %d", p.Aisle)
+	if p.Aisle == 0 {
+		where = "not yet shelved"
+	}
+	return p.Name + ", " + sold + ", " + where
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[p := newProduct("10m rope", "roll", 2)
+fmt.Println(p.Name)
+fmt.Println(describe(p))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>10 metre rope
+10 metre rope, sold by the roll, aisle 2</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Printf("%+v\n", newProduct("2kg sand", "", 4))
+fmt.Println(describe(newProduct("500g nails", "box", 0)))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>{Name:2 kilogram sand Unit:each Aisle:4}
+500 gram nails, sold by the box, not yet shelved</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(newProduct("  5mm bolt ", "", 3).Name)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>5 millimetre bolt</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(newProduct(" 5mm bolt", "each", 3) == newProduct("5mm bolt ", "", 3))
+fmt.Println(describe(newProduct("3m hose", "", 0)))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true
+3 metre hose, sold singly, not yet shelved</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

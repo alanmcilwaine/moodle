@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 11.1: The Throws Clause Vanished!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write three functions that convert text to a whole number with <code>try</code>, <code>except</code>, <code>else</code> and <code>finally</code>.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java splits exceptions in two. An unchecked one you may ignore. A checked one the compiler will not let you ignore, so the signature has to say so and every caller has to answer for it.</p>
+<pre>static String load(Path path) throws IOException {
+    return Files.readString(path);
+}
+
+try {
+    String text = load(path);
+    record(text);
+} catch (IOException e) {
+    log(e);
+} finally {
+    close();
+}</pre>
+<p>Python has no checked exceptions. There is no <code>throws</code> keyword, nothing in a <code>def</code> line says what a function can raise, and no tool stops you from calling it. Python does compile your file to bytecode, and that step checks syntax and nothing whatever about exceptions.</p>
+<p>So the compiler will never again hand you a list of what can go wrong. You find out by reading the function, reading its documentation, or reading the code it calls. That cuts both ways. The <code>throws IOException</code> noise is gone, and so is the safety net that produced it.</p>
+<p>You have already raised several exceptions without meaning to. <code>int("nope")</code> raises <code>ValueError</code>. A missing key raises <code>KeyError</code>, as the dictionaries topic showed. Hashing a list raises <code>TypeError</code>. Dividing by zero raises <code>ZeroDivisionError</code>. Each of those names is a class, and catching a class catches its subclasses too.</p>
+<p>Four keywords cover the shape. <code>try</code> is Java's <code>try</code>. <code>except</code> is Java's <code>catch</code>. <code>finally</code> is Java's <code>finally</code>. Every header ends in a colon and the indented lines under it are the block.</p>
+<pre>try:
+    value = int(text)
+except ValueError as exc:
+    print("bad value", exc)
+finally:
+    print("always runs")</pre>
+<p><code>except ValueError</code> names the one type you can actually deal with. <code>as exc</code> binds the exception object to a name, which you only need when you want to read it.</p>
+<p>The fourth keyword is the one Java has not got. A <code>try</code> may carry an <code>else</code> clause, and it runs when the <code>try</code> block finished without raising anything.</p>
+<pre>try:
+    value = int(text)
+except ValueError:
+    print("rejected")
+else:
+    print("accepted")
+finally:
+    print("logged")</pre>
+<p>You met that word in the loops topic, where <code>for ... else</code> runs when the loop was never broken out of. Both spellings of <code>else</code> mean the same thing. The normal path completed.</p>
+<p>Why bother, when you could put those lines at the bottom of <code>try</code>? Because everything inside <code>try</code> is covered by your <code>except</code>. Park the follow-on work in there instead. A <code>ValueError</code> raised by that follow-on work is then caught by a handler written for the conversion. The handler reports the wrong failure and hides a real one. Keep <code>try</code> down to the line that can fail, and put the work that depends on it in <code>else</code>.</p>
+<p><code>finally</code> runs on every path out of the block, including a <code>return</code>. The return value is worked out first, then <code>finally</code> runs, then the caller gets the value. So a <code>print</code> in <code>finally</code> lands before the caller sees anything.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write three functions. None of them is longer than eight lines.</p>
+<ul>
+<li><code>strict_reading(text)</code> returns <code>int(text)</code> and handles nothing. Whatever it raises is the caller's problem, and no part of Python records that fact.</li>
+<li><code>safe_reading(text, fallback)</code> returns <code>int(text)</code>, or <code>fallback</code> when the text is not a whole number.</li>
+<li><code>audited_reading(text)</code> converts the text. On <code>ValueError</code> it prints <code>rejected</code> and returns <code>None</code>. Otherwise it prints <code>accepted</code> and returns the number. Either way it prints <code>logged</code> last. Use <code>except</code>, <code>else</code> and <code>finally</code>, one job each.</li>
+</ul>
+<p>Watch the order of the printed lines in <code>audited_reading</code> against the order you wrote the clauses in. That is the part worth getting wrong once.</p>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Name the type. <code>except ValueError:</code> and nothing broader. A bare <code>except:</code> and <code>except Exception:</code> are banned in every question of this course.</li><li>One line inside each <code>try</code>. Only the call that can fail belongs there.</li><li>The success path goes in <code>else</code>. Do not park it at the bottom of <code>try</code>.</li><li>Do not inspect the text first. <code>text.isdigit()</code> is the Java reflex, and it answers <code>False</code> for <code>-5</code> anyway.</li><li>Leave <code>strict_reading</code> bare. No <code>try</code>, and no comment pretending to be a <code>throws</code> clause.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>22</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def strict_reading(text):
+    # TODO: one line. Convert and hand back. Catch nothing.
+
+
+def safe_reading(text, fallback):
+    # TODO: try the conversion, catch ValueError, return the fallback
+
+
+def audited_reading(text):
+    # TODO: try, then except, then else, then finally. One job each.
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def strict_reading(text):
+    return int(text)
+
+
+def safe_reading(text, fallback):
+    try:
+        return int(text)
+    except ValueError:
+        return fallback
+
+
+def audited_reading(text):
+    try:
+        value = int(text)
+    except ValueError:
+        print("rejected")
+        return None
+    else:
+        print("accepted")
+        return value
+    finally:
+        print("logged")
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(safe_reading("42", -1))
+print(safe_reading("4.5", -1))
+print(audited_reading("7"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>42
+-1
+accepted
+logged
+7</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(audited_reading("nope"))
+try:
+    strict_reading("nope")
+except ValueError as exc:
+    print("caught", type(exc).__name__)
+print(strict_reading("  90  "))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>rejected
+logged
+None
+caught ValueError
+90</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (strict_reading, safe_reading, audited_reading))
+assert "except:" not in whole, "rule broken: no bare except"
+assert "except Exception" not in whole, "rule broken: catch ValueError by name"
+audited = inspect.getsource(audited_reading)
+assert "else:" in audited, "rule broken: the success path belongs in else"
+assert "finally:" in audited, "rule broken: finally must run on both paths"
+assert "try:" in inspect.getsource(safe_reading), "rule broken: catch the failure"
+assert "try:" not in inspect.getsource(strict_reading), "rule broken: strict_reading catches nothing"
+assert ".isdigit()" not in whole, "rule broken: do not inspect the text first"
+print(safe_reading("0", -1), safe_reading("-5", -1), safe_reading("", -1))
+print(audited_reading("-12"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>0 -5 -1
+accepted
+logged
+-12</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 11.2: Forgiveness Beats Permission!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write three functions that show a check-then-act lookup breaking and an ask-forgiveness lookup that does not.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java trains one shape into you until you stop seeing it. Ask first, then act.</p>
+<pre>if (readings.containsKey(key)) {
+    return readings.get(key);
+}
+return null;
+
+if (file.exists()) {
+    return Files.readString(file.toPath());
+}</pre>
+<p>That style has a name. <b>LBYL</b>, short for "look before you leap". Python's preference has a name too. <b>EAFP</b>, short for "easier to ask forgiveness than permission". You try the operation and you catch the failure.</p>
+<pre>try:
+    return readings[key]
+except KeyError:
+    return None</pre>
+<p>Both spellings do the same job when nothing else in the world is running. Three things separate them.</p>
+<p>The first is the window. Your check is a statement about the past. Between the check and the act, anything may change the thing you checked. Another thread evicts the key. Another process deletes the file. The check passed and the act fails anyway, and the failure lands in code you wrote on the assumption it could not happen. <code>os.path.exists(p)</code> followed by an open is the classic case, and it is a genuine security bug with its own name in the literature.</p>
+<p>The second is cost. Checking costs a second lookup on every call. Setting up a <code>try</code> costs Python close to nothing, and you only pay when something raises. On the happy path EAFP is the cheaper of the two.</p>
+<p>The third is honesty. One operation either works or raises. Two operations can disagree with each other.</p>
+<p>This is not a ban on checking. <code>if key in readings:</code> on its own reads well and is fine. The rule is narrower. Do not check and then act on the strength of the check.</p>
+<p>The other half of this tier is which type you name. <code>except Exception:</code> catches everything your code could ever get wrong. A misspelled name raises <code>NameError</code>. A wrong argument type raises <code>TypeError</code>. A bug you have not written yet raises something you have not thought of. Funnel all of that into one fallback value and a wiring fault becomes a plausible reading.</p>
+<p>On a safety-critical system that is worse than a crash. A crash gets investigated. A wrong number gets trusted, averaged, and acted on. Catch the one failure you know how to handle and let the rest travel.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Your answer box already holds <code>evict</code>. It stands in for whatever else touches the dict while you are working, and it is there to make one of your functions fail.</p>
+<p>Write three functions.</p>
+<ul>
+<li><code>racy_lookup(readings, key)</code> is the Java shape, written out so you can watch it break. Test whether the key is in <code>readings</code>. If it is, call <code>evict(readings, key)</code>, then return <code>readings[key]</code>. Return <code>None</code> when the key was absent.</li>
+<li><code>atomic_lookup(readings, key)</code> does the same job in one operation. Subscript inside a <code>try</code>, return <code>None</code> on <code>KeyError</code>, and change nothing.</li>
+<li><code>convert_all(rows)</code> walks a list of strings and returns two lists as a pair. The whole numbers it converted, and the strings it could not convert. Catch <code>ValueError</code> and nothing else.</li>
+</ul>
+<p>One reading in the tests is <code>0</code>, and one is the empty string. Both are falsey, as the truth and None topic showed, so anything built on <code>if readings.get(key):</code> reports them as missing. That is the trap.</p>
+<p>The tests hand <code>convert_all</code> a list containing <code>None</code>. <code>int(None)</code> raises <code>TypeError</code>, which is not a bad reading, it is a caller who wired the wrong thing in. Your narrow <code>except</code> lets it through to them, which is the correct behaviour.</p>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li><code>except Exception:</code> and bare <code>except:</code> appear nowhere. Name the one type you can handle.</li><li><code>atomic_lookup</code> performs one operation. No <code>in</code>, no <code>.get(</code>, no <code>len()</code>.</li><li><code>convert_all</code> catches <code>ValueError</code> alone. A <code>TypeError</code> is the caller's fault and must reach the caller.</li><li>Leave <code>evict</code> exactly as it is. It is there to fail, and repairing it removes the lesson.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>28</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def evict(readings, key):
+    # Stands in for whatever else touches this dict. Leave it alone.
+    del readings[key]
+
+
+def racy_lookup(readings, key):
+    # TODO: check, then evict, then read. Watch the check fail to protect you.
+
+
+def atomic_lookup(readings, key):
+    # TODO: one subscript inside try, None on KeyError
+
+
+def convert_all(rows):
+    # TODO: two lists, ValueError only, return them as a pair
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def evict(readings, key):
+    # Stands in for whatever else touches this dict. Leave it alone.
+    del readings[key]
+
+
+def racy_lookup(readings, key):
+    if key in readings:
+        evict(readings, key)
+        return readings[key]
+    return None
+
+
+def atomic_lookup(readings, key):
+    try:
+        return readings[key]
+    except KeyError:
+        return None
+
+
+def convert_all(rows):
+    good = []
+    bad = []
+    for text in rows:
+        try:
+            good.append(int(text))
+        except ValueError:
+            bad.append(text)
+    return good, bad
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>readings = {"psi": 0, "temp": 21}
+print(atomic_lookup(readings, "psi"))
+print(atomic_lookup(readings, "temp"))
+print(atomic_lookup(readings, "flow"))
+print(readings)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>0
+21
+None
+{'psi': 0, 'temp': 21}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>live = {"psi": 12}
+print(racy_lookup(live, "flow"))
+try:
+    racy_lookup(live, "psi")
+except KeyError as exc:
+    print("check passed, read failed:", type(exc).__name__, exc)
+print(live)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>None
+check passed, read failed: KeyError 'psi'
+{}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+import re
+whole = "".join(inspect.getsource(f) for f in (racy_lookup, atomic_lookup, convert_all))
+assert "except:" not in whole, "rule broken: no bare except"
+assert "except Exception" not in whole, "rule broken: name the type you can handle"
+atomic = inspect.getsource(atomic_lookup)
+assert not re.search(r"\bin\b", atomic), "rule broken: atomic_lookup checks nothing first"
+assert ".get(" not in atomic, "rule broken: subscript inside try, not .get"
+assert "len(" not in atomic, "rule broken: one operation only"
+assert "try:" in atomic, "rule broken: ask forgiveness"
+assert re.search(r"\bin\b", inspect.getsource(racy_lookup)), "rule broken: keep the check-then-act shape"
+assert "del " in inspect.getsource(evict), "rule broken: leave evict alone"
+print(convert_all(["1", "x", "3"]))
+try:
+    convert_all(["1", None])
+except TypeError as exc:
+    print("escaped:", type(exc).__name__)
+print(convert_all([]))
+print(atomic_lookup({}, "psi"), atomic_lookup({"psi": ""}, "psi") == "")</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>([1, 3], ['x'])
+escaped: TypeError
+([], [])
+None True</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 11.3: Chain of Custody!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write four functions that turn every low-level failure into a chained <code>SensorFault</code>.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>A Java exception of your own is a small ceremony.</p>
+<pre>public class SensorFaultException extends Exception {
+    public SensorFaultException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
+
+throw new SensorFaultException("bad channel", e);</pre>
+<p>Python asks for two lines.</p>
+<pre>class SensorFault(Exception):
+    pass</pre>
+<p><code>class</code> is Java's <code>class</code>. The name in brackets is what it inherits from, so that line reads as <code>extends Exception</code>. <code>pass</code> is the empty body, needed because Python has no braces to leave empty. You inherit the message argument, the printable form, and everything else, so an empty body is the normal shape for an exception. Classes proper come later in the course. These two lines are all you need today.</p>
+<p>Python names them without the <code>Exception</code> suffix, because <code>except SensorFault:</code> already reads as one.</p>
+<p>To keep the cause, write <code>raise ... from</code>.</p>
+<pre>try:
+    raw = config[name]
+except KeyError as exc:
+    raise SensorFault(f"unknown channel {name!r}") from exc</pre>
+<p>That is <code>new SensorFaultException(msg, e)</code>. The original lands on <code>exc.__cause__</code>. A printed traceback then shows both, joined by the line "The above exception was the direct cause of the following exception". Drop the <code>from</code> and you destroy the only record of what actually failed. On a system that has to be explainable after an incident, that is evidence tampering.</p>
+<p>The <code>!r</code> conversion in that f-string is the one from the f-strings topic. It puts the quotes round the channel name.</p>
+<p>To pass a failure onward untouched, write <code>raise</code> on its own.</p>
+<pre>except SensorFault:
+    print("logging this")
+    raise</pre>
+<p>Java writes <code>throw e</code> there. A bare <code>raise</code> continues the throw already in progress, with its cause and its traceback intact. <code>raise exc</code> starts a fresh throw of the same object and adds a frame that never happened.</p>
+<p>Now the part that decides how you write every handler for the rest of your career. Python's exception tree has <code>BaseException</code> at the root. <code>Exception</code> sits under it, and everything you would ever want to handle sits under <code>Exception</code>. Two things deliberately do not. <code>KeyboardInterrupt</code>, which is Ctrl-C, and <code>SystemExit</code>, which is what <code>sys.exit()</code> raises.</p>
+<p>They were put outside <code>Exception</code> so that <code>except Exception:</code> cannot swallow them. A bare <code>except:</code> catches <code>BaseException</code>, so it catches both. Write one inside a loop and you have built a program that cannot be stopped from the keyboard and ignores its own shutdown. That is why a bare <code>except:</code> is always wrong, and why <code>except Exception:</code> is nearly always wrong as well.</p>
+<p><code>issubclass(A, B)</code> answers whether <code>A</code> is a subclass of <code>B</code>, so you can check that claim rather than take it on trust.</p>
+<p>Last, the reason all of this matters here. When a safety-critical system finds bad state, the correct move is to stop. Continuing turns one bad reading into a plausible average that somebody acts on. Fail loudly.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p><code>SensorFault</code> is already in the answer box. Write four functions under it. <code>config</code> maps a channel name to a string reading.</p>
+<ul>
+<li><code>read_channel(config, name)</code> returns the reading as an <code>int</code>. A missing channel becomes <code>SensorFault</code> with the message <code>unknown channel 'depth'</code>, chained from the <code>KeyError</code>. A reading that will not convert becomes <code>SensorFault</code> with the message <code>channel 'flow' sent 'n/a'</code>, chained from the <code>ValueError</code>. Both names are rendered with <code>!r</code>.</li>
+<li><code>checked_read(config, name)</code> calls <code>read_channel</code>, prints <code>fault logged for 'flow'</code> when it fails, and lets the same fault carry on to the caller.</li>
+<li><code>commit(config, names)</code> adds up every channel in <code>names</code>, collecting the message from each fault as it goes. If any channel failed it raises <code>SensorFault</code> reading <code>2 of 3 channels bad: </code> followed by the collected messages joined with <code>"; "</code>. Otherwise it returns the total. Never a partial total.</li>
+<li><code>hierarchy()</code> takes no arguments and returns three answers as a tuple. Whether <code>KeyboardInterrupt</code> is a subclass of <code>Exception</code>, whether it is a subclass of <code>BaseException</code>, and whether <code>SensorFault</code> is a subclass of <code>Exception</code>.</li>
+</ul>
+<p>Read the first two answers from <code>hierarchy</code> together. They are the whole argument against the bare <code>except:</code> in one line of output.</p>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Nothing but <code>SensorFault</code> leaves your functions. <code>KeyError</code> and <code>ValueError</code> are implementation detail and must not reach the caller.</li><li>Chain every one with <code>raise ... from exc</code>. A cause thrown away is evidence destroyed.</li><li>Re-raise with a bare <code>raise</code> on its own line. <code>raise exc</code> is banned.</li><li><code>commit</code> raises when any channel is bad. Returning what you managed to add up is the defect this whole topic is about.</li><li>No bare <code>except:</code> and no <code>except Exception:</code>, here or ever. One of them catches Ctrl-C.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>40</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[class SensorFault(Exception):
+    pass
+
+
+def read_channel(config, name):
+    # TODO: subscript, then convert. Chain both failures into SensorFault.
+
+
+def checked_read(config, name):
+    # TODO: call read_channel, print the log line, let the fault carry on
+
+
+def commit(config, names):
+    # TODO: total the good ones, collect the messages, raise if any failed
+
+
+def hierarchy():
+    # TODO: three issubclass answers as a tuple
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[class SensorFault(Exception):
+    pass
+
+
+def read_channel(config, name):
+    try:
+        raw = config[name]
+    except KeyError as exc:
+        raise SensorFault(f"unknown channel {name!r}") from exc
+    try:
+        return int(raw)
+    except ValueError as exc:
+        raise SensorFault(f"channel {name!r} sent {raw!r}") from exc
+
+
+def checked_read(config, name):
+    try:
+        return read_channel(config, name)
+    except SensorFault:
+        print(f"fault logged for {name!r}")
+        raise
+
+
+def commit(config, names):
+    total = 0
+    faults = []
+    for name in names:
+        try:
+            total += read_channel(config, name)
+        except SensorFault as exc:
+            faults.append(str(exc))
+    if faults:
+        raise SensorFault(f"{len(faults)} of {len(names)} channels bad: " + "; ".join(faults))
+    return total
+
+
+def hierarchy():
+    return (
+        issubclass(KeyboardInterrupt, Exception),
+        issubclass(KeyboardInterrupt, BaseException),
+        issubclass(SensorFault, Exception),
+    )
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>config = {"psi": "12", "temp": "21", "flow": "n/a"}
+print(read_channel(config, "psi"))
+try:
+    read_channel(config, "depth")
+except SensorFault as exc:
+    print(exc)
+    print(type(exc.__cause__).__name__)
+try:
+    read_channel(config, "flow")
+except SensorFault as exc:
+    print(exc)
+    print(type(exc.__cause__).__name__)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>12
+unknown channel 'depth'
+KeyError
+channel 'flow' sent 'n/a'
+ValueError</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>rig = {"psi": "12", "flow": "n/a"}
+print(checked_read(rig, "psi"))
+try:
+    checked_read(rig, "flow")
+except SensorFault as exc:
+    print("caller saw:", exc)
+    print("cause survived:", type(exc.__cause__).__name__)
+print(commit(rig, ["psi"]))
+try:
+    commit(rig, ["psi", "flow", "depth"])
+except SensorFault as exc:
+    print(exc)
+print(hierarchy())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>12
+fault logged for 'flow'
+caller saw: channel 'flow' sent 'n/a'
+cause survived: ValueError
+12
+2 of 3 channels bad: channel 'flow' sent 'n/a'; unknown channel 'depth'
+(False, True, True)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+import re
+whole = "".join(inspect.getsource(o) for o in (SensorFault, read_channel, checked_read, commit, hierarchy))
+assert "except:" not in whole, "rule broken: a bare except also catches KeyboardInterrupt"
+assert "except Exception" not in whole, "rule broken: catch SensorFault, not everything"
+assert whole.count("from exc") &gt;= 2, "rule broken: chain every fault with raise ... from"
+assert re.search(r"\n\s+raise\s*\n", inspect.getsource(checked_read)), "rule broken: re-raise with a bare raise"
+assert "raise exc" not in whole, "rule broken: a bare raise continues the original throw"
+assert "KeyError" not in inspect.getsource(commit), "rule broken: commit handles SensorFault only"
+print(commit({}, []))
+print(issubclass(SensorFault, Exception), SensorFault.__mro__[1].__name__)
+try:
+    commit({"a": "1"}, ["a", "b"])
+except SensorFault as exc:
+    print(exc, exc.__cause__)
+try:
+    read_channel({"a": "1.5"}, "a")
+except SensorFault as exc:
+    print(exc, type(exc.__cause__).__name__)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>0
+True Exception
+1 of 2 channels bad: unknown channel 'b' None
+channel 'a' sent '1.5' ValueError</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+</quiz>

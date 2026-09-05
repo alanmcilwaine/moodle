@@ -1,0 +1,708 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 05.1: The Slash That Floats!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write four one-line functions that divide, floor, take a remainder, and raise a number to a power.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>In Java the result of a division depends on the operands. Two <code>int</code> values give an
+<code>int</code>, and the fraction is thrown away before anything else happens.</p>
+<pre>int total   = 7;
+int samples = 2;
+int mean    = total / samples;   // 3, the .5 is gone
+double real = 7 / 2;             // 3.0, because the damage was done first</pre>
+<p>That last line catches Java developers every year. The division ran as <code>int</code> arithmetic,
+and only then was the <code>3</code> widened to <code>3.0</code>.</p>
+<p>Python cannot make that mistake, because <code>/</code> never returns a whole number. Before the
+operators, meet the two numeric types.</p>
+<ul>
+<li><b>int</b> is a whole number, and it has no upper limit. A Java <code>int</code> wraps round to a
+negative value once it passes 2147483647, and a <code>long</code> runs out further along. A Python
+<code>int</code> grows to fit, so <code>2 ** 100</code> is an exact integer of 31 digits.</li>
+<li><b>float</b> is a number with a decimal point. It behaves exactly as a Java <code>double</code>
+does, because both follow the IEEE 754 standard. Python has nothing matching Java's 32-bit
+<code>float</code>, so the word <code>float</code> in Python means <code>double</code> in Java.</li>
+</ul>
+<p>You never write either word in your code. Python reads the literal and picks the type. <code>3</code>
+is an int and <code>3.0</code> is a float.</p>
+<p>Now the operators.</p>
+<ul>
+<li><code>+</code>, <code>-</code> and <code>*</code> behave as they do in Java. Two ints give an int,
+and one float anywhere in the sum gives a float.</li>
+<li><code>/</code> is <b>true division</b>. It always returns a float, even when the answer comes out
+whole. <code>6 / 3</code> is <code>2.0</code> and never <code>2</code>. This is the single largest
+arithmetic difference between the two languages.</li>
+<li><code>//</code> is <b>floor division</b>. It drops the fraction and gives back an int when both
+sides are ints, so <code>17 // 5</code> is <code>3</code>. This is the operator that does what Java's
+<code>/</code> does to two ints.</li>
+<li><code>%</code> is the remainder, as in Java. <code>17 % 5</code> is <code>2</code>.</li>
+<li><code>**</code> raises a number to a power, so <code>2 ** 10</code> is <code>1024</code>. Java has
+no such operator and sends you to <code>Math.pow</code>, which hands back a double even when the
+answer is whole.</li>
+</ul>
+<p>Keep every number in this question at zero or above. The two languages disagree about which way
+<code>//</code> and <code>%</code> round once a value goes negative, and that disagreement is the
+subject of the hard tier of this topic.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write four functions. Each one is a single line.</p>
+<ul>
+<li><code>mean_reading(total, samples)</code> returns the average of <code>total</code> spread over
+<code>samples</code>. It returns a float every time, including when the division comes out whole.</li>
+<li><code>full_crates(items, per_crate)</code> returns how many whole crates the items fill.</li>
+<li><code>loose_items(items, per_crate)</code> returns how many items are left over.</li>
+<li><code>cube(side)</code> returns the side raised to the power of three.</li>
+</ul>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not call <code>int()</code>, <code>float()</code> or <code>round()</code> anywhere. The operator decides the type for you.</li><li>Do not write a type before a name, and do not write one after a name either.</li><li>Write no <code>import</code> line. Every operator here is built into the language.</li><li>Build the cube with <code>**</code>. Do not multiply the side by itself, and do not reach for a library.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>16</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def mean_reading(total, samples):
+    # TODO: return the average, a float every time
+
+
+def full_crates(items, per_crate):
+    # TODO: return the number of whole crates
+
+
+def loose_items(items, per_crate):
+    # TODO: return the items left over
+
+
+def cube(side):
+    # TODO: return the side raised to the power of three
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def mean_reading(total, samples):
+    return total / samples
+
+
+def full_crates(items, per_crate):
+    return items // per_crate
+
+
+def loose_items(items, per_crate):
+    return items % per_crate
+
+
+def cube(side):
+    return side ** 3
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(mean_reading(7, 2))
+print(mean_reading(6, 3))
+print(mean_reading(9, 4))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>3.5
+2.0
+2.25</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(full_crates(17, 5))
+print(loose_items(17, 5))
+print(cube(4))
+print(cube(1.5))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>3
+2
+64
+3.375</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>for items in (0, 5, 12, 100):
+    print(items, mean_reading(items, 8), full_crates(items, 8), loose_items(items, 8))
+print(mean_reading(10, 5) == 2, mean_reading(10, 5) == 2.0)
+print(cube(10) ** 2)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>0 0.0 0 0
+5 0.625 0 5
+12 1.5 1 4
+100 12.5 12 4
+True True
+1000000</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import ast, inspect
+for fn in (mean_reading, full_crates, loose_items, cube):
+    tree = ast.parse(inspect.getsource(fn))
+    names = {n.func.id for n in ast.walk(tree) if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)}
+    assert not (names &amp; {"int", "float", "round"}), "rule broken: no int, float or round conversions"
+    assert not [n for n in ast.walk(tree) if isinstance(n, (ast.Import, ast.ImportFrom))], "rule broken: no imports"
+cube_tree = ast.parse(inspect.getsource(cube))
+assert any(isinstance(n, ast.Pow) for n in ast.walk(cube_tree)), "rule broken: build the cube with the ** operator"
+print(mean_reading(1, 3))
+print(full_crates(7, 7), loose_items(7, 7), cube(0))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>0.3333333333333333
+1 0 0</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 05.2: Half a Penny Short!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write four functions for a paint shop that round values up, down, to the nearest whole number, and to two places.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java's <code>Math.round</code> breaks a tie by going up. <code>Math.round(0.5)</code> is
+<code>1</code>, <code>Math.round(1.5)</code> is <code>2</code>, and <code>Math.round(2.5)</code> is
+<code>3</code>. Round a long column of prices that way and the total creeps upwards, because every
+tie leans in the same direction.</p>
+<pre>long units   = Math.round(2.5);             // 3
+double floor = Math.floor(7.9);             // 7.0, still a double
+long tins    = (long) Math.ceil(45 / 12.0); // 4, and only after a cast</pre>
+<p>Python breaks a tie toward the even number instead. The rule is called <b>banker's rounding</b>, or
+round half to even. <code>round(0.5)</code> is <code>0</code>, <code>round(1.5)</code> is
+<code>2</code>, <code>round(2.5)</code> is <code>2</code>, and <code>round(3.5)</code> is
+<code>4</code>. Half the ties go up and half go down, so a long column does not drift.</p>
+<p><code>round</code> has two shapes, and they return different types.</p>
+<ul>
+<li><code>round(x)</code> with one argument returns an <b>int</b>.</li>
+<li><code>round(x, n)</code> with a digit count returns a <b>float</b>, rounded to <code>n</code>
+places after the point.</li>
+</ul>
+<p>The second shape carries a trap that no rule about ties explains. <code>round(2.675, 2)</code> is
+<code>2.67</code> and not <code>2.68</code>. The literal <code>2.675</code> has no exact binary form,
+so the value actually stored sits a shade below the tie, and Python rounds the number it holds rather
+than the number you typed. Java's <code>Math.round(2.675 * 100) / 100.0</code> gives <code>2.68</code>
+because the multiplication lands on the other side of the line. Neither language is wrong about
+arithmetic. Both answers are facts about binary floats.</p>
+<p>The rest of the work lives in a module. <code>import math</code> loads the <b>module</b> called
+<code>math</code>. A module is a file of ready-made code, and it is the closest thing Python has to a
+Java class full of static helpers. After the import, write <code>math.ceil(...)</code> with a dot, the
+way you write <code>Math.ceil(...)</code> in Java.</p>
+<ul>
+<li><code>math.ceil(x)</code> rounds up to a whole number and returns an <b>int</b>. Java's
+<code>Math.ceil</code> returns a double and leaves you to cast it.</li>
+<li><code>math.floor(x)</code> rounds down and also returns an <b>int</b>.</li>
+<li><code>math.sqrt(x)</code> returns a float, so <code>math.sqrt(16)</code> is <code>4.0</code>.</li>
+</ul>
+<p>Keep every value in this question at zero or above. Negative numbers change the direction
+<code>math.floor</code> travels, and that argument belongs to the hard tier of this topic.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write four functions for a paint shop.</p>
+<ul>
+<li><code>tins_needed(area, coverage)</code> returns how many tins cover the area. Part of a tin is not
+for sale, so any remainder costs a whole tin. The answer is an int.</li>
+<li><code>whole_metres(length)</code> returns the length with the fraction dropped, as an int.</li>
+<li><code>rounded_units(value)</code> returns the value rounded to the nearest whole number, as an int.
+Predict all four tie cases before you run them.</li>
+<li><code>line_total(unit_price, quantity)</code> returns the price times the quantity, rounded to two
+places. The answer is a float, so a total that prints as <code>8.0</code> is correct and not a
+defect.</li>
+</ul>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Round with <code>round</code> and with <code>math</code>. Do not call <code>int()</code> to chop a decimal off.</li><li>Do not nudge a value with a small addition before rounding to force Java's answer out of it.</li><li>Write no <code>if</code> inside these four functions. A branch means you are fighting the rounding rule rather than using it.</li><li><code>import math</code> is the only import permitted.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>20</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[import math
+
+
+def tins_needed(area, coverage):
+    # TODO: return the whole number of tins, rounding up
+
+
+def whole_metres(length):
+    # TODO: return the length with the fraction dropped, as an int
+
+
+def rounded_units(value):
+    # TODO: return the value rounded to the nearest whole number
+
+
+def line_total(unit_price, quantity):
+    # TODO: return price times quantity, rounded to two places
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[import math
+
+
+def tins_needed(area, coverage):
+    return math.ceil(area / coverage)
+
+
+def whole_metres(length):
+    return math.floor(length)
+
+
+def rounded_units(value):
+    return round(value)
+
+
+def line_total(unit_price, quantity):
+    return round(unit_price * quantity, 2)
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(tins_needed(45, 12))
+print(tins_needed(48, 12))
+print(tins_needed(1, 12))
+print(whole_metres(7.9))
+print(whole_metres(7.0))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>4
+4
+1
+7
+7</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(rounded_units(0.5))
+print(rounded_units(1.5))
+print(rounded_units(2.5))
+print(rounded_units(3.5))
+print(line_total(2.675, 1))
+print(line_total(19.99, 3))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>0
+2
+2
+4
+2.67
+59.97</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>for price in (0.1, 1.005, 2.665, 12.5):
+    print(price, line_total(price, 3), rounded_units(price))
+print(tins_needed(0, 5), whole_metres(0.0), line_total(0.1, 3) == 0.3)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>0.1 0.3 0
+1.005 3.01 1
+2.665 8.0 3
+12.5 37.5 12
+0 0 True</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import ast, inspect
+for fn in (tins_needed, whole_metres, rounded_units, line_total):
+    tree = ast.parse(inspect.getsource(fn))
+    names = {n.func.id for n in ast.walk(tree) if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)}
+    assert "int" not in names, "rule broken: no int() to chop a decimal off"
+    assert not [n for n in ast.walk(tree) if isinstance(n, (ast.If, ast.IfExp))], "rule broken: no if inside these functions"
+assert isinstance(tins_needed(5, 2), int), "tins_needed must return an int"
+assert isinstance(line_total(1.0, 1), float), "line_total must return a float"
+print(tins_needed(37, 12), whole_metres(99.999), rounded_units(4.5), line_total(0.125, 1))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>4 99 4 0.12</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 05.3: Division Is a Lie!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write five functions that split a shift and report how Python's division, rounding, and floats differ from Java's.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>In Java, <code>7 / 2</code> is <code>3</code> and <code>-7 / 2</code> is <code>-3</code>. Both
+results truncate toward zero. Java's <code>%</code> then takes the sign of the left operand, so
+<code>-7 % 2</code> is <code>-1</code>.</p>
+<pre>int shifts = total / workers;   // -7 / 2 gives -3
+int left   = total % workers;   // -7 % 2 gives -1</pre>
+<p>Python splits those two jobs across two different operators and rounds the other way.</p>
+<ul>
+<li><code>/</code> is <b>true division</b> and always returns a float. <code>7 / 2</code> is
+<code>3.5</code>, and <code>6 / 3</code> is <code>2.0</code> rather than <code>2</code>.</li>
+<li><code>//</code> is <b>floor division</b>. It rounds down toward negative infinity instead of
+toward zero, so <code>-7 // 2</code> is <code>-4</code> and not <code>-3</code>.</li>
+<li><code>%</code> takes the sign of the right operand, so <code>-7 % 2</code> is <code>1</code> and
+not <code>-1</code>.</li>
+<li><code>**</code> raises a number to a power, so <code>2 ** 10</code> is <code>1024</code>. Java has
+no such operator and sends you to <code>Math.pow</code>.</li>
+</ul>
+<p>The two operators still agree with each other. For any <code>a</code> and any non-zero
+<code>b</code>, the expression <code>(a // b) * b + (a % b)</code> gives back <code>a</code>. Java
+holds the same identity under its own rounding rule. Neither language is broken. The two languages
+round in opposite directions, and the Python answer is the one you will not expect.</p>
+<p>Python integers have no upper limit. A Java <code>int</code> wraps round to a negative number once
+it passes 2147483647. An overflow guard you would write in Java has nothing to catch here.
+<code>2 ** 100</code> is an exact integer of 31 digits.</p>
+<p><code>round</code> disagrees with Java as well. Java's <code>Math.round</code> always breaks a
+<code>.5</code> tie upwards. Python uses <b>banker's rounding</b>, which breaks the tie toward the
+even number. <code>round(0.5)</code> is <code>0</code>, <code>round(1.5)</code> is <code>2</code>, and
+<code>round(2.5)</code> is <code>2</code>. Across a long run of values, that rule does not drift
+upwards the way Java's rule does.</p>
+<p>Floats behave exactly as a Java <code>double</code> does, because both follow the IEEE 754
+standard. <code>0.1 + 0.2</code> is not <code>0.3</code> in either language. Python's standard library
+carries the repair. <code>math.isclose(a, b)</code> returns <code>True</code> when two floats sit near
+enough to each other to count as equal.</p>
+<p>To reach that function you need one new statement. <code>import math</code> loads the <b>module</b>
+called <code>math</code>. A module is a file of ready-made code, and it is the closest thing Python
+has to a Java class full of static helpers. After the import, write <code>math.isclose(...)</code>
+with a dot, the way you write <code>Math.abs(...)</code> in Java.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write five functions.</p>
+<ul>
+<li><code>split_shift(total, workers)</code> returns two values, the number of full shifts and the
+number left over, in that order. Write <code>return full, leftover</code> with a comma between the two
+names. The comma packs them into a <b>tuple</b>, which is a fixed group of values held in one object.
+One <code>return</code> then hands both back, and Python prints a tuple inside parentheses, as
+<code>(3, 1)</code>. Java needs an array or a small class to carry a pair like that. Your answer must
+be right when <code>total</code> is negative, which is where a Java habit gives the wrong number.</li>
+<li><code>division_report()</code>, <code>rounding_report()</code> and <code>float_report()</code>
+each print the lines shown below. None of the three returns a value.</li>
+<li><code>big_power()</code> returns <code>2 ** 100</code>.</li>
+</ul>
+<p>Copy these lines exactly. The grader compares them character for character, spaces included.</p>
+<pre>7 / 2       = 3.5
+7 // 2      = 3
+-7 // 2     = -4   Java gives -3
+-7 % 2      = 1    Java gives -1
+int(-7 / 2) = -3   Java truncation
+round(0.5) = 0   Java Math.round gives 1
+round(1.5) = 2   Java Math.round gives 2
+round(2.5) = 2   Java Math.round gives 3
+0.1 + 0.2      = 0.30000000000000004
+== 0.3         = False
+math.isclose   = True</pre>
+<p>An f-string from the f-strings topic builds each of those lines. The float line needs the format spec
+<code>{0.1 + 0.2:.17f}</code>, which writes the sum with seventeen digits after the decimal point.
+Seventeen places is where the error becomes visible.</p>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Compare two floats with <code>==</code> exactly once, on the line that proves it is broken. Use <code>math.isclose</code> everywhere else.</li><li>Do not call <code>int()</code>, <code>round()</code> or <code>abs()</code> inside <code>split_shift</code> to patch up the negative case. The operators already floor correctly.</li><li>Write no <code>if</code> inside <code>split_shift</code>. If you needed a branch, you reached for the wrong operator.</li><li>Reach for <code>int()</code> only on the line that deliberately reproduces Java truncation, and label that line as such.</li><li><code>import math</code> is the only import permitted.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>24</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[import math
+
+
+def split_shift(total, workers):
+    # TODO: one return, two values, correct for a negative total
+
+
+def division_report():
+    # TODO: print the five labelled division lines
+
+
+def rounding_report():
+    # TODO: print round() at 0.5, 1.5 and 2.5
+
+
+def float_report():
+    # TODO: print 0.1 + 0.2 to 17 places, then == 0.3, then math.isclose
+
+
+def big_power():
+    # TODO: return 2 to the power of 100
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[import math
+
+
+def split_shift(total, workers):
+    return total // workers, total % workers
+
+
+def division_report():
+    print(f"7 / 2       = {7 / 2}")
+    print(f"7 // 2      = {7 // 2}")
+    print(f"-7 // 2     = {-7 // 2}   Java gives -3")
+    print(f"-7 % 2      = {-7 % 2}    Java gives -1")
+    print(f"int(-7 / 2) = {int(-7 / 2)}   Java truncation")
+
+
+def rounding_report():
+    print(f"round(0.5) = {round(0.5)}   Java Math.round gives 1")
+    print(f"round(1.5) = {round(1.5)}   Java Math.round gives 2")
+    print(f"round(2.5) = {round(2.5)}   Java Math.round gives 3")
+
+
+def float_report():
+    print(f"0.1 + 0.2      = {0.1 + 0.2:.17f}")
+    print(f"== 0.3         = {0.1 + 0.2 == 0.3}")
+    print(f"math.isclose   = {math.isclose(0.1 + 0.2, 0.3)}")
+
+
+def big_power():
+    return 2 ** 100
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(split_shift(7, 2))
+print(split_shift(-7, 2))
+print(split_shift(12, 4))
+print(split_shift(-1, 5))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>(3, 1)
+(-4, 1)
+(3, 0)
+(-1, 4)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>division_report()
+rounding_report()
+float_report()
+print(big_power())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>7 / 2       = 3.5
+7 // 2      = 3
+-7 // 2     = -4   Java gives -3
+-7 % 2      = 1    Java gives -1
+int(-7 / 2) = -3   Java truncation
+round(0.5) = 0   Java Math.round gives 1
+round(1.5) = 2   Java Math.round gives 2
+round(2.5) = 2   Java Math.round gives 3
+0.1 + 0.2      = 0.30000000000000004
+== 0.3         = False
+math.isclose   = True
+1267650600228229401496703205376</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>for total in (-9, -1, 0, 1, 9):
+    full, left = split_shift(total, 4)
+    print(f"{total:&gt;3} -&gt; {full:&gt;3} shifts, {left} left, rebuilt {full * 4 + left}")</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text> -9 -&gt;  -3 shifts, 3 left, rebuilt -9
+ -1 -&gt;  -1 shifts, 3 left, rebuilt -1
+  0 -&gt;   0 shifts, 0 left, rebuilt 0
+  1 -&gt;   0 shifts, 1 left, rebuilt 1
+  9 -&gt;   2 shifts, 1 left, rebuilt 9</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import ast, inspect
+tree = ast.parse(inspect.getsource(split_shift))
+assert not [n for n in ast.walk(tree) if isinstance(n, (ast.If, ast.IfExp))], "rule broken: no if inside split_shift"
+names = {n.func.id for n in ast.walk(tree) if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)}
+assert not (names &amp; {"int", "round", "abs"}), "rule broken: no int, round or abs inside split_shift"
+assert sum(isinstance(n, ast.Return) for n in ast.walk(tree)) == 1, "rule broken: one return statement"
+print(split_shift(0, 3), split_shift(-100, 7), split_shift(100, -7))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>(0, 0) (-15, 5) (-15, -5)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+</quiz>

@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 15.1: Wrap It With %w!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A returned parcel passes through two desks. Each desk adds a note to the front of its docket. The returns clerk must still identify the original reason beneath both notes.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/fmt#Errorf">fmt.Errorf</a>. Read the second documentation paragraph. Which method does the returned error gain when the format contains <code>%w</code>? What happens if the <code>%w</code> operand is not an error?</li><li><a href="https://pkg.go.dev/errors#Is">errors.Is</a>. Find the paragraph beginning "The tree consists of". Which errors does Is inspect while looking for <code>target</code>?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a new exception class that holds the original as its cause, then <code>getCause()</code> at the top of the stack. Go has no cause field and no exception class to declare.</p><pre>throw new PackException("pack " + item, e);
+...
+} catch (PackException e) {
+    if (e.getCause() == OUT_OF_STOCK) { ... }
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>%w</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Reread the first sentence of Errorf, then work out what <code>pack</code> must return when <code>pick</code> succeeds.</li><li>Reread the tree paragraph in Is and count how many errors a plain <code>==</code> against the sentinel would miss.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>26</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+var ErrOutOfStock = errors.New("out of stock")
+
+// pick is fixed. It returns ErrOutOfStock when the warehouse has none of item.
+func pick(item string, stock map[string]int) error {
+	if stock[item] == 0 {
+		return ErrOutOfStock
+	}
+	return nil
+}
+
+func pack(item string, stock map[string]int) error {
+	// TODO
+}
+
+func outOfStock(err error) bool {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+var ErrOutOfStock = errors.New("out of stock")
+
+// pick is fixed. It returns ErrOutOfStock when the warehouse has none of item.
+func pick(item string, stock map[string]int) error {
+	if stock[item] == 0 {
+		return ErrOutOfStock
+	}
+	return nil
+}
+
+func pack(item string, stock map[string]int) error {
+	if err := pick(item, stock); err != nil {
+		return fmt.Errorf("pack %s: %w", item, err)
+	}
+	return nil
+}
+
+func outOfStock(err error) bool {
+	return errors.Is(err, ErrOutOfStock)
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "%w"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[stock := map[string]int{"lamp": 2}
+fmt.Println(pack("rug", stock))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>pack rug: out of stock</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[stock := map[string]int{"lamp": 2}
+fmt.Println(pack("lamp", stock) == nil, outOfStock(ErrOutOfStock))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[err := pack("rug", map[string]int{})
+fmt.Println(outOfStock(err), err == ErrOutOfStock)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[deep := fmt.Errorf("courier: %w", pack("rug", map[string]int{}))
+fmt.Println(deep)
+fmt.Println(outOfStock(deep), outOfStock(nil))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>courier: pack rug: out of stock
+true false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(outOfStock(fmt.Errorf("crate marked out of stock by mistake")))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 15.2: Is, As, and the Chain!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A telegram passes through several relay stations. Each operator adds the station name before sending it onwards. Some station names match known fault names, but that does not make them the original fault. The final clerk must identify the real fault.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/errors#As">errors.As</a>. Read the first paragraph and those beginning "For most uses" and "An error matches target". What does As do with <code>target</code> after a match? What form must <code>target</code> have?</li><li>In the example on the same page, what is the type of <code>pathError</code>? What does the call pass as <code>target</code>?</li><li><a href="https://pkg.go.dev/errors#Is">errors.Is</a>. Find the paragraph beginning "The tree consists of". Do extra wrapping layers between <code>err</code> and the sentinel change the result from Is?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>catch (QuotaException e)</code> for the typed fault and a string check on the message for the sentinel. After two stamps the outermost error comes from fmt, and its message starts with a station name.</p><pre>} catch (QuotaException e) {
+    return e.size - e.limit;
+} catch (TelegraphException e) {
+    if (e.getMessage().contains("wire closed")) { ... }
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>==</code>. <b>Required:</b> <code>errors.As</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Check the type <code>send</code> returns for a quota fault, then reread the sentence in As about what <code>target</code> must point to.</li><li>For <code>closed</code>, the station name and the fault text share one message string, so reread what counts as a match in Is.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>40</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+var ErrClosed = errors.New("wire closed")
+
+// QuotaError reports a message longer than the wire allows.
+type QuotaError struct {
+	Limit int
+	Size  int
+}
+
+// send is fixed. It returns ErrClosed when limit is 0 and a *QuotaError
+// when size exceeds limit.
+func send(size, limit int) error {
+	if limit < 1 {
+		return ErrClosed
+	}
+	if size > limit {
+		return &QuotaError{Limit: limit, Size: size}
+	}
+	return nil
+}
+
+// TODO: give QuotaError an Error method.
+
+func relay(stations []string, size, limit int) error {
+	// TODO
+}
+
+func overBy(err error) int {
+	// TODO
+}
+
+func closed(err error) bool {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+var ErrClosed = errors.New("wire closed")
+
+// QuotaError reports a message longer than the wire allows.
+type QuotaError struct {
+	Limit int
+	Size  int
+}
+
+// send is fixed. It returns ErrClosed when limit is 0 and a *QuotaError
+// when size exceeds limit.
+func send(size, limit int) error {
+	if limit < 1 {
+		return ErrClosed
+	}
+	if size > limit {
+		return &QuotaError{Limit: limit, Size: size}
+	}
+	return nil
+}
+
+func (e *QuotaError) Error() string {
+	return fmt.Sprintf("size %d exceeds limit %d", e.Size, e.Limit)
+}
+
+func relay(stations []string, size, limit int) error {
+	err := send(size, limit)
+	if err != nil {
+		for _, station := range stations {
+			err = fmt.Errorf("%s: %w", station, err)
+		}
+	}
+	return err
+}
+
+func overBy(err error) int {
+	var q *QuotaError
+	if errors.As(err, &q) {
+		return q.Size - q.Limit
+	}
+	return 0
+}
+
+func closed(err error) bool {
+	return errors.Is(err, ErrClosed)
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "==", "required": "errors.As"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(relay([]string{"Ashburton"}, 12, 10))
+fmt.Println(relay([]string{"Ashburton"}, 3, 0))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Ashburton: size 12 exceeds limit 10
+Ashburton: wire closed</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[err := relay(nil, 12, 10)
+fmt.Println(overBy(err), closed(err))
+fmt.Println(overBy(send(3, 0)), closed(send(3, 0)))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2 false
+0 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[err := relay([]string{"Ashburton", "Timaru"}, 12, 10)
+fmt.Println(err)
+fmt.Println(overBy(err), closed(err))
+down := relay([]string{"Ashburton", "Timaru", "Oamaru"}, 12, 0)
+fmt.Println(down)
+fmt.Println(overBy(down), closed(down))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Timaru: Ashburton: size 12 exceeds limit 10
+2 false
+Oamaru: Timaru: Ashburton: wire closed
+0 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[prank := relay([]string{"wire closed"}, 12, 10)
+fmt.Println(prank, overBy(prank), closed(prank))
+sly := relay([]string{"size 99 exceeds limit 1"}, 2, 0)
+fmt.Println(sly, overBy(sly), closed(sly))
+fmt.Println(relay([]string{"Timaru"}, 3, 10) == nil, overBy(nil), closed(nil))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>wire closed: size 12 exceeds limit 10 2 false
+size 99 exceeds limit 1: wire closed 0 true
+true 0 false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 15.3: The Nil That Wasn't!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>The customs desk marks a form as clean when an inspector reports no problem. One inspector returns an empty envelope that still carries his name. The desk treats that envelope as a finding.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Comparison_operators">Comparison operators</a>. Find the bullet beginning "Interface types that are not type parameters". Which two parts must match for interface values to be equal? When does an interface equal <code>nil</code>?</li><li><a href="https://go.dev/ref/spec#Variables">Variables</a>. Read the dynamic-type paragraph and its four-line example. After <code>x = v</code>, what value does <code>x</code> hold? What is <code>x</code>'s dynamic type? Does it still hold the original <code>nil</code>?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is to return the pointer the helper gave back, because a Java null is null whatever its declared type.</p><pre>Finding inspect(List&lt;String&gt; form) { ...; return null; }
+Exception review(List&lt;String&gt; form) { return inspect(form); } // null stays null</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>The type <code>review</code> returns is not the type <code>inspect</code> returns, so reread the interface bullet in Comparison operators.</li><li>Check what <code>review</code> returns on the clean path against the <code>x = v</code> line in Variables, then decide whether that value has a dynamic type.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>36</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "fmt"
+
+// Finding is one inspector's objection to a form.
+type Finding struct {
+	Line int
+	Text string
+}
+
+// inspect is fixed. It returns the first fault on the form, or nil.
+func inspect(form []string) *Finding {
+	for i, line := range form {
+		if line == "" {
+			return &Finding{Line: i + 1, Text: "blank"}
+		}
+		if len(line) > 12 {
+			return &Finding{Line: i + 1, Text: "too long"}
+		}
+	}
+	return nil
+}
+
+// TODO: give Finding an Error method.
+
+func review(form []string) error {
+	// TODO
+}
+
+func verdict(err error) string {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+// Finding is one inspector's objection to a form.
+type Finding struct {
+	Line int
+	Text string
+}
+
+// inspect is fixed. It returns the first fault on the form, or nil.
+func inspect(form []string) *Finding {
+	for i, line := range form {
+		if line == "" {
+			return &Finding{Line: i + 1, Text: "blank"}
+		}
+		if len(line) > 12 {
+			return &Finding{Line: i + 1, Text: "too long"}
+		}
+	}
+	return nil
+}
+
+func (f *Finding) Error() string {
+	return fmt.Sprintf("line %d: %s", f.Line, f.Text)
+}
+
+func review(form []string) error {
+	if f := inspect(form); f != nil {
+		return f
+	}
+	return nil
+}
+
+func verdict(err error) string {
+	if err == nil {
+		return "clean"
+	}
+	return err.Error()
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(verdict(review([]string{"name", "", "date"})))
+fmt.Println(verdict(review([]string{"a line that runs on"})))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>line 2: blank
+line 1: too long</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(verdict(review([]string{"name", "date"})))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>clean</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[err := review([]string{"name", "date"})
+fmt.Println(err == nil)
+fmt.Println(verdict(err))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true
+clean</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var f *Finding
+var err error = f
+fmt.Println(f == nil, err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(verdict(nil), verdict(review(nil)))
+fmt.Println(review([]string{"ok", "", "x"}), review([]string{"ok"}) == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>clean clean
+line 2: blank true</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 15.4: Panic! at the Codebase!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A museum program checks whether each visitor qualifies for a concession ticket. An AI-generated version panics when one roster line is smudged, which stops the whole ticket desk. Fix it before the school holidays without breaking the passing cases. Every failure now returns 0 as the age and an error. For the field <code>old</code> the error reads <code>parse age "old": </code> plus the wrapped Atoi error, and for <code>-3</code> it reads <code>negative age -3</code>. The roster line <code>Bob</code> gives <code>malformed line "Bob"</code>, and a visitor Zed with no entry gives <code>no entry for Zed</code>. When the age fails to parse, <code>ageOf</code> puts the visitor's name in front, as <code>Bob: parse age ...</code>.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/defer-panic-and-recover">Defer, Panic, and Recover</a>. Find the paragraph beginning "Panic is a built-in function". If nothing recovers a panic, where does control go? What happens to the program?</li><li>Find the paragraph about the json package and the following paragraph. Despite panicking internally, what does the package return to callers?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>throw new IllegalArgumentException</code> for any input the method rejects, with a catch somewhere up the stack. The starter code does the same with <code>panic</code>, and nothing up the stack catches the panic.</p><pre>static int parseAge(String field) {
+    int n = Integer.parseInt(field); // throws NumberFormatException
+    if (n &lt; 0) throw new IllegalArgumentException("negative age " + field);
+    return n;
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>panic</code>. <b>Required:</b> <code>%w</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Each <code>panic</code> call names one failure, so hand that failure back in the second return value with 0 beside it.</li><li>Reread which Errorf verb keeps the error that <code>strconv.Atoi</code> returned inside the error you return.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>40</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	"strconv"
+	"strings"
+)
+
+// The AI wrote this. It passes the happy path. Judge it, then rewrite it.
+
+// parseAge converts an age field to a number. Ages are never negative.
+func parseAge(field string) int {
+	n, err := strconv.Atoi(field)
+	if err != nil {
+		panic("bad age: " + field)
+	}
+	if n < 0 {
+		panic("negative age: " + field)
+	}
+	return n
+}
+
+// ageOf finds name in roster lines of the form "name,age".
+// It never fails on a well-formed roster.
+func ageOf(roster []string, name string) (int, error) {
+	for _, line := range roster {
+		fields := strings.Split(line, ",")
+		if len(fields) != 2 {
+			panic("malformed line: " + line)
+		}
+		if fields[0] != name {
+			continue
+		}
+		return parseAge(fields[1]), nil
+	}
+	panic("no entry for " + name)
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
+// parseAge converts an age field to a number. Ages are never negative.
+func parseAge(field string) (int, error) {
+	n, err := strconv.Atoi(field)
+	if err != nil {
+		return 0, fmt.Errorf("parse age %q: %w", field, err)
+	}
+	if n < 0 {
+		return 0, fmt.Errorf("negative age %d", n)
+	}
+	return n, nil
+}
+
+// ageOf finds name in roster lines of the form "name,age".
+func ageOf(roster []string, name string) (int, error) {
+	for _, line := range roster {
+		fields := strings.Split(line, ",")
+		if len(fields) != 2 {
+			return 0, fmt.Errorf("malformed line %q", line)
+		}
+		if fields[0] != name {
+			continue
+		}
+		age, err := parseAge(fields[1])
+		if err != nil {
+			return 0, fmt.Errorf("%s: %w", name, err)
+		}
+		return age, nil
+	}
+	return 0, fmt.Errorf("no entry for %s", name)
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "panic", "required": "%w"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[roster := []string{"Ada,36", "Bob,7"}
+age, err := ageOf(roster, "Bob")
+fmt.Println(age, err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>7 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[age, err := ageOf([]string{"Cy,101", "Di,0"}, "Cy")
+fmt.Println(age, err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>101 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[age, err := ageOf([]string{"Ada,36", "Bob,old"}, "Bob")
+fmt.Println(age, err)
+age, err = ageOf([]string{"Di,-3"}, "Di")
+fmt.Println(age, err)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 Bob: parse age "old": strconv.Atoi: parsing "old": invalid syntax
+0 Di: negative age -3</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[age, err := ageOf([]string{"Ada,36", "Bob"}, "Zed")
+fmt.Println(age, err)
+age, err = ageOf([]string{"Ada,36"}, "Zed")
+fmt.Println(age, err)
+age, err = ageOf([]string{"Ada,36", "Bob"}, "Ada")
+fmt.Println(age, err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 malformed line "Bob"
+0 no entry for Zed
+36 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

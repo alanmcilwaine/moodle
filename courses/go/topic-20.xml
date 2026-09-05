@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 20.1: Switch on Type!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A lost property counter accepts any item that a passenger hands over, including nothing. The clerk gives every item a name and keeps the counter open when an unfamiliar item arrives. The clerk names nothing at all <code>empty hands</code>. The clerk names any item he does not recognise, including a number with a decimal part, <code>unclaimed</code>. When the clerk counts coins and the item is not coins, the count is <code>0</code>, the answer is <code>false</code>, and the counter stays open.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Type_switches">Type switches</a>. Read the two paragraphs after the grammar block. What can a case use instead of a type? When does that case match?</li><li><a href="https://go.dev/ref/spec#Type_assertions">Type assertions</a>. Which assertion form stops the run when the stored value has a different type? What does the other form return?</li><li><a href="https://go.dev/ref/spec#Interface_types">Interface types</a>. Find the empty interface. Which predeclared one-word name can replace it?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a null check followed by a chain of <code>instanceof</code> tests. One Go statement does both jobs, and Go has no catch clause for a conversion that fails.</p><pre>if (item == null) return "empty hands";
+if (item instanceof Integer n) return n + " coins";</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>if</code>, <code>==</code>, <code>!=</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If <code>describe</code> prints <code>unclaimed</code> for nothing at all, reread the Type switches paragraph that mentions a predeclared identifier.</li><li>If a test ends the run instead of printing, count the names on the left of your assertion. Then reread the last paragraph of Type assertions.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>26</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "fmt"
+
+func describe(item any) string {
+	// TODO
+}
+
+func coins(item any) (int, bool) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+func describe(item any) string {
+	switch v := item.(type) {
+	case nil:
+		return "empty hands"
+	case int:
+		return fmt.Sprintf("%d coins", v)
+	case string:
+		return "a note reading " + v
+	default:
+		return "unclaimed"
+	}
+}
+
+func coins(item any) (int, bool) {
+	n, ok := item.(int)
+	return n, ok
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "if == !="}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(describe(7))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>7 coins</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(describe("meet me at platform 2"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>a note reading meet me at platform 2</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(describe(nil), describe(1.5))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>empty hands unclaimed</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(coins(7))
+fmt.Println(coins("hat"))
+fmt.Println(coins(nil))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>7 true
+0 false
+0 false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 20.2: Sealed With a Marker!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A depot seal marks the types of cargo that the Ōtaki depot accepts. A rival crate has copied that seal, while a sack of onions carries none. Give the crate the seal it claims and give the sack only its weight. The depot then carries whatever shows the seal, so it takes the rival crate and turns away the sack. Every item reports its weight in grams, and the weight of a load is the sum of those weights.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Interface_types">Interface types</a>. Under Basic interfaces, which types belong to an interface's type set when it lists two methods? Under General interfaces, which interfaces can be variable types? Can an interface that lists types be the element type of <code>[]Parcel</code>?</li><li><a href="https://go.dev/ref/spec#Uniqueness_of_identifiers">Uniqueness of identifiers</a>. Read both rules. When does Go treat identically spelled method names as different names?</li><li><a href="https://go.dev/ref/spec#Type_assertions">Type assertions</a>. Read the first paragraph. Before checking the stored value, what does <code>x.(T)</code> require of <code>x</code> itself?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>sealed interface Parcel permits Letter, Box</code>, and the Java compiler refuses any type absent from that list. Go keeps no such list. A marker method seals nothing while every type sits in one file, as they all do here.</p><pre>sealed interface Parcel permits Letter, Box {}
+record Letter(int grams) implements Parcel {}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>sealed</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If <code>carried</code> prints false for the rival's crate, reread the sentence on which types make up a type set. Then list the methods a crate needs to be one of them.</li><li>If <code>carried</code> prints true for the sack, put the methods on your interface beside the methods you gave the sack.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>60</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+type Parcel interface {
+	// TODO
+}
+
+type Letter struct {
+	Grams int
+}
+
+type Box struct {
+	Grams int
+}
+
+type Crate struct {
+	Grams int
+}
+
+type Sack struct {
+	Grams int
+}
+
+// TODO: give each type the methods it should have.
+
+func carried(item any) bool {
+	// TODO
+}
+
+func load(items []Parcel) int {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+type Parcel interface {
+	weight() int
+	sealed()
+}
+
+type Letter struct {
+	Grams int
+}
+
+func (l Letter) weight() int { return l.Grams }
+
+func (l Letter) sealed() {}
+
+type Box struct {
+	Grams int
+}
+
+func (b Box) weight() int { return b.Grams }
+
+func (b Box) sealed() {}
+
+type Crate struct {
+	Grams int
+}
+
+func (c Crate) weight() int { return c.Grams }
+
+func (c Crate) sealed() {}
+
+type Sack struct {
+	Grams int
+}
+
+func (s Sack) weight() int { return s.Grams }
+
+func carried(item any) bool {
+	_, ok := item.(Parcel)
+	return ok
+}
+
+func load(items []Parcel) int {
+	total := 0
+	for _, item := range items {
+		total += item.weight()
+	}
+	return total
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "sealed"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(carried(Letter{Grams: 20}), carried(Box{Grams: 500}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(load([]Parcel{Letter{Grams: 20}, Box{Grams: 500}}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>520</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(carried(Crate{Grams: 900}), carried(Sack{Grams: 40}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(load([]Parcel{Crate{Grams: 900}, Letter{Grams: 20}}), carried(3), carried(nil))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>920 false false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 20.3: Silent Default, Loud Error!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A fare barrier calculates the price for each supported ticket type. The Johnsonville barrier knows two ticket types but was built before the day pass existed. It must refuse any ticket that it cannot price and explain why. Tickets reach the barrier either as the ticket itself or as a pointer to it. A Single or a Return earns the same price either way. The refusal keeps <code>ErrUnpriced</code> reachable inside it, so <code>unpriced</code> still finds <code>ErrUnpriced</code> however many more layers a caller adds.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Type_switches">Type switches</a>. Find the sentence beginning "Cases then match". What value is compared with each case? Does a pointer match a case that names the pointed-to value's type?</li><li><a href="https://pkg.go.dev/errors#Is">errors.Is</a>. Read the paragraph about the error chain. How far does <code>Is</code> search? Does another error with the same message count as a match?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a switch expression over a sealed interface. The Java compiler refuses to build until every permitted type has an arm. Go runs no such check, so a type with no case reaches <code>default</code> and the build still succeeds.</p><pre>return switch (ticket) {
+    case Single s -&gt; 350;
+    case Return r -&gt; 620;
+};</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If the barrier refuses a ticket you expected it to price, reread what each case is compared against. Then work out the type of a pointer to a <code>Return</code>.</li><li>If <code>unpriced</code> prints false for an error the barrier made, reread how <code>Is</code> walks the chain. Then find on that same page what puts a new link into it.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>56</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+// TODO: declare ErrUnpriced.
+
+type Ticket interface {
+	// TODO
+}
+
+type Single struct {
+	Name string
+}
+
+type Return struct {
+	Name string
+}
+
+type DayPass struct {
+	Name string
+}
+
+// TODO: give each ticket its holder method.
+
+func fare(t Ticket) (int, error) {
+	// TODO
+}
+
+func unpriced(err error) bool {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+var ErrUnpriced = errors.New("no fare for this ticket")
+
+type Ticket interface {
+	holder() string
+}
+
+type Single struct {
+	Name string
+}
+
+func (s Single) holder() string { return s.Name }
+
+type Return struct {
+	Name string
+}
+
+func (r Return) holder() string { return r.Name }
+
+type DayPass struct {
+	Name string
+}
+
+func (d DayPass) holder() string { return d.Name }
+
+func fare(t Ticket) (int, error) {
+	switch t.(type) {
+	case Single, *Single:
+		return 350, nil
+	case Return, *Return:
+		return 620, nil
+	default:
+		return 0, fmt.Errorf("%s: %w", t.holder(), ErrUnpriced)
+	}
+}
+
+func unpriced(err error) bool {
+	return errors.Is(err, ErrUnpriced)
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[n, err := fare(Single{Name: "Ana"})
+fmt.Println(n, err == nil)
+n, err = fare(Return{Name: "Bo"})
+fmt.Println(n, err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>350 true
+620 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[n, err := fare(DayPass{Name: "Tane"})
+fmt.Println(n, err)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 Tane: no fare for this ticket</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[n, err := fare(&Return{Name: "Ana"})
+fmt.Println(n, err == nil)
+n, err = fare(&Single{Name: "Bo"})
+fmt.Println(n, err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>620 true
+350 true</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[_, err := fare(DayPass{Name: "Tane"})
+fmt.Println(unpriced(err), unpriced(nil))
+fmt.Println(unpriced(fmt.Errorf("barrier 3: %w", err)), unpriced(fmt.Errorf("no fare for this ticket")))
+_, err = fare(&DayPass{Name: "Mia"})
+fmt.Println(err)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true false
+true false
+Mia: no fare for this ticket</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

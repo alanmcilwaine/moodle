@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 21.1: Brackets, Not Erasure!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Each competition at the Kaitoke country show records a different kind of mark. Pumpkin weights, name cards, and plain counts all appear on one board. Write one function that finds the highest mark in any competition.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/intro-generics#type-parameters">Type Parameters</a>. Which brackets enclose a type parameter list? What type can serve as a constraint?</li><li><a href="https://go.dev/blog/intro-generics#type-sets">Type sets</a>. Find the paragraphs about the tilde. How does a tilde before a type name change the set?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a bounded type parameter in angle brackets, and the method returns null when the list is empty. Java erases the type argument at compile time, so the method cannot make a T of its own. Ask what a Go type parameter still knows that an erased one does not.</p><pre>static &lt;T extends Comparable&lt;T&gt;&gt; T top(List&lt;T&gt; xs) {
+    return xs.isEmpty() ? null : Collections.max(xs);
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>any</code>, <code>cmp</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If the compiler says a type does not satisfy your constraint, reread Type sets and look at what sits before each type name.</li><li>If an empty class crashes the run, look at what your function reads before the first comparison.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+type Weight int
+
+type Ranked interface {
+	// TODO
+}
+
+func top[T Ranked](entries []T) T {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+type Weight int
+
+type Ranked interface {
+	~int | ~string
+}
+
+func top[T Ranked](entries []T) T {
+	var best T
+	for i, entry := range entries {
+		if i == 0 || entry > best {
+			best = entry
+		}
+	}
+	return best
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "any cmp"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(top([]int{3, 9, 4}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>9</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(top([]string{"kea", "tui", "moa"}), top[int](nil))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>tui 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(top([]Weight{-40, -12, -95}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>-12</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Printf("%d %q\n", top[Weight](nil), top[string](nil))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 ""</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 21.2: The Zero-Value Or-acle!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>The Ōhakune platform board combines timetable information from three sources. For each field, it prefers the driver's value, then the roster's value, then the printed timetable's value. An empty field does not count.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/cmp#Or">cmp.Or</a>. Read the signature and both documentation sentences. How many arguments can <code>...T</code> accept? Which argument does the function return? What is the result if no argument qualifies?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a chain of null checks, or <code>Optional.ofNullable(a).orElse(b)</code> stacked twice. Neither one counts an empty string or a zero as missing, and Go has no conditional expression. One standard library call replaces the whole chain.</p><pre>String p = driver != null ? driver
+         : roster != null ? roster
+         : timetable;</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>if</code>, <code>for</code>, <code>switch</code>, <code>len</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If the all-blank board surprises you, reread the second sentence of the doc comment and predict that case again.</li><li>Before you predict the last test, ask whether a one-space string equals a string's zero value.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>16</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "cmp"
+
+func platform(driver, roster, timetable string) string {
+	// TODO
+}
+
+func carriages(driver, roster, timetable int) int {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "cmp"
+
+func platform(driver, roster, timetable string) string {
+	return cmp.Or(driver, roster, timetable)
+}
+
+func carriages(driver, roster, timetable int) int {
+	return cmp.Or(driver, roster, timetable)
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "if for switch len"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(platform("", "2", "3"), carriages(0, 0, 5))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2 5</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Printf("%q %d\n", platform("1A", "", "3"), carriages(4, 0, 5))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>"1A" 4</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Printf("%q %d\n", platform("", "", ""), carriages(0, 0, 0))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>"" 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Printf("%q %d\n", platform(" ", "2", "3"), carriages(-1, 0, 5))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>" " -1</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 21.3: Methods Go Generic!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Each fishing boat at the Kaikōura market has its own list of catches. Every stall converts a list to a different measure, but each result must remain a catch list.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/go1.27#language-changes">Go 1.27, Language changes</a>. What is the first listed change? Before Go 1.27, what did the comment say <code>Rand</code> needed one method for?</li><li><a href="https://go.dev/blog/generic-methods#methods-for-organization">Methods for organization</a>. Compare the two chained calls. Which reads from left to right? What must you do to a generic method before calling it or converting it to a value?</li><li><a href="https://go.dev/blog/generic-methods#decoupling-things">Decoupling things</a>. Can a generic method help a type satisfy an interface? Why?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a type parameter on the method itself, which Java has allowed since generics arrived. One rule about interfaces still differs, and the third link names that rule.</p><pre>&lt;R&gt; List&lt;R&gt; map(Function&lt;T, R&gt; f) { ... }</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If the compiler rejects the second call in a chain, ask where the conversion function's result type is declared.</li><li>Reread the inside-out example at the end of Methods for organization.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>38</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "fmt"
+
+type Catch[E any] struct {
+	// TODO
+}
+
+type Named interface {
+	// TODO
+}
+
+func NewCatch[E any](entries ...E) Catch[E] {
+	// TODO
+}
+
+func (c Catch[E]) Items() []E {
+	// TODO
+}
+
+func (c Catch[E]) Label() string {
+	// TODO
+}
+
+// TODO Map
+
+func describe(n Named) string {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+type Catch[E any] struct {
+	items []E
+}
+
+type Named interface {
+	Label() string
+}
+
+func NewCatch[E any](entries ...E) Catch[E] {
+	return Catch[E]{items: entries}
+}
+
+func (c Catch[E]) Items() []E {
+	return c.items
+}
+
+func (c Catch[E]) Label() string {
+	return fmt.Sprintf("%d entries", len(c.items))
+}
+
+func (c Catch[E]) Map[R any](convert func(E) R) Catch[R] {
+	out := make([]R, 0, len(c.items))
+	for _, item := range c.items {
+		out = append(out, convert(item))
+	}
+	return Catch[R]{items: out}
+}
+
+func describe(n Named) string {
+	return n.Label()
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(NewCatch(1, 2, 3).Map(func(n int) int { return n * 2 }).Items())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[2 4 6]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(describe(NewCatch("hoki", "tarakihi")), NewCatch[int]().Label())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2 entries 0 entries</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(NewCatch(1, 22, 333).Map(func(n int) string { return fmt.Sprint(n) }).Map(func(s string) int { return len(s) }).Items())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[1 2 3]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[lengths := NewCatch("kea", "tui", "kererū").Map[int]
+fmt.Println(lengths(func(s string) int { return len([]rune(s)) }).Items(), describe(NewCatch(1.5, 2.5)))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[3 3 6] 2 entries</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 21.4: When Any Is Too Much!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A callsign is the name that a vessel uses over the radio. The harbour master at Aotea Quay logs vessel callsigns and cargo totals. Each kind of vessel builds its callsign differently, while every total keeps the unit in which it arrived. Loads arrive as plain whole counts, as the shed's own <code>Crates</code>, and as tonnes with a decimal part.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/when-generics#when-are-type-parameters-useful">When are type parameters useful?</a> Which of the three cases covers code that would otherwise be copied for each type?</li><li><a href="https://go.dev/blog/when-generics#dont-replace-interface-types-with-type-parameters">Don't replace interface types with type parameters</a>. If a function only calls a method on a value, should it use an interface or a type parameter?</li><li><a href="https://go.dev/blog/when-generics#one-simple-guideline">One simple guideline</a>. Read the closing paragraph. What must you observe before using a type parameter?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is to reach for a type parameter whenever more than one type turns up. Java has no operator constraints, so almost every Java type parameter carries an interface bound. Go uses the two tools for different jobs, and the article says which job each one takes.</p><pre>&lt;T extends Vessel&gt; List&lt;String&gt; roll(List&lt;T&gt; vessels) { ... }</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Ask what each function does with one element, because one calls a method and the other applies an operator.</li><li>If the compiler cannot infer a type argument for an empty log, reread the second link.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>48</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "fmt"
+
+type Crates int
+
+type Vessel interface {
+	Callsign() string
+}
+
+type Ferry struct {
+	Name string
+}
+
+type Tug struct {
+	Number int
+}
+
+// TODO Callsign on Ferry and on Tug
+
+// TODO Tonnage, the set of load types the day's loads use
+
+// TODO roll, returning each callsign in order
+
+// TODO total, returning the sum of the loads
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+type Crates int
+
+type Vessel interface {
+	Callsign() string
+}
+
+type Ferry struct {
+	Name string
+}
+
+type Tug struct {
+	Number int
+}
+
+type Tonnage interface {
+	~int | ~float64
+}
+
+func (f Ferry) Callsign() string {
+	return f.Name
+}
+
+func (t Tug) Callsign() string {
+	return fmt.Sprintf("TUG-%d", t.Number)
+}
+
+func roll(vessels []Vessel) []string {
+	calls := make([]string, 0, len(vessels))
+	for _, vessel := range vessels {
+		calls = append(calls, vessel.Callsign())
+	}
+	return calls
+}
+
+func total[T Tonnage](loads []T) T {
+	var sum T
+	for _, load := range loads {
+		sum += load
+	}
+	return sum
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(roll([]Vessel{Ferry{Name: "Aratere"}, Tug{Number: 7}}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[Aratere TUG-7]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(total([]int{3, 4, 5}), total([]int(nil)))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>12 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(total([]float64{1.5, 2.25, 0.25}), total([]Crates{2, 3}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>4 5</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(roll(nil), total([]float64{1.25, 0.75}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[] 2</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

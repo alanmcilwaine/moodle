@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 10.1: The Backing Array Conspiracy!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A ledger is one book of records divided into pages. Two agents hold different groups of pages, but both groups still belong to the same ledger.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/slices">Arrays, slices (and strings)</a>. Under "Slices: The slice header", find the <code>sliceHeader</code> for <code>slice2</code>. Which array contains its <code>ZerothElement</code>? Does creating the slice copy any elements?</li><li>On the same page, find "Passing slices to functions". What does the caller see after <code>AddOneToEachElement</code> returns? What can the function not change in the <code>SubtractOneFromLength</code> example?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java developer might make a defensive copy with <code>new ArrayList&lt;&gt;(ledger.subList(from, to))</code>. That gives the caller separate storage. The copy is banned here, and a hidden test writes through the page.</p><pre>List&lt;Integer&gt; page = new ArrayList&lt;&gt;(ledger.subList(from, to));</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>copy</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>In the <code>sliceHeader</code> for <code>slice2</code>, find the target of <code>ZerothElement</code>. Is there a second array in that section?</li><li>Inspect <code>AddOneToEachElement</code>. What does the caller print after that function returns?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func page(ledger []int, from, to int) []int {
+	// TODO
+}
+
+func redact(entries []int) {
+	// TODO
+}
+
+func trim(ledger []int) []int {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func page(ledger []int, from, to int) []int {
+	return ledger[from:to]
+}
+
+func redact(entries []int) {
+	for i := range entries {
+		entries[i] = 0
+	}
+}
+
+func trim(ledger []int) []int {
+	return ledger[:len(ledger)-1]
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "copy"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(page([]int{10, 20, 30, 40, 50}, 1, 3))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[20 30]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[entries := []int{7, 8, 9}
+redact(entries)
+fmt.Println(entries, trim([]int{4, 5, 6}))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[0 0 0] [4 5]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ledger := []int{10, 20, 30, 40, 50}
+p := page(ledger, 1, 3)
+redact(p)
+fmt.Println(ledger, p)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[10 0 0 40 50] [0 0]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ledger := []int{10, 20, 30, 40, 50}
+p := page(ledger, 2, 5)
+redact(p[:1])
+fmt.Println(ledger, p, len(p), len(ledger))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[10 20 0 40 50] [0 40 50] 3 5</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[ledger := []int{10, 20, 30, 40}
+short := trim(ledger)
+redact(short)
+fmt.Println(len(ledger), len(short), ledger, short)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>4 3 [0 0 0 40] [0 0 0]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 10.2: The Haunted Duplex!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A duplex is one building divided into two homes. This landlord divides one hallway into flat A at the front and flat B at the back. Adding a room to flat A must not overwrite part of flat B.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Slice_expressions">Slice expressions</a>. Under "Full slice expressions", read the first paragraph and the <code>a[1:3:5]</code> example. What does the third index set? What length and capacity does <code>t</code> have?</li><li>Under "Simple slice expressions", find the sentence beginning "For slices, the upper index bound". Does <code>len</code> or <code>cap</code> bound a slice expression on a slice?</li><li><a href="https://pkg.go.dev/builtin#append">append</a>. Read the first three sentences. When does <code>append</code> reuse the destination array? What does it do when it cannot reuse the array?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, <code>new ArrayList&lt;&gt;(hall.subList(0, k))</code> creates a fresh list with separate storage. This task bans that copy. Both flats must remain parts of one hallway.</p><pre>List&lt;String&gt; flatA = new ArrayList&lt;&gt;(hall.subList(0, k));</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>copy</code>, <code>make</code>, <code>append</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Under "Full slice expressions", find how the third index sets capacity.</li><li>Find the spare capacity of a plain <code>hall[:k]</code>. What does <code>append</code> do when that capacity is available?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>12</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func partition(hall []string) ([]string, []string) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func partition(hall []string) ([]string, []string) {
+	k := len(hall) / 2
+	return hall[:k:k], hall[k:]
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "copy make append"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[a, b := partition([]string{"foyer", "study", "kitchen", "bath"})
+fmt.Println(a, b)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[foyer study] [kitchen bath]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[hall := []string{"foyer", "study", "kitchen"}
+a, b := partition(hall)
+a[0] = "lounge"
+fmt.Println(a, b, hall)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[lounge] [study kitchen] [lounge study kitchen]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[hall := []string{"foyer", "study", "kitchen", "bath"}
+a, b := partition(hall)
+a = append(a, "shed")
+fmt.Println(a, b, hall)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[foyer study shed] [kitchen bath] [foyer study kitchen bath]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[hall := []string{"foyer", "study", "kitchen", "bath", "attic"}
+a, b := partition(hall)
+fmt.Println(len(a), cap(a), len(b), cap(b))
+b = append(b, "shed")
+a = append(a, "porch")
+fmt.Println(a, b, hall)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2 2 3 3
+[foyer study porch] [kitchen bath attic shed] [foyer study kitchen bath attic]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 10.3: Copy That!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A signals desk writes incoming messages on a fixed-size pad and keeps the newest message at the top of its board. A snapshot is a saved view of the board. It must not change when later messages arrive.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/builtin#copy">copy</a>. Read the last sentence. If the destination is shorter than the source, how many elements are copied? What does the return value count?</li><li>Read the preceding sentence in the same documentation. Can the source and destination share storage?</li><li><a href="https://go.dev/blog/slices#copy">Arrays, slices (and strings)</a>, section "Copy". In the <code>Insert</code> example, which direction does <code>copy</code> move the upper part of the slice? What does the preceding paragraph say about overlap?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java's <code>System.arraycopy</code> throws when the destination is too short. <code>Arrays.copyOf</code> allocates a destination. Go's <code>copy</code> handles both jobs.</p><pre>System.arraycopy(msgs, 0, pad, 0, msgs.length);</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>for</code>. <b>Required:</b> <code>copy</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>For <code>snapshot</code>, compare the last documentation sentence with the length of a destination declared only with <code>var</code>.</li><li>For <code>pin</code>, find the <code>copy</code> call in the <code>Insert</code> example. Compare its two arguments with yours.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>20</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func snapshot(board []string) []string {
+	// TODO
+}
+
+func record(pad []string, msgs []string) int {
+	// TODO
+}
+
+func pin(board []string, msg string) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func snapshot(board []string) []string {
+	out := make([]string, len(board))
+	copy(out, board)
+	return out
+}
+
+func record(pad []string, msgs []string) int {
+	return copy(pad, msgs)
+}
+
+func pin(board []string, msg string) {
+	copy(board[1:], board)
+	board[0] = msg
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "for", "required": "copy"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[board := []string{"alpha", "bravo"}
+saved := snapshot(board)
+board[0] = "zulu"
+fmt.Println(saved, board)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[alpha bravo] [zulu bravo]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[pad := []string{"-", "-", "-"}
+n := record(pad, []string{"alpha", "bravo"})
+fmt.Println(n, pad)
+board := []string{"alpha", "bravo"}
+pin(board, "charlie")
+fmt.Println(board)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2 [alpha bravo -]
+[charlie alpha]</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[pad := []string{"-", "-"}
+n := record(pad, []string{"alpha", "bravo", "charlie"})
+fmt.Println(n, pad)
+fmt.Println(record(pad, nil), pad)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2 [alpha bravo]
+0 [alpha bravo]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[board := []string{"alpha", "bravo", "charlie", "delta"}
+saved := snapshot(board)
+pin(board, "echo")
+pin(board, "foxtrot")
+fmt.Println(board, saved, len(snapshot(nil)))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[foxtrot echo alpha bravo] [alpha bravo charlie delta] 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 10.4: Death to i := 0!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A market stall displays its prices on a board. An AI rewrote the board's program with three loops that count from zero by hand. The tests pass, but the stallholder wants range loops before using it.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#For_range">For statements with range clause</a>. Read the table row for a slice. What two iteration values does it produce?</li><li>Read the first paragraph of the same section. How does an iteration value reach its variable? Does changing that variable change the slice?</li><li>Find the paragraph after the table and the sentence beginning "For an array, pointer to array, or slice value a". At which index do iteration values start? Which value does a loop with one variable receive?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java developer might use the counted loop below and reserve the enhanced for loop for code that does not need an index. The starter code repeats the counted loop three times.</p><pre>for (int i = 0; i &lt; prices.size(); i++) {
+    prices.set(i, prices.get(i) * (100 - pct) / 100);
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>range</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Check the second range value for a slice. For each function, decide whether the loop needs the index, the element, or both.</li><li>For <code>discount</code>, how must the assignment use the slice if the iteration variable receives a copy?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>30</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+// The AI wrote this. It passes every test. Judge it, then rewrite it.
+
+// discount lowers every price on the board by pct percent, in place.
+func discount(prices []int, pct int) {
+	for i := 0; i < len(prices); i++ {
+		prices[i] = prices[i] * (100 - pct) / 100
+	}
+}
+
+// cheapest returns the index of the lowest price, or -1 for an empty board.
+func cheapest(prices []int) int {
+	if len(prices) == 0 {
+		return -1
+	}
+	best := 0
+	for i := 1; i < len(prices); i++ {
+		if prices[i] < prices[best] {
+			best = i
+		}
+	}
+	return best
+}
+
+// total returns the sum of every price on the board.
+func total(prices []int) int {
+	sum := 0
+	for i := 0; i < len(prices); i++ {
+		sum = sum + prices[i]
+	}
+	return sum
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+// discount lowers every price on the board by pct percent, in place.
+func discount(prices []int, pct int) {
+	for i, p := range prices {
+		prices[i] = p * (100 - pct) / 100
+	}
+}
+
+// cheapest returns the index of the lowest price, or -1 for an empty board.
+func cheapest(prices []int) int {
+	if len(prices) == 0 {
+		return -1
+	}
+	best := 0
+	for i, p := range prices {
+		if p < prices[best] {
+			best = i
+		}
+	}
+	return best
+}
+
+// total returns the sum of every price on the board.
+func total(prices []int) int {
+	sum := 0
+	for _, p := range prices {
+		sum += p
+	}
+	return sum
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "range"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[board := []int{25, 40, 60}
+fmt.Println(total(board), cheapest(board))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>125 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(cheapest([]int{}), cheapest([]int{3, 9, 3}), total(nil))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>-1 0 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[board := []int{40, 25, 60}
+discount(board, 10)
+fmt.Println(board, total(board))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[36 22 54] 112</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[board := []int{7, 7, 2}
+fmt.Println(cheapest(board))
+discount(board, 50)
+fmt.Println(board, cheapest(board))
+discount(board, 100)
+fmt.Println(board, cheapest(board))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2
+[3 3 1] 2
+[0 0 0] 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

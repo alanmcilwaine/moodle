@@ -1,0 +1,964 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 23.1: Walrus Before Wading!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write five short functions, two of them binding a name inside a condition and three of them taking a path apart without touching a disk.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<h4>Assigning inside a condition</h4>
+<p>Java treats assignment as an expression, so an assignment can sit inside a condition and hand its
+value straight to the test.</p>
+<pre>String line;
+while ((line = reader.readLine()) != null) {
+    lines.add(line);
+}</pre>
+<p>Python treats <code>=</code> as a statement, so that shape has never compiled. Write
+<code>while (value = step(value)) &gt; 0:</code> and you get a <code>SyntaxError</code>. The language
+refused the feature for twenty-six years, because <code>=</code> inside a condition is usually a typo
+for <code>==</code>.</p>
+<p>Python 3.8 added a separate operator for the job, <code>:=</code>. It is called the <b>walrus
+operator</b>, after the animal its two eyes and tusks resemble. It binds a name and gives back the same
+value in one breath.</p>
+<pre>while (value := value // 2) &gt; 0:
+    steps.append(value)</pre>
+<p>The name outlives the loop, exactly as an ordinary <code>for</code> variable does. Nothing about
+scope changes. The only thing the walrus buys you is the right to bind where an expression is expected,
+and Python still refuses a bare <code>=</code> there, so the typo it was guarding against cannot get
+through.</p>
+<h4>The second place it earns its keep</h4>
+<p>A comprehension filter often computes the very thing the output expression wants. Without the
+walrus you compute it twice.</p>
+<pre>[PurePosixPath(p).name for p in paths if PurePosixPath(p).suffix == ".csv"]</pre>
+<p>That builds every path object twice, and a reader has to compare the two calls character by
+character to be sure they agree. Bind it in the filter and the output reads it back.</p>
+<pre>[pure.name for p in paths if (pure := PurePosixPath(p)).suffix == ".csv"]</pre>
+<p>The filter runs before the output expression, so the name is bound by the time the front of the
+comprehension asks for it.</p>
+<h4>Where it hurts</h4>
+<p>Those two positions are the whole of it. Everywhere else the walrus costs a reader more than it
+saves you. A binding buried in the middle of a long expression is invisible to somebody scanning the
+left margin for the place a name was born, and two walruses in one expression turn a line into a
+puzzle. A plain assignment on its own line is free and says the same thing.</p>
+<pre>total = (subtotal := price * count) + (tax := subtotal * 0.15)   # do not
+return (result := compute(x))                                    # pointless</pre>
+<h4>Pure paths</h4>
+<p>Java hands you two path types with different habits. <code>File</code> mixes path arithmetic with
+disk access, so <code>new File(dir, name).exists()</code> both builds a path and goes to the disk.
+<code>Path</code> is better behaved and knows its own parts.</p>
+<pre>Path p = Paths.get("/var/log/raw_sensor_07.csv");
+p.getParent();               // /var/log
+p.getFileName();             // raw_sensor_07.csv
+p.resolve("processed");      // /var/log/raw_sensor_07.csv/processed</pre>
+<p>Java stops there. It has no accessor for the part before the dot and none for the extension, so
+everybody writes the same <code>lastIndexOf('.')</code> arithmetic and one of them gets it wrong.</p>
+<p>Python's <code>pathlib</code> splits the two habits into separate types. <code>Path</code> talks to
+the disk. <code>PurePosixPath</code> does path arithmetic and nothing else, so it never checks whether
+anything exists and never raises because a directory is missing. Every function below uses the pure
+kind.</p>
+<pre>pure = PurePosixPath("/var/log/raw_sensor_07.csv")
+pure.parent      # PurePosixPath('/var/log')
+pure.name        # 'raw_sensor_07.csv'
+pure.stem        # 'raw_sensor_07'
+pure.suffix      # '.csv'</pre>
+<p>Four accessors, and the last two are the ones Java made you compute.</p>
+<pre>/var/log / raw_sensor_07 .csv
+--------   ------------- ----
+parent     stem          suffix
+           --------------------
+           name</pre>
+<p>Two more pieces finish the set. <code>with_suffix(".json")</code> returns a new path with the
+extension swapped, and adds one when the name had none. Only the last suffix moves, so
+<code>a.tar.gz</code> becomes <code>a.tar.json</code>.</p>
+<p>The <code>/</code> operator joins, in place of <code>resolve</code>. Python lets a class decide what
+its operators mean, which you met in the dunders and dataclasses topic, and <code>pathlib</code> spends
+that freedom on the character every path already contains.</p>
+<pre>PurePosixPath("/var/log") / "processed" / "p1.csv"
+# PurePosixPath('/var/log/processed/p1.csv')</pre>
+<p>A pure path prints as <code>PurePosixPath('/var/log')</code> rather than as text, so a function
+handing one back to a caller who wants a string wraps it in <code>str(...)</code>.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>The answer box imports <code>PurePosixPath</code> for you. Write five functions.</p>
+<ul>
+<li><code>halve_steps(value)</code> halves a whole number over and over, and returns every value it
+passes through on the way down. Halve with <code>//</code>, stop as soon as the result reaches zero,
+and keep the zero out of the list. Bind the new value in the <code>while</code> condition.</li>
+<li><code>csv_names(paths)</code> takes a list of path strings and returns the <code>name</code> of
+every path whose <code>suffix</code> is <code>".csv"</code>. One comprehension, and the path object is
+built once, in the filter.</li>
+<li><code>parts_of(path)</code> returns the four parts of one path as a single string, in the order
+parent, name, stem, suffix, separated by <code>" | "</code>. For
+<code>"/var/log/raw_sensor_07.csv"</code> that is
+<code>"/var/log | raw_sensor_07.csv | raw_sensor_07 | .csv"</code>.</li>
+<li><code>as_json(path)</code> returns the same path as a string with its suffix replaced by
+<code>".json"</code>.</li>
+<li><code>joined(folder, name)</code> returns <code>folder</code> and <code>name</code> joined into one
+path string.</li>
+</ul>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Use the walrus in <code>halve_steps</code> and in <code>csv_names</code>, and nowhere else. A hidden test reads all five functions and fails you for a walrus in the other three.</li><li>Touch no file. Pure path operations only, so no <code>open</code>, no <code>exists</code> and no <code>mkdir</code>.</li><li>Do not take a path apart with <code>split</code>, <code>rfind</code> or <code>os.path</code>. Four accessors and the <code>/</code> operator cover every case here.</li><li>Annotate every signature, parameters and return alike.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>22</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from pathlib import PurePosixPath
+
+
+def halve_steps(value: int) -> list[int]:
+    # TODO: a walrus in the while condition, stopping at zero
+
+
+def csv_names(paths: list[str]) -> list[str]:
+    # TODO: one comprehension, the path object bound once in the filter
+
+
+def parts_of(path: str) -> str:
+    # TODO: parent, name, stem and suffix in one f-string, separated by " | "
+
+
+def as_json(path: str) -> str:
+    # TODO: with_suffix, handed back as a string
+
+
+def joined(folder: str, name: str) -> str:
+    # TODO: the / operator, handed back as a string
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from pathlib import PurePosixPath
+
+
+def halve_steps(value: int) -> list[int]:
+    steps: list[int] = []
+    while (value := value // 2) > 0:
+        steps.append(value)
+    return steps
+
+
+def csv_names(paths: list[str]) -> list[str]:
+    return [pure.name for path in paths if (pure := PurePosixPath(path)).suffix == ".csv"]
+
+
+def parts_of(path: str) -> str:
+    pure = PurePosixPath(path)
+    return f"{pure.parent} | {pure.name} | {pure.stem} | {pure.suffix}"
+
+
+def as_json(path: str) -> str:
+    return str(PurePosixPath(path).with_suffix(".json"))
+
+
+def joined(folder: str, name: str) -> str:
+    return str(PurePosixPath(folder) / name)
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(halve_steps(20))
+print(halve_steps(1))
+print(csv_names(["/var/log/p1.csv", "/var/log/t1.txt", "r1.csv"]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[10, 5, 2, 1]
+[]
+['p1.csv', 'r1.csv']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(parts_of("/var/log/raw_sensor_07.csv"))
+print(as_json("/var/log/raw_sensor_07.csv"))
+print(joined("/var/log", "processed"))
+print(joined("readings", "t1.dat"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>/var/log | raw_sensor_07.csv | raw_sensor_07 | .csv
+/var/log/raw_sensor_07.json
+/var/log/processed
+readings/t1.dat</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+
+mine = {name: inspect.getsource(f) for name, f in
+        (("halve_steps", halve_steps), ("csv_names", csv_names), ("parts_of", parts_of),
+         ("as_json", as_json), ("joined", joined))}
+whole = "".join(mine.values())
+for banned in ("os.path", "open(", ".exists(", ".mkdir(", ".split(", "rfind(", "rsplit("):
+    assert banned not in whole, f"rule broken: {banned} has no place in this answer"
+assert ":=" in mine["halve_steps"], "rule broken: halve_steps wants a walrus"
+assert "while " in mine["halve_steps"], "rule broken: bind the new value in a while condition"
+assert ":=" in mine["csv_names"], "rule broken: csv_names wants a walrus"
+assert "append(" not in mine["csv_names"], "rule broken: csv_names is one comprehension"
+for quiet in ("parts_of", "as_json", "joined"):
+    assert ":=" not in mine[quiet], f"rule broken: no walrus in {quiet}, it buys nothing there"
+for name, func in (("halve_steps", halve_steps), ("csv_names", csv_names), ("parts_of", parts_of),
+                   ("as_json", as_json), ("joined", joined)):
+    hints = func.__annotations__
+    missing = [p for p in inspect.signature(func).parameters if p not in hints]
+    assert not missing, f"rule broken: annotate {name}, missing {missing}"
+    assert "return" in hints, f"rule broken: annotate the return type of {name}"
+
+print(halve_steps(0), halve_steps(3), csv_names([]))
+print(as_json("notes"), parts_of("t1.csv"))
+print(joined(".", "p1.csv"), as_json("logs/a.tar.gz"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[] [1] []
+notes.json . | t1.csv | t1 | .csv
+p1.csv logs/a.tar.json</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 23.2: TypeVar Is Dead!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Rewrite four generic functions, one generic container class and two type aliases in the bracket syntax Python 3.12 added.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java declares a type parameter in angle brackets, in front of the thing it belongs to. The parameter
+is scoped to that method or that class, and a bound narrows what it accepts.</p>
+<pre>static &lt;T&gt; Optional&lt;T&gt; first(List&lt;T&gt; items) { ... }
+
+class Stack&lt;T&gt; { void push(T item) { ... } }
+
+static &lt;T extends Comparable&lt;T&gt;&gt; T largest(List&lt;T&gt; values) { ... }</pre>
+<p>Python asked for the same idea in a shape nothing else in the language uses. You imported
+<code>TypeVar</code>, assigned one to a module-level name, repeated its own name as a string argument,
+and inherited from <code>Generic</code> to make a class generic.</p>
+<pre>from typing import Generic, TypeVar
+
+T = TypeVar("T")
+
+
+def first(items: list[T]) -&gt; T | None:
+    ...
+
+
+class Stack(Generic[T]):
+    ...</pre>
+<p>That spelling still runs and you will meet it in any codebase older than a year, so recognise it.
+Do not write it. Python 3.12 added the bracket syntax, and new code uses that.</p>
+<pre>def first[T](items: list[T]) -&gt; T | None:
+    ...
+
+
+class Stack[T]:
+    ...</pre>
+<p>The brackets go where Java puts its angle brackets, and they read the same way. The type parameter
+is scoped to that one function or class, so two functions writing <code>[T]</code> no longer share a
+module-level object, and the name never has to be repeated as a string.</p>
+<p>The third piece is the <code>type</code> statement, which declares a <b>type alias</b>, a name for a
+type you would rather not spell out at every use.</p>
+<pre>type Channel = tuple[str, float]
+type Result[T] = T | None</pre>
+<p>A plain <code>Channel = tuple[str, float]</code> assignment gives you a variable that happens to hold
+a type. The <code>type</code> statement gives you an alias object that a type checker recognises as one,
+and an alias takes its own parameters in brackets. The right-hand side is evaluated lazily, so an alias
+may name a class defined further down the file.</p>
+<p>A bare <code>[T]</code> accepts anything. Two spellings narrow it. A <b>bound</b> written
+<code>[T: Sized]</code> says T must be that type or a subtype of it, and it is the counterpart of Java's
+<code>extends</code>. <b>Constraints</b> written <code>[T: (int, float)]</code> say T is exactly one of
+those listed types and never a subtype and never a mixture, which Java has no direct equivalent for.
+Reach for a bound when you need a capability, and for constraints when you mean a closed set.</p>
+<p>None of this is enforced while the program runs, which is the type hints topic again. Python records
+the type parameters on <code>__type_params__</code> and evaluates the bound only when something asks
+for it. A list of strings goes into <code>total</code> and comes out the far side, and only the type
+checker objects.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>The answer box holds the old spelling between two banners. Delete it and write the replacement.</p>
+<ul>
+<li><code>first(items)</code> returns the first item or <code>None</code> for an empty list.</li>
+<li><code>widest(items)</code> takes anything with a length and returns the longest item, or
+<code>None</code> for an empty list. Bind its type parameter to <code>Sized</code> from
+<code>collections.abc</code>.</li>
+<li><code>total(values)</code> adds a non-empty list of numbers and returns the total. Constrain its
+type parameter to <code>int</code> and <code>float</code>.</li>
+<li><code>apply_all(items, func)</code> takes two type parameters and returns
+<code>[func(item) for item in items]</code>. Annotate <code>func</code> with <code>Callable</code> from
+<code>collections.abc</code>.</li>
+<li><code>Stack</code> is a generic container. <code>push</code> adds and returns nothing,
+<code>pop</code> removes and returns the last item, <code>peek</code> returns the last item or
+<code>None</code>, <code>__len__</code> returns the count and <code>__iter__</code> walks the items
+oldest first.</li>
+<li><code>Result</code> and <code>Channel</code> are the two aliases. <code>Result</code> takes one
+parameter and means that type or <code>None</code>. <code>Channel</code> means
+<code>tuple[str, float]</code>.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Write <code>def f[T]()</code> and <code>class Stack[T]</code>. The old <code>TypeVar</code> spelling is banned, and so is the <code>Generic[T]</code> base class.</li><li>Declare each alias with the <code>type</code> statement. A plain assignment gives you a variable, not an alias.</li><li>Say what each type parameter allows. <code>widest</code> needs a length, and <code>total</code> takes <code>int</code> or <code>float</code> and nothing else.</li><li>Return <code>T | None</code> from <code>first</code>. No sentinel string, no <code>-1</code>, no exception.</li><li>Annotate every signature. Parameters and return type, no exceptions.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>52</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from collections.abc import Callable, Iterator, Sized
+
+# ======================================================================
+# DELETE EVERY LINE BETWEEN THE TWO BANNERS. Do not translate it.
+# ======================================================================
+from typing import Generic, TypeVar
+
+T = TypeVar("T")
+R = TypeVar("R")
+
+
+def first(items):
+    for item in items:
+        return item
+    return None
+
+
+class Stack(Generic[T]):
+    def __init__(self):
+        self._items = []
+
+    def push(self, item):
+        self._items.append(item)
+# ======================================================================
+# END OF THE PART YOU DELETE.
+# ======================================================================
+
+
+# TODO: the two aliases, Result and Channel, with the type statement
+
+# TODO: first, widest, total and apply_all, each with its parameters in brackets
+
+# TODO: class Stack[T] with push, pop, peek, __len__ and __iter__
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from collections.abc import Callable, Iterator, Sized
+
+type Result[T] = T | None
+type Channel = tuple[str, float]
+
+
+def first[T](items: list[T]) -> T | None:
+    for item in items:
+        return item
+    return None
+
+
+def widest[T: Sized](items: list[T]) -> Result[T]:
+    if not items:
+        return None
+    return max(items, key=len)
+
+
+def total[T: (int, float)](values: list[T]) -> T:
+    running = values[0]
+    for value in values[1:]:
+        running = running + value
+    return running
+
+
+def apply_all[T, R](items: list[T], func: Callable[[T], R]) -> list[R]:
+    return [func(item) for item in items]
+
+
+class Stack[T]:
+    def __init__(self) -> None:
+        self._items: list[T] = []
+
+    def push(self, item: T) -> None:
+        self._items.append(item)
+
+    def pop(self) -> T:
+        return self._items.pop()
+
+    def peek(self) -> Result[T]:
+        return self._items[-1] if self._items else None
+
+    def __len__(self) -> int:
+        return len(self._items)
+
+    def __iter__(self) -> Iterator[T]:
+        return iter(self._items)
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(first([3, 1, 2]), first([]), first(["p1", "p2"]))
+print(widest(["ab", "abcd", "a"]), widest([]))
+print(total([1, 2, 3]), total([1.5, 2.5]))
+print(apply_all([1, 2, 3], lambda n: n * 10))
+print(apply_all(["p1", "t1"], str.upper))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>3 None p1
+abcd None
+6 4.0
+[10, 20, 30]
+['P1', 'T1']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>readings: Stack[float] = Stack()
+print(len(readings), readings.peek())
+readings.push(1.5)
+readings.push(2.5)
+readings.push(3.5)
+print(len(readings), readings.peek())
+print([value * 2 for value in readings])
+print(readings.pop(), len(readings))
+names: Stack[str] = Stack()
+names.push("inlet")
+print(names.peek(), list(names))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>0 None
+3 3.5
+[3.0, 5.0, 7.0]
+3.5 2
+inlet ['inlet']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>from typing import TypeAliasType
+
+print(first.__type_params__)
+print(widest.__type_params__[0].__bound__.__name__)
+print(total.__type_params__[0].__constraints__)
+print(apply_all.__type_params__)
+print(Stack.__type_params__)
+print(isinstance(Result, TypeAliasType), isinstance(Channel, TypeAliasType))
+print(Channel.__value__)
+print(Stack[int])</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>(T,)
+Sized
+(&lt;class 'int'&gt;, &lt;class 'float'&gt;)
+(T, R)
+(T,)
+True True
+tuple[str, float]
+__main__.Stack[int]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+
+sources = [inspect.getsource(f) for f in (first, widest, total, apply_all)]
+sources.append(inspect.getsource(Stack))
+for source in sources:
+    assert "TypeVar" not in source, "rule broken: the old TypeVar spelling is banned"
+    assert "Generic[" not in source, "rule broken: no Generic base class"
+for func in (first, widest, total, apply_all):
+    assert func.__type_params__, "rule broken: declare the type parameter in brackets"
+assert Stack.__type_params__, "rule broken: write class Stack[T]"
+assert widest.__type_params__[0].__bound__ is Sized, "rule broken: bound widest to Sized"
+assert total.__type_params__[0].__constraints__ == (int, float), "rule broken: constrain total"
+assert type(Result).__name__ == "TypeAliasType", "rule broken: declare Result with the type statement"
+assert type(Channel).__name__ == "TypeAliasType", "rule broken: declare Channel with the type statement"
+for func in (first, widest, total, apply_all, Stack.push, Stack.peek, Stack.__init__):
+    hints = func.__annotations__
+    parameters = list(inspect.signature(func).parameters)
+    missing = [p for p in parameters if p != "self" and p not in hints]
+    assert not missing, f"rule broken: annotate every parameter, missing {missing}"
+    assert "return" in hints, "rule broken: annotate every return type"
+
+crates: Stack[Channel] = Stack()
+crates.push(("p1", 1.5))
+crates.push(("t1", 2.5))
+print(crates.peek(), len(crates))
+print(first(list(crates)))
+print(widest(["aaa", "b"]), total([2, 4, 6]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>('t1', 2.5) 2
+('p1', 1.5)
+aaa 12</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 23.3: The Walrus and the Path!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write five functions that replace an old-style summariser with dict merging, pure paths, prefix trimming, batching and the walrus.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>This tier gathers the additions that arrived between Python 3.8 and 3.12, the ones a tutorial written
+in 2019 cannot mention. Each one has a Java habit behind it. The walrus and pure paths come back from
+the first tier of this topic, with three more additions beside them.</p>
+<p>Java lets you assign inside a condition, and every reader of that language knows the shape.</p>
+<pre>String line;
+while ((line = reader.readLine()) != null) {
+    lines.add(line);
+}</pre>
+<p>Python refused for twenty-six years, because <code>=</code> in a condition is usually a typo for
+<code>==</code>. Python 3.8 added a separate operator for it, <code>:=</code>, called the <b>walrus
+operator</b> after the animal it resembles. It binds a name and gives back the value in the same
+breath.</p>
+<pre>while (value := next(source, None)) is not None:
+    kept.append(value)</pre>
+<p>Compare against a sentinel with <code>is not None</code> rather than truthiness, because
+<code>0.0</code> and <code>""</code> are falsey and a reading of zero is still a reading. The other
+place the walrus earns its keep is a comprehension whose filter computes something the output needs, so
+the work happens once instead of twice.</p>
+<pre>[code for line in lines if (code := line.removeprefix("ERR-")) != line]</pre>
+<p>It hurts everywhere else. A walrus in a plain <code>return</code>, or a second one in the same
+expression, buries the binding where a reader scanning the left margin will not find it. Use it in
+those two positions and nowhere else.</p>
+<p>Java gives you <code>Paths.get</code> and a <code>Path</code> that knows its own parts. Python's
+equivalent is <code>pathlib</code>, and its <code>PurePosixPath</code> does path arithmetic without
+touching a disk. <code>parent</code>, <code>name</code>, <code>stem</code> and <code>suffix</code> take
+a path apart, <code>with_suffix()</code> replaces the extension, and <code>/</code> joins.</p>
+<pre>pure = PurePosixPath("/var/log/raw_sensor_07.csv")
+pure.parent      # PurePosixPath('/var/log')
+pure.name        # 'raw_sensor_07.csv'
+pure.stem        # 'raw_sensor_07'
+pure.suffix      # '.csv'
+str(pure.parent / "processed" / pure.stem)   # '/var/log/processed/raw_sensor_07'</pre>
+<p>Trimming a fixed prefix by hand is where off-by-one defects breed.
+<code>base[4:]</code> is correct until somebody edits the prefix and forgets the number, and
+<code>base[:-4]</code> silently eats four characters off a name that never had the suffix. Python 3.9
+added <code>str.removeprefix</code> and <code>str.removesuffix</code>, which take the text itself and
+return the string unchanged when it does not match.</p>
+<p>Python 3.9 also gave dicts the <code>|</code> operator. <code>defaults | overrides</code> returns a
+new merged dict with the right-hand side winning, and it leaves both operands alone.
+<code>config |= overrides</code> updates in place instead, so a function doing that returns
+<code>None</code> and its annotation says <code>-&gt; None</code>.</p>
+<p>Python 3.12 added <code>itertools.batched</code>. <code>batched(readings, 3)</code> yields tuples of
+three, and the last tuple is short when the input does not divide evenly. It replaces the accumulator
+loop that everyone writes slightly differently.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>The answer box holds <code>summarise_old</code>, a function written the way all of this used to be
+written. Leave it alone. The tests run it beside yours and compare, so it is the oracle you have to
+match.</p>
+<ul>
+<li><code>summarise(paths, readings, defaults, overrides, size)</code> returns a dict with three keys.
+<code>"settings"</code> is <code>defaults</code> merged under <code>overrides</code>.
+<code>"names"</code> is one name per path, taken from the last path segment with
+<code>"raw_"</code> off the front and <code>".csv"</code> off the end. <code>"groups"</code> is the
+readings in tuples of <code>size</code>.</li>
+<li><code>output_path(source, folder)</code> takes <code>"/var/log/raw_sensor_07.csv"</code> and
+<code>"processed"</code> and returns the string
+<code>"/var/log/processed/sensor_07.json"</code>. Drop <code>"raw_"</code>, put the file in
+<code>folder</code> beside its old parent, and give it a <code>.json</code> suffix.</li>
+<li><code>apply_overrides(config, overrides)</code> updates <code>config</code> in place and returns
+nothing.</li>
+<li><code>drain(source)</code> pulls every float out of an iterator and returns them in a list. Stop on
+the sentinel, not on truthiness.</li>
+<li><code>flagged(lines)</code> returns the code from every line starting <code>"ERR-"</code>, with that
+prefix removed, and skips every other line.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not build a path with string concatenation, <code>str.split</code> or <code>os.path.join</code>. <code>PurePosixPath</code> and <code>/</code> do the job.</li><li>Touch no file. Pure path operations only, so no <code>open</code>, no <code>exists</code> and no <code>mkdir</code>.</li><li>Slice no string to trim a prefix or a suffix. <code>removeprefix</code> and <code>removesuffix</code> are exact and never off by one.</li><li>Merge with <code>|</code> and update with <code>|=</code>. A loop over <code>overrides</code> is banned.</li><li>Use the walrus in <code>drain</code> and in <code>flagged</code>, and nowhere else. A walrus that saves nobody a line is a defect waiting for a reader in a hurry.</li><li>Annotate every signature. Parameters and return type, no exceptions.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>66</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from collections.abc import Iterator
+from itertools import batched
+from pathlib import PurePosixPath
+
+# ----------------------------------------------------------------------
+# Supplied. Do not change it. The tests run it beside yours and compare.
+# ----------------------------------------------------------------------
+def summarise_old(paths, readings, defaults, overrides, size):
+    settings = dict(defaults)
+    for key in overrides:
+        settings[key] = overrides[key]
+
+    names = []
+    for path in paths:
+        base = path.split("/")[-1]
+        if base.startswith("raw_"):
+            base = base[4:]
+        if base.endswith(".csv"):
+            base = base[:-4]
+        names.append(base)
+
+    groups = []
+    group = []
+    for value in readings:
+        group.append(value)
+        if len(group) == size:
+            groups.append(tuple(group))
+            group = []
+    if group:
+        groups.append(tuple(group))
+
+    return {"settings": settings, "names": names, "groups": groups}
+# ----------------------------------------------------------------------
+# End of the supplied block.
+# ----------------------------------------------------------------------
+
+
+def summarise(paths: list[str], readings: list[int], defaults: dict[str, int],
+              overrides: dict[str, int], size: int) -> dict[str, object]:
+    # TODO: the same three keys, with |, PurePosixPath, removeprefix, removesuffix and batched
+
+
+def output_path(source: str, folder: str) -> str:
+    # TODO: parent, stem, removeprefix, / and with_suffix
+
+
+def apply_overrides(config: dict[str, int], overrides: dict[str, int]) -> None:
+    # TODO: one line, in place
+
+
+def drain(source: Iterator[float]) -> list[float]:
+    # TODO: a walrus in the while condition, stopping on the sentinel
+
+
+def flagged(lines: list[str]) -> list[str]:
+    # TODO: a walrus in the comprehension filter
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from collections.abc import Iterator
+from itertools import batched
+from pathlib import PurePosixPath
+
+# ----------------------------------------------------------------------
+# Supplied. Do not change it. The tests run it beside yours and compare.
+# ----------------------------------------------------------------------
+def summarise_old(paths, readings, defaults, overrides, size):
+    settings = dict(defaults)
+    for key in overrides:
+        settings[key] = overrides[key]
+
+    names = []
+    for path in paths:
+        base = path.split("/")[-1]
+        if base.startswith("raw_"):
+            base = base[4:]
+        if base.endswith(".csv"):
+            base = base[:-4]
+        names.append(base)
+
+    groups = []
+    group = []
+    for value in readings:
+        group.append(value)
+        if len(group) == size:
+            groups.append(tuple(group))
+            group = []
+    if group:
+        groups.append(tuple(group))
+
+    return {"settings": settings, "names": names, "groups": groups}
+# ----------------------------------------------------------------------
+# End of the supplied block.
+# ----------------------------------------------------------------------
+
+
+def summarise(paths: list[str], readings: list[int], defaults: dict[str, int],
+              overrides: dict[str, int], size: int) -> dict[str, object]:
+    return {
+        "settings": defaults | overrides,
+        "names": [PurePosixPath(path).name.removeprefix("raw_").removesuffix(".csv")
+                  for path in paths],
+        "groups": list(batched(readings, size)),
+    }
+
+
+def output_path(source: str, folder: str) -> str:
+    pure = PurePosixPath(source)
+    trimmed = pure.stem.removeprefix("raw_")
+    return str((pure.parent / folder / trimmed).with_suffix(".json"))
+
+
+def apply_overrides(config: dict[str, int], overrides: dict[str, int]) -> None:
+    config |= overrides
+
+
+def drain(source: Iterator[float]) -> list[float]:
+    kept: list[float] = []
+    while (value := next(source, None)) is not None:
+        kept.append(value)
+    return kept
+
+
+def flagged(lines: list[str]) -> list[str]:
+    return [code for line in lines if (code := line.removeprefix("ERR-")) != line]
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>paths = ["/var/log/raw_p1.csv", "/var/log/t1.csv", "raw_r1.txt"]
+readings = [1, 2, 3, 4, 5]
+defaults = {"limit": 90, "gain": 1}
+overrides = {"gain": 3, "mode": 7}
+new = summarise(paths, readings, defaults, overrides, 2)
+old = summarise_old(paths, readings, defaults, overrides, 2)
+print(new == old)
+print(new["settings"])
+print(new["names"])
+print(new["groups"])
+print(defaults)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>True
+{'limit': 90, 'gain': 3, 'mode': 7}
+['p1', 't1', 'r1.txt']
+[(1, 2), (3, 4), (5,)]
+{'limit': 90, 'gain': 1}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(output_path("/var/log/raw_sensor_07.csv", "processed"))
+print(output_path("readings/t1.dat", "out"))
+pure = PurePosixPath("/var/log/raw_sensor_07.csv")
+print(pure.name, pure.stem, pure.suffix, pure.parent)
+config = {"limit": 90, "gain": 1}
+print(apply_overrides(config, {"gain": 4, "mode": 2}), config)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>/var/log/processed/sensor_07.json
+readings/out/t1.json
+raw_sensor_07.csv raw_sensor_07 .csv /var/log
+None {'limit': 90, 'gain': 4, 'mode': 2}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(drain(iter([1.5, 2.5, 3.5])))
+print(drain(iter([])))
+print(flagged(["ERR-17", "ok", "ERR-18", "ERR-", "warn"]))
+print("raw_p1.csv".removeprefix("raw_").removesuffix(".csv"))
+print("p1.csv".removeprefix("raw_"), "p1.txt".removesuffix(".csv"))
+print(list(batched("abcdefg", 3)))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[1.5, 2.5, 3.5]
+[]
+['17', '18', '']
+p1
+p1.csv p1.txt
+[('a', 'b', 'c'), ('d', 'e', 'f'), ('g',)]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+
+mine = {name: inspect.getsource(f) for name, f in
+        (("summarise", summarise), ("output_path", output_path),
+         ("apply_overrides", apply_overrides), ("drain", drain), ("flagged", flagged))}
+whole = "".join(mine.values())
+for banned in ("os.path", "split(\"/\")", "open(", ".exists(", ".mkdir(", "[4:]", "[:-4]"):
+    assert banned not in whole, f"rule broken: {banned} has no place in this answer"
+assert ":=" in mine["drain"], "rule broken: drain wants a walrus"
+assert ":=" in mine["flagged"], "rule broken: flagged wants a walrus"
+assert ":=" not in mine["summarise"], "rule broken: no walrus where it buys nothing"
+assert ":=" not in mine["output_path"], "rule broken: no walrus where it buys nothing"
+assert "|" in mine["summarise"], "rule broken: merge the dicts with |"
+assert "|=" in mine["apply_overrides"], "rule broken: update the dict with |="
+assert "for " not in mine["apply_overrides"], "rule broken: no loop over the overrides"
+assert "batched(" in mine["summarise"], "rule broken: batch with itertools.batched"
+for name, func in (("summarise", summarise), ("output_path", output_path),
+                   ("apply_overrides", apply_overrides), ("drain", drain), ("flagged", flagged)):
+    hints = func.__annotations__
+    missing = [p for p in inspect.signature(func).parameters if p not in hints]
+    assert not missing, f"rule broken: annotate {name}, missing {missing}"
+    assert "return" in hints, f"rule broken: annotate the return type of {name}"
+
+paths = ["logs/raw_a.csv", "logs/b.csv"]
+print(summarise(paths, [7, 8, 9], {"a": 1}, {"b": 2}, 2) ==
+      summarise_old(paths, [7, 8, 9], {"a": 1}, {"b": 2}, 2))
+print(output_path("d/raw_x.csv", "out"), flagged(["ERR-9"]), drain(iter([0.0])))
+print(apply_overrides.__annotations__["return"] is None)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>True
+d/out/x.json ['9'] [0.0]
+True</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+</quiz>

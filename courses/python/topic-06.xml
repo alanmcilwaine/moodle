@@ -1,0 +1,645 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 06.1: Mind Your Capitals!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write three short functions that print Python's three capitalised words, return the truth of a value, and branch on it.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java has one boolean type, spelled in lower case, and it is the only thing an <code>if</code> will take.</p>
+<pre>boolean armed = true;
+String label = null;
+if (armed) { ... }
+if (count != 0) { ... }   // a number needs a comparison first</pre>
+<p>Python has a boolean type as well. It is called <code>bool</code> and it has two values, <code>True</code> and <code>False</code>, each written with a capital letter. Lower case <code>true</code> is not a Python word at all, and typing it raises <code>NameError: name 'true' is not defined</code>.</p>
+<p>Python's stand-in for <code>null</code> is <code>None</code>, again with a capital letter. <code>None</code> is a real value. You can assign it, pass it, return it and print it, and printing one shows the word <code>None</code>.</p>
+<pre>armed = True
+label = None
+print(armed, label)      # True None</pre>
+<p>Then comes the part Java never prepared you for. An <code>if</code> in Python takes any value at all, not only a <code>bool</code>. Python asks the value whether it counts as true, and every value has an answer ready.</p>
+<p>A value that counts as false is called <b>falsey</b>. Every other value is <b>truthy</b>. The falsey values you have met so far make a short list.</p>
+<ul>
+<li><code>False</code> itself.</li>
+<li><code>None</code>.</li>
+<li>Zero, both the int <code>0</code> and the float <code>0.0</code>.</li>
+<li>The empty string <code>""</code>.</li>
+<li>The empty list <code>[]</code>.</li>
+</ul>
+<p>Everything else is truthy. That includes the string <code>"0"</code>, which is one character long, the list <code>[0]</code>, which holds one item, and the single space <code>" "</code>. What matters is emptiness, never the contents.</p>
+<p>So <code>if count != 0:</code> and <code>if count:</code> ask an integer the same question, and a Python programmer writes the second. To see the answer for yourself, call <code>bool(value)</code>, which hands back a real <code>True</code> or <code>False</code>.</p>
+<pre>print(bool(""))     # False
+print(bool("0"))    # True</pre>
+<p>In Java the compiler stops you from writing <code>if (payload)</code>. Python allows it, and the harder tiers of this topic show you where that freedom bites. For now, learn to read it.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write three short functions. No body here runs past four lines.</p>
+<ul>
+<li><code>flags_and_gap()</code> prints <code>True</code>, <code>False</code> and <code>None</code> on one line with single spaces between them. Use one call to <code>print</code>, hand it all three values, and let it place the spaces.</li>
+<li><code>truth_of(value)</code> returns the truth of <code>value</code> as a <code>bool</code>. One line, and <code>bool</code> does the work.</li>
+<li><code>gate(value)</code> prints <code>go</code> when <code>value</code> is truthy and <code>stop</code> when it is falsey. Test the value on its own, as <code>if value:</code>, with nothing after it.</li>
+</ul>
+<p>You pass when each function prints or returns what it should and adds nothing else.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Compare against nothing. <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code> and <code>is</code> are all banned.</li><li>Do not call <code>len()</code>. Emptiness is the question <code>if</code> already asks.</li><li>Write <code>True</code>, <code>False</code> and <code>None</code> with their capital letters. The lower case spellings do not exist.</li><li>Hand the work to <code>bool</code> in <code>truth_of</code>, on one line.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>14</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def flags_and_gap():
+    # TODO: one print call, all three capitalised words
+
+
+def truth_of(value):
+    # TODO: one line, let bool answer
+
+
+def gate(value):
+    # TODO: if value: with nothing after it
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def flags_and_gap():
+    print(True, False, None)
+
+
+def truth_of(value):
+    return bool(value)
+
+
+def gate(value):
+    if value:
+        print("go")
+    else:
+        print("stop")
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>flags_and_gap()
+print(truth_of(0), truth_of(1), truth_of(""), truth_of("0"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>True False None
+False True False True</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>gate([])
+gate([0])
+gate(None)
+gate("north")</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>stop
+go
+stop
+go</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(truth_of([]), truth_of([0]), truth_of(None), truth_of(-3), truth_of(0.0))
+gate(0)
+gate(" ")
+print("edge cases done")</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>False True False True False
+stop
+go
+edge cases done</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import ast, inspect
+answer = "".join(inspect.getsource(f) for f in (flags_and_gap, truth_of, gate))
+tree = ast.parse(answer)
+assert not [n for n in ast.walk(tree) if isinstance(n, ast.Compare)], "rule broken: compare against nothing, test the value itself"
+assert not [n for n in ast.walk(tree) if isinstance(n, ast.Call) and getattr(n.func, "id", "") == "len"], "rule broken: no len()"
+assert "True" in answer and "False" in answer and "None" in answer, "rule broken: write the three words with their capital letters"
+assert "bool(" in inspect.getsource(truth_of), "rule broken: hand the work to bool()"
+print(truth_of(""), truth_of("x"))
+gate(0)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>False True
+stop</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 06.2: Empty Is Not Nothing!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write two functions and one report that tell an absent payload from an empty one and show what <code>and</code> and <code>or</code> hand back.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>In Java you check for absence one way and one way only.</p>
+<pre>if (payload != null) { ... }</pre>
+<p>That line has exactly one correct Python translation, and it is
+<code>if payload is not None</code>. It is never <code>if payload</code>.</p>
+<p>Here is the reason. Python lets you put any value where a condition belongs, not only a boolean. A
+value that counts as false in a condition is called <b>falsey</b>. Every other value is
+<b>truthy</b>. The falsey list is longer than a Java developer expects. <code>None</code> is falsey.
+The int <code>0</code> and the float <code>0.0</code> are falsey. So are the empty string
+<code>""</code>, the empty list <code>[]</code>, the empty dictionary <code>{}</code>, and every other
+empty container. A dictionary is Python's map from keys to values, written with curly braces, and an empty pair of braces
+makes an empty one.</p>
+<p>Write the null check as a truth test and the legitimate empty case disappears. A payload of length
+zero arrives, your code decides that nothing arrived, and no exception is raised to tell anybody.
+Preventing that defect is why this exercise exists.</p>
+<p><code>and</code> and <code>or</code> hold the second surprise. Java's <code>||</code> produces a
+boolean. Python's <code>or</code> produces an <b>operand</b>, which means one of the two values you
+gave it. Python evaluates the left side first. If the left side is truthy, Python returns the left
+side. Otherwise Python returns the right side. So <code>"" or "fallback"</code> is the string
+<code>"fallback"</code> and not <code>True</code>. That behaviour turns <code>or</code> into a way of
+supplying a default value. <code>and</code> works as the mirror image and returns the first falsey
+operand, so <code>0 and 99</code> is <code>0</code>.</p>
+<p>Python also has a <b>conditional expression</b>. It is an expression rather than a statement, so it
+produces a value and you can return it directly. The value comes first and the test comes second.</p>
+<pre>result = "yes" if flag else "no"</pre>
+<p>Java's <code>flag ? "yes" : "no"</code> is the same idea with the three parts in a different order.
+To handle three outcomes, put a second conditional expression after the <code>else</code>.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write two functions and one report.</p>
+<ul>
+<li><code>status(payload)</code> returns <code>"MISSING"</code> when <code>payload</code> is
+<code>None</code>, <code>"EMPTY"</code> when <code>payload</code> is falsey, and <code>"OK"</code>
+otherwise. Test for <code>None</code> first, because <code>None</code> is falsey too and the two
+answers differ. <code>0</code> and <code>""</code> give <code>"EMPTY"</code> because they are falsey.
+<code>[0]</code> and <code>"0"</code> give <code>"OK"</code>, because a container that holds something
+is truthy whatever it holds.</li>
+<li><code>label(reading, fallback)</code> returns <code>reading</code> when <code>reading</code> is
+truthy and returns <code>fallback</code> when it is not. One <code>or</code> does the whole job.</li>
+<li><code>operand_report()</code> prints the value that <code>"" or "fallback"</code> produces and the
+value that <code>0 and 99</code> produces, each one beside the name of its type. Print these two lines
+exactly.</li>
+</ul>
+<pre>'fallback' is a str
+0 is a int</pre>
+<p>Write the value with <code>{value!r}</code>, the <code>!r</code> form from the strings and f-strings
+topic, so the string keeps its quotes. Write the type name with
+<code>{type(value).__name__}</code>. <code>type(value)</code> hands back the type itself, the way
+Java's <code>getClass()</code> does, and <code>__name__</code> holds that type's name as a string.</p>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Write <code>is None</code> once. Nothing else in your answer may mention <code>None</code>. <code>== None</code> and <code>!= None</code> are banned.</li><li>Do not call <code>len()</code>, and do not compare against <code>0</code>, <code>""</code> or <code>[]</code>.</li><li>Write no <code>if</code> statement. Use a conditional expression or <code>or</code>.</li><li>Return on every path. Falling off the end returns <code>None</code> and the grader prints it.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>12</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def status(payload):
+    # TODO: conditional expressions only, one "is None", no if statement
+
+
+def label(reading, fallback):
+    # TODO: one "or", nothing else
+
+
+def operand_report():
+    # TODO: print each value under !r with its type name
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def status(payload):
+    return "MISSING" if payload is None else ("OK" if payload else "EMPTY")
+
+
+def label(reading, fallback):
+    return reading or fallback
+
+
+def operand_report():
+    defaulted = "" or "fallback"
+    stopped = 0 and 99
+    print(f"{defaulted!r} is a {type(defaulted).__name__}")
+    print(f"{stopped!r} is a {type(stopped).__name__}")
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>for payload in (None, [], [0], "", "0", 0):
+    print(f"{payload!r:&lt;6} -&gt; {status(payload)}")</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>None   -&gt; MISSING
+[]     -&gt; EMPTY
+[0]    -&gt; OK
+''     -&gt; EMPTY
+'0'    -&gt; OK
+0      -&gt; EMPTY</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(label("14.2", "n/a"))
+print(label("", "n/a"))
+print(label(0, -1))
+print(label(None, "n/a"))
+operand_report()</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>14.2
+n/a
+-1
+n/a
+'fallback' is a str
+0 is a int</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(status({}), status({"a": 1}), status(0.0), status(False))
+print(label([], ["default"]), label({"k": 1}, {}))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>EMPTY OK EMPTY EMPTY
+['default'] {'k': 1}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import ast, inspect
+answer = "".join(inspect.getsource(f) for f in (status, label, operand_report))
+assert answer.count("None") == 1, "rule broken: mention None exactly once"
+assert "== None" not in answer and "!= None" not in answer, "rule broken: no equality against None"
+for fn in (status, label):
+    tree = ast.parse(inspect.getsource(fn))
+    assert not [n for n in ast.walk(tree) if isinstance(n, ast.If)], "rule broken: no if statement"
+    assert not [n for n in ast.walk(tree) if isinstance(n, ast.Call) and getattr(n.func, "id", "") == "len"], "rule broken: no len()"
+    for cmp in [n for n in ast.walk(tree) if isinstance(n, ast.Compare)]:
+        assert all(isinstance(op, (ast.Is, ast.IsNot)) for op in cmp.ops), "rule broken: is comparisons only"
+print(status(None), status([]), status([0]), status(""), status("0"), status(0))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>MISSING EMPTY OK EMPTY OK EMPTY</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 06.3: The Impostor Test!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write four functions that show where <code>==</code> and <code>is</code> agree and where they come apart.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java taught you that <code>==</code> compares references and <code>.equals</code> compares values.
+Python keeps both tests and hands them to the opposite operators.</p>
+<ul>
+<li><code>==</code> is the value test. It calls the object's <code>__eq__</code> method, which is
+Python's name for the method Java calls <code>equals</code>. The two underscores at each end mark a
+method that Python calls for you rather than one you call by name.</li>
+<li><code>is</code> is the identity test. It asks whether two names point at one single object in
+memory. That is the job Java's <code>==</code> does on two references.</li>
+</ul>
+<p>A Java developer reaches for <code>is</code> as the safe general comparison and gets it exactly
+backwards. Worse, <code>is</code> often appears to work. CPython is the standard Python
+implementation. It keeps one cached object for every small integer from -5 to 256, and it hands out
+that same object every time. While it compiles the file, it also stores one shared copy of each string
+literal it can see. Two string literals added together are joined before the program runs. So
+<code>is</code> passes review, ships, and then fails on the value 257.</p>
+<p><code>int("256")</code> reads a string and builds an integer from it, the way Java's
+<code>Integer.parseInt</code> does. It builds that integer while the program runs, so no compiler ever
+sees the number.</p>
+<p>Assignment is the other half of the lesson. <code>alias = original</code> copies nothing. It binds
+a second name to the same object. A Python variable is a name attached to an object, never a box that
+holds a value. Change the object through one name and the change shows through the other name, because
+there was only ever one list.</p>
+<pre>original = [10, 20, 30]
+alias = original
+alias.append(40)
+print(original)          # [10, 20, 30, 40]</pre>
+<p><code>append</code> adds one item to the end of a list. It changes the list in place and returns
+nothing.</p>
+<p>One use of <code>is</code> is correct. <code>None</code> is a <b>singleton</b>, which means exactly
+one <code>None</code> object exists for the whole program. <code>value is None</code> is therefore
+both correct and the form other Python programmers expect to read.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write four functions. None of them prints.</p>
+<ul>
+<li><code>compare(left, right)</code> returns two values, the result of <code>left == right</code> and
+the result of <code>left is right</code>, in that order. Separate the two with a comma to make the
+tuple, as the numbers topic did. This one function answers every pair below.</li>
+<li><code>alias_demo()</code> builds the list <code>[10, 20, 30]</code> and binds a second name to
+that same list. It appends <code>40</code> through the second name, then returns both names as
+<code>original, alias</code>.</li>
+<li><code>tricky_pairs()</code> returns a list of four tuples. Each tuple holds a name, a left value,
+and a right value, in that order. Build these four.
+<ul>
+<li><code>"folded literals"</code> with <code>"py" + "thon"</code> on the left and
+<code>"python"</code> on the right.</li>
+<li><code>"joined at runtime"</code> with <code>"".join(["py", "thon"])</code> on the left and
+<code>"python"</code> on the right.</li>
+<li><code>"256 built twice"</code> with <code>256</code> on the left and <code>int("256")</code> on
+the right.</li>
+<li><code>"257 built twice"</code> with <code>257</code> on the left and <code>int("257")</code> on
+the right.</li>
+</ul></li>
+<li><code>is_missing(value)</code> returns <code>True</code> when <code>value</code> is
+<code>None</code>.</li>
+</ul>
+<p>All four pairs are equal under <code>==</code>. Only two of the four are one object under
+<code>is</code>, and those two match by accident, because CPython happened to share an object. Depend on
+that accident and your code breaks on the value 257 or on any string built while the program runs.
+That gap is the whole question.</p>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Use <code>is</code> exactly twice in the whole answer. One of the two must be <code>is None</code>.</li><li>Answer every value question with <code>==</code>. Do not call <code>id()</code>, and do not import anything.</li><li>Do not copy or slice the list in <code>alias_demo</code>. The aliasing is the entire point.</li><li>One implementation handles all four pairs. Special-casing any of them is cheating.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def compare(left, right):
+    # TODO: return the == result and the is result, in that order
+
+
+def alias_demo():
+    # TODO: build a list, bind a second name, append through it, return both names
+
+
+def tricky_pairs():
+    # TODO: return a list of four (name, left, right) tuples
+
+
+def is_missing(value):
+    # TODO: the one correct use of is
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def compare(left, right):
+    return left == right, left is right
+
+
+def alias_demo():
+    original = [10, 20, 30]
+    alias = original
+    alias.append(40)
+    return original, alias
+
+
+def tricky_pairs():
+    joined = "".join(["py", "thon"])
+    return [
+        ("folded literals", "py" + "thon", "python"),
+        ("joined at runtime", joined, "python"),
+        ("256 built twice", 256, int("256")),
+        ("257 built twice", 257, int("257")),
+    ]
+
+
+def is_missing(value):
+    return value is None
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>first = [1, 2, 3]
+second = [1, 2, 3]
+print(compare(first, second))
+print(compare(first, first))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>(True, False)
+(True, True)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>original, alias = alias_demo()
+print(original)
+print(alias)
+print(compare(original, alias))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[10, 20, 30, 40]
+[10, 20, 30, 40]
+(True, True)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>for name, left, right in tricky_pairs():
+    equal, same = compare(left, right)
+    print(f"{name:&lt;18} == {equal!s:&lt;5} is {same}")
+print(is_missing(None), is_missing(0), is_missing(""), is_missing([]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>folded literals    == True  is True
+joined at runtime  == True  is False
+256 built twice    == True  is True
+257 built twice    == True  is False
+True False False False</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import ast, inspect
+answer = "".join(inspect.getsource(f) for f in (compare, alias_demo, tricky_pairs, is_missing))
+tree = ast.parse(answer)
+ids = [n for n in ast.walk(tree) if isinstance(n, ast.Call) and getattr(n.func, "id", "") == "id"]
+assert not ids, "rule broken: do not call id()"
+assert not [n for n in ast.walk(tree) if isinstance(n, (ast.Import, ast.ImportFrom))], "rule broken: no imports"
+ops = [op for n in ast.walk(tree) if isinstance(n, ast.Compare) for op in n.ops]
+assert sum(isinstance(op, (ast.Is, ast.IsNot)) for op in ops) == 2, "rule broken: use is exactly twice"
+assert "is None" in answer, "rule broken: one is must be is None"
+assert ".copy(" not in answer and "[:]" not in answer and "list(" not in answer, "rule broken: do not copy the list"
+box = [7]
+same_box = box
+same_box.append(8)
+print(compare(box, same_box), box)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>(True, True) [7, 8]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+</quiz>

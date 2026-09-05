@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 05.1: Four Loops, One Keyword!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A ferry log records several facts about each trip, including crossings, sailings, and seats on the port side. Write one counting function for each fact. Use a different loop form in every function. <code>crossings</code> counts the trips needed to carry every passenger when each trip carries at most <code>capacity</code> passengers, so no passengers means no trips. <code>departures</code> counts the sailings from <code>first</code> o'clock to <code>last</code> o'clock inclusive, one every <code>every</code> hours. <code>portSide</code> numbers the passengers from 0 up to but not including <code>n</code> and counts the even numbers, because those passengers sit on the port side.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#For_statements">For statements</a>. Find the subsections about a single condition and a for clause. When does Go evaluate the condition? Which semicolons can you omit?</li><li><a href="https://go.dev/ref/spec#For_range">For statements with range clause</a>. Find the table row for an integer value and the paragraph beginning "For an integer value n". Which values does the loop produce for <code>n</code>? What happens when <code>n</code> is zero or negative?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java has four loop forms called for, while, do-while, and for-each. Go uses <code>while</code> for none of them. The content after <code>for</code> determines the loop form.</p><pre>while (passengers > 0) { ... }
+for (int hour = first; hour <= last; hour += every) { ... }
+for (int ticket : tickets) { ... }</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>for</code>, <code>range</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find "only if the block was executed" in the for clause subsection. Trace a timetable whose last hour is before its first.</li><li>Find "If n &lt;= 0" in the range subsection. Read that sentence and the preceding one.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>24</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func crossings(passengers, capacity int) int {
+	// TODO
+}
+
+func departures(first, last, every int) int {
+	// TODO
+}
+
+func portSide(n int) int {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func crossings(passengers, capacity int) int {
+	trips := 0
+	for passengers > 0 {
+		passengers -= capacity
+		trips++
+	}
+	return trips
+}
+
+func departures(first, last, every int) int {
+	count := 0
+	for hour := first; hour <= last; hour += every {
+		count++
+	}
+	return count
+}
+
+func portSide(n int) int {
+	count := 0
+	for ticket := range n {
+		if ticket%2 == 0 {
+			count++
+		}
+	}
+	return count
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "for range"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(crossings(30, 12), departures(6, 18, 4))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>3 4</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(portSide(6))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>3</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(crossings(0, 12), crossings(24, 12), departures(9, 8, 1))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 2 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(portSide(5), portSide(-3))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>3 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 05.2: Switch Without a Break!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>An anemometer measures wind speed. The harbourmaster converts its reading to the harbour's force scale and raises one warning flag. Write the three required functions. The scale gives force 0 below 1 knot, 3 below 11, 6 below 28, 9 below 48, and 12 from 48 knots up. <code>describe</code> prints <code>calm</code> for 0, <code>breeze</code> for 3 or 6, <code>gale</code> for 9, <code>storm</code> for 12, and <code>unknown</code> for any other level. <code>advise</code> prints <code>sail at force F</code> when force F is no greater than licence L, and otherwise prints <code>stay, force F exceeds L</code>.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Switch_statements">Switch statements</a>. Read the Expression switches subsection and its examples. In what order does Go test case expressions? What happens after the matching clause runs? What does an omitted switch expression mean? In the first example, how does one clause match several values?</li><li><a href="https://go.dev/ref/spec#If_statements">If statements</a>. Read the last example. What can appear between <code>if</code> and its condition? Which branches can use the declared value?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java switch continues into the next case unless the case ends with <code>break</code>. Java's arrow form prevents that fall-through. A Java developer might therefore end each clause with <code>break</code> or use an arrow.</p><pre>switch (force) {
+    case 3:
+    case 6:
+        System.out.println("breeze");
+        break;
+    default:
+        System.out.println("unknown");
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>break</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find "top-to-bottom" under Expression switches. Which clause wins when 2 knots satisfies more than one band?</li><li>Find the second example in that subsection. Read the comment beside the switch without an expression.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>30</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "fmt"
+
+func force(knots int) int {
+	// TODO
+}
+
+func describe(level int) {
+	// TODO
+}
+
+func advise(knots, licence int) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+func force(knots int) int {
+	switch {
+	case knots < 1:
+		return 0
+	case knots < 11:
+		return 3
+	case knots < 28:
+		return 6
+	case knots < 48:
+		return 9
+	default:
+		return 12
+	}
+}
+
+func describe(level int) {
+	switch level {
+	case 0:
+		fmt.Println("calm")
+	case 3, 6:
+		fmt.Println("breeze")
+	case 9:
+		fmt.Println("gale")
+	case 12:
+		fmt.Println("storm")
+	default:
+		fmt.Println("unknown")
+	}
+}
+
+func advise(knots, licence int) {
+	if f := force(knots); f <= licence {
+		fmt.Println("sail at force", f)
+	} else {
+		fmt.Println("stay, force", f, "exceeds", licence)
+	}
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "break"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[describe(force(30))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>gale</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[advise(20, 9)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>sail at force 6</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[describe(force(2))
+describe(force(20))
+describe(force(48))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>breeze
+breeze
+storm</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[describe(7)
+advise(50, 9)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>unknown
+stay, force 12 exceeds 9</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 05.3: Labels of Love!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A matchmaker at a ball pairs guests and awards prizes as she checks each table seat by seat. The band keeps playing until she tells it to stop. Tables and seats are numbered from 1, and a guest pairs when the table number times the seat number equals the wish. <code>firstPair</code> checks tables in order and seats in order, and skips to the next table once the product passes the wish. It returns the first pair, or table 0 and seat 0 when none exists. <code>consolations</code> counts the tables with no pairing seat, one prize each. <code>rounds</code> doubles the couples after every round and counts the rounds completed before a doubling would take the count above the floor.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Break_statements">Break statements</a>. Which statements can a plain <code>break</code> leave? If those statements are nested, which one does <code>break</code> leave? In the example, what does the label change?</li><li><a href="https://go.dev/ref/spec#Continue_statements">Continue statements</a>. Read the first sentence and the sentence about labels. If the label names the outer loop, where does control continue?</li><li><a href="https://go.dev/ref/spec#Label_scopes">Label scopes</a>. Read the paragraph. How far does a label's scope extend? What happens if you declare a label but never use it?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java also has labelled <code>break</code> and <code>continue</code>, although many Java developers never use them. A common alternative sets a boolean flag in the inner loop and checks it in the outer loop. Java also permits labelling every loop before choosing a target.</p><pre>boolean found = false;
+for (int t = 1; t <= tables &amp;&amp; !found; t++) {
+    for (int s = 1; s <= seats; s++) {
+        if (t * s == wish) { found = true; break; }
+    }
+}</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find "innermost" under Break statements. List the statements around the <code>break</code> inside the <code>switch</code> in <code>firstPair</code>.</li><li>Find where control continues after <code>continue Tables</code>. Compare that point with the line where <code>consolations</code> counts a prize.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>36</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func firstPair(tables, seats, wish int) (int, int) {
+	// TODO
+}
+
+func consolations(tables, seats, wish int) int {
+	// TODO
+}
+
+func rounds(couples, floor int) int {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func firstPair(tables, seats, wish int) (int, int) {
+	table, seat := 0, 0
+Tables:
+	for t := 1; t <= tables; t++ {
+		for s := 1; s <= seats; s++ {
+			switch {
+			case t*s == wish:
+				table, seat = t, s
+				break Tables
+			case t*s > wish:
+				continue Tables
+			}
+		}
+	}
+	return table, seat
+}
+
+func consolations(tables, seats, wish int) int {
+	prizes := 0
+Tables:
+	for t := 1; t <= tables; t++ {
+		for s := 1; s <= seats; s++ {
+			if t*s == wish {
+				continue Tables
+			}
+		}
+		prizes++
+	}
+	return prizes
+}
+
+func rounds(couples, floor int) int {
+	played := 0
+	for {
+		couples *= 2
+		if couples > floor {
+			break
+		}
+		played++
+	}
+	return played
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(firstPair(3, 5, 15))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>3 5</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(consolations(3, 3, 7), rounds(3, 20))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>3 2</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(firstPair(3, 5, 6))
+fmt.Println(firstPair(4, 4, 4))
+fmt.Println(firstPair(3, 3, 7))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2 3
+1 4
+0 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(consolations(3, 5, 6), consolations(4, 4, 4))
+fmt.Println(rounds(3, 5), rounds(1, 16))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>1 1
+0 4</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

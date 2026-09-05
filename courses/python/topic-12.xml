@@ -1,0 +1,773 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 12.1: Types Are Back!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Add type annotations to a constant and four function signatures that already run without them.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Every name in Java carries a type, and you write it before you write anything else.</p>
+<pre>int sensorId = 7;
+String label = sensorLabel(sensorId, "RDR");
+List&lt;Double&gt; readings = new ArrayList&lt;&gt;();
+Map&lt;String, Double&gt; offsets = new HashMap&lt;&gt;();
+
+static String sensorLabel(int sensorId, String prefix) { ... }
+static void logFault(String name, String code) { ... }</pre>
+<p>Every topic before this one gave you none of that, and the omission was deliberate. A Java developer who keeps the
+declaration reflex writes Python that fights the language, so those topics took the crutch
+away and made you read a body to learn what a function wanted.</p>
+<p>You asked whether real Python code carries types. It does, nearly everywhere. A modern codebase
+annotates every function it ships, and the safety-critical one you are about to join will be no
+exception. From this topic on, every signature in this course carries types, and so must yours.</p>
+<p>An <b>annotation</b> is a type written into the source. Three places take one.</p>
+<ul>
+<li>A parameter takes a colon and a type, so <code>name: str</code> says the argument is a string.</li>
+<li>A return takes an arrow after the bracket, so <code>def total(...) -&gt; int:</code> says the
+function hands back an integer.</li>
+<li>A variable takes the same colon form, so <code>count: int = 0</code> types the name as you create
+it.</li>
+</ul>
+<pre>def sensor_label(sensor_id: int, prefix: str) -&gt; str:
+    count: int = 0
+    return f"{prefix}-{sensor_id}"</pre>
+<p>Container types use square brackets on the builtin, so <code>list[int]</code> is Java's
+<code>List&lt;Integer&gt;</code> and <code>dict[str, float]</code> is
+<code>Map&lt;String, Double&gt;</code>. Read the brackets as the diamond.</p>
+<p>You will meet a second spelling in older files. <code>typing.List[int]</code> and
+<code>typing.Dict[str, float]</code> were the only forms available before Python 3.9, because the
+builtin <code>list</code> could not take brackets back then. It can now. The capital-letter forms are
+deprecated, so read them and never write them.</p>
+<p>A value that may be absent is written with a vertical bar. <code>float | None</code> means a float
+or <code>None</code>, and it is the honest signature for anything built on <code>.get()</code> from the
+dictionaries topic. Java would hand you <code>Optional&lt;Double&gt;</code> or a bare nullable
+<code>Double</code>. Python 3.10 gave the bar its meaning, and the older
+<code>typing.Optional[float]</code> says the same thing in more characters. Write the bar.</p>
+<p>A function that hands nothing back is annotated <code>-&gt; None</code>. That is Java's
+<code>void</code>, and it is the one return type you might have been tempted to leave off.</p>
+<p>What do annotations buy you? A <b>type checker</b> such as mypy, Pyright or Pyrefly reads them and
+reports the mismatches before the program runs. Point it at your file, or wire it into CI, and it will
+tell you that you passed a string where the signature promised an integer. That is the closest thing
+Python has to <code>javac</code>, and it is the reason production code annotates.</p>
+<p>Two facts about annotations matter more than any of the syntax above. They are optional, so Python
+runs a file with none of them. And the interpreter ignores them, so it stores each one and then never
+looks at it again. Storage means you can read them back yourself.</p>
+<pre>print(sensor_label.__annotations__)
+# {'sensor_id': &lt;class 'int'&gt;, 'prefix': &lt;class 'str'&gt;, 'return': &lt;class 'str'&gt;}</pre>
+<p><code>__annotations__</code> is a plain dict of the kind you built in the dictionaries topic, holding the real type
+objects. Every parameter is a key, and the return type is stored under the key
+<code>return</code>. The tests read that dict, so a missing annotation shows up as a missing key.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>The code below already runs. Add the types and change nothing else.</p>
+<ul>
+<li><code>READING_LIMIT</code> is a module-level integer and takes a variable annotation.</li>
+<li><code>sensor_label(sensor_id, prefix)</code> takes an integer and a string and returns a
+string.</li>
+<li><code>mean_reading(readings)</code> takes a list of floats and returns a float. Annotate the local
+<code>total</code> as well, because a variable annotation is worth the same three characters
+here.</li>
+<li><code>calibrate(offsets, name)</code> takes a dict of string to float, takes a string, and returns
+a float that may be absent.</li>
+<li><code>log_fault(name, code)</code> takes two strings, prints a line, and returns nothing.</li>
+</ul>
+<p>One display note before you start. <code>__annotations__</code> stores <code>None</code> itself for
+a <code>-&gt; None</code> return, so it prints as <code>None</code>.
+<code>typing.get_type_hints()</code> resolves the same annotation to the type of <code>None</code> and
+prints it as <code>&lt;class 'NoneType'&gt;</code>. Both describe the same signature.</p>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Annotate every signature you write, every parameter and every return. A bare <code>def</code> header is a habit from the earlier topics and this tier ends it.</li><li>Write <code>list[float]</code> and <code>dict[str, float]</code>. The capital-letter <code>typing.List</code> form is deprecated, and a hidden test compares the stored objects, so it will catch you.</li><li>Write <code>float | None</code>. <code>Optional[float]</code> is banned, and the hidden test can tell the two apart even though Python calls them equal.</li><li>Import nothing. Your answer needs no <code>typing</code> module, and a test imports it for you where one is needed.</li><li>Add types and delete nothing. Every function below already passes its behaviour test, so breaking one costs you the whole question.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>28</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[# TODO: annotate READING_LIMIT
+READING_LIMIT = 4
+
+
+# TODO: annotate the two parameters and the return
+def sensor_label(sensor_id, prefix):
+    return f"{prefix}-{sensor_id}"
+
+
+# TODO: annotate the parameter, the return, and the local total
+def mean_reading(readings):
+    total = 0.0
+    for reading in readings:
+        total = total + reading
+    return total / len(readings)
+
+
+# TODO: annotate. The return may be absent, so use the bar.
+def calibrate(offsets, name):
+    return offsets.get(name)
+
+
+# TODO: annotate. This one hands nothing back.
+def log_fault(name, code):
+    print(f"FAULT {name} {code}")
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[READING_LIMIT: int = 4
+
+
+def sensor_label(sensor_id: int, prefix: str) -> str:
+    return f"{prefix}-{sensor_id}"
+
+
+def mean_reading(readings: list[float]) -> float:
+    total: float = 0.0
+    for reading in readings:
+        total = total + reading
+    return total / len(readings)
+
+
+def calibrate(offsets: dict[str, float], name: str) -> float | None:
+    return offsets.get(name)
+
+
+def log_fault(name: str, code: str) -> None:
+    print(f"FAULT {name} {code}")
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(sensor_label(7, "RDR"))
+print(mean_reading([1.0, 2.0, 3.0]))
+print(calibrate({"rdr": 0.5}, "rdr"))
+print(calibrate({"rdr": 0.5}, "pwr"))
+print(log_fault("rdr", "E14"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>RDR-7
+2.0
+0.5
+None
+FAULT rdr E14
+None</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(sensor_label.__annotations__)
+print(mean_reading.__annotations__)
+print(calibrate.__annotations__)
+print(log_fault.__annotations__)
+print(__annotations__["READING_LIMIT"])</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>{'sensor_id': &lt;class 'int'&gt;, 'prefix': &lt;class 'str'&gt;, 'return': &lt;class 'str'&gt;}
+{'readings': list[float], 'return': &lt;class 'float'&gt;}
+{'offsets': dict[str, float], 'name': &lt;class 'str'&gt;, 'return': float | None}
+{'name': &lt;class 'str'&gt;, 'code': &lt;class 'str'&gt;, 'return': None}
+&lt;class 'int'&gt;</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+import types
+assert sensor_label.__annotations__ == {"sensor_id": int, "prefix": str, "return": str}, "rule broken: annotate every parameter and the return"
+assert mean_reading.__annotations__["readings"] == list[float], "rule broken: write list[float], not the deprecated capital-letter form"
+assert calibrate.__annotations__["offsets"] == dict[str, float], "rule broken: write dict[str, float], not the deprecated capital-letter form"
+assert isinstance(calibrate.__annotations__["return"], types.UnionType), "rule broken: write float | None, not the older Optional spelling"
+assert log_fault.__annotations__["return"] is None, "rule broken: a function that hands nothing back is annotated -> None"
+assert __annotations__["READING_LIMIT"] is int, "rule broken: annotate READING_LIMIT"
+assert "total: float" in inspect.getsource(mean_reading), "rule broken: annotate the local total as well"
+print(len(sensor_label.__annotations__), len(mean_reading.__annotations__))
+print(mean_reading([2.0, 4.0]), calibrate({}, "rdr"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>3 2
+3.0 None</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import typing
+print(typing.get_type_hints(calibrate))
+print(typing.get_type_hints(log_fault))
+print(READING_LIMIT + 1, sensor_label(1, "PWR"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>{'offsets': dict[str, float], 'name': &lt;class 'str'&gt;, 'return': float | None}
+{'name': &lt;class 'str'&gt;, 'code': &lt;class 'str'&gt;, 'return': &lt;class 'NoneType'&gt;}
+5 PWR-1</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 12.2: Brackets All the Way Down!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write four annotated functions that group, total and flatten a sensor log, and find its busiest label.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java generics nest, and you read them from the outside in.</p>
+<pre>Map&lt;String, List&lt;Double&gt;&gt; byLabel = new HashMap&lt;&gt;();
+List&lt;Double&gt; radar = byLabel.get("radar");
+double first = radar.get(0);</pre>
+<p>Python spells the same shape with square brackets on the builtin, and it nests exactly as the
+diamond does. <code>dict[str, list[float]]</code> is that <code>Map</code>. Read it outside in and you
+get a dict, whose keys are strings, whose values are lists, whose items are floats.</p>
+<pre>by_label: dict[str, list[float]] = {}
+readings: list[float] = by_label["radar"]
+first: float = readings[0]</pre>
+<p>Nesting has no depth limit, so <code>list[dict[str, list[float]]]</code> is legal and describes a
+list of those dicts. Depth is a signal rather than a target. A signature three levels deep usually
+means the shape has earned a name of its own, and naming shapes is a job for a later topic.</p>
+<p>Now the part Java has no word for. A <b>tuple</b> annotation comes in two shapes, and they mean
+different things.</p>
+<pre>pair: tuple[int, str] = (7, "radar")        # exactly two items, an int then a str
+counts: tuple[int, ...] = (1, 2, 3, 4)      # any number of items, every one an int</pre>
+<p><code>tuple[int, str]</code> fixes the length and the type of each position at once, so it is a
+Java <code>record Pair(int id, String label)</code> without the declaration.
+<code>tuple[int, ...]</code> fixes the type and leaves the length open, so it is Java's
+<code>int[]</code>. The three dots are a literal ellipsis you type, and they stand for nothing you
+left out.</p>
+<p>Getting those two the wrong way round is the usual mistake. A function that hands back a count and
+a total returns <code>tuple[int, float]</code>, a fixed pair of two known positions. A function that
+accepts however many readings turned up takes <code>tuple[float, ...]</code>.</p>
+<p>None of this pays for itself unless something reads it, and the thing that reads it is a <b>type
+checker</b>. A checker is a separate program rather than part of the interpreter. You run
+<code>mypy .</code> at your desk the way you run a test suite, and a CI job runs the same command and
+fails the build when it reports an error.</p>
+<p>That is where the <code>javac</code> comparison earns its keep. The check happens on a machine
+before the code reaches a rig, which is the only kind of check that helps a safety-critical
+codebase.</p>
+<p>Here is mypy on a list handed to something that wanted a dict.</p>
+<pre>station.py:19: error: Argument 1 to "busiest" has incompatible type "list[tuple[str, float]]"; expected "dict[str, list[float]]"  [arg-type]</pre>
+<p>Read it in five parts.</p>
+<ul>
+<li><code>station.py:19</code> is the file and the line.</li>
+<li><code>error</code> is the severity, and a checker also emits <code>note</code> lines that carry no
+failure of their own.</li>
+<li><code>Argument 1 to "busiest"</code> names the called function and the argument position, counting
+from one rather than from zero.</li>
+<li><code>has incompatible type A; expected B</code> is always in that order, so the first type is
+what you wrote and the second is what the signature asked for.</li>
+<li><code>[arg-type]</code> is the error code. It is the string you search the documentation for, and
+the string you would name if you ever had to silence the check.</li>
+</ul>
+<p>Pyright, the checker behind the editor squiggles in VS Code, reports the same mistake in its own
+words.</p>
+<pre>station.py:19:14 - error: Argument of type "list[tuple[str, float]]" cannot be assigned to
+  parameter "groups" of type "dict[str, list[float]]" in function "busiest"
+  (reportArgumentType)</pre>
+<p>Same file, same line, a column as well, the same two types in the same order, and a rule name where
+mypy puts an error code. Learn to read one and you can read the other.</p>
+<p>One further complaint is worth meeting now, because a <code>str | None</code> return earns it every
+time.</p>
+<pre>station.py:20: error: Item "None" of "str | None" has no attribute "upper"  [union-attr]</pre>
+<p>The checker is telling you that one member of the union has no such attribute, so the call is
+unsafe for that member. It is the nag Java's <code>Optional</code> gives you by refusing to hand the
+value over, moved out of the type system and into a tool. Test for <code>None</code> before you use
+the value and the complaint goes.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write four functions for a sensor log. A row is a label and one reading.</p>
+<ul>
+<li><code>group_readings(rows)</code> takes a list of pairs and returns a dict from label to the list
+of that label's readings, in the order they arrived. Build a plain dict with <code>setdefault</code>.
+An empty list gives <code>{}</code>.</li>
+<li><code>tally(values)</code> takes a tuple of however many readings and returns a fixed pair of the
+count and the total. An empty tuple gives <code>(0, 0.0)</code>, and the total stays a float even
+then, so start it at <code>0.0</code>.</li>
+<li><code>busiest(groups)</code> returns the label holding the most readings, or <code>None</code> when
+the dict has no labels at all. A label whose list is empty is still a label. The first label wins a
+tie.</li>
+<li><code>flatten(groups)</code> undoes <code>group_readings</code> and returns the list of pairs
+again, label by label.</li>
+</ul>
+<p>Each function also builds one local container or running value, and each of those takes an
+annotation of its own. Four functions, four different bracket forms.</p>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Write every bracket in full. <code>dict[str, list[float]]</code>, never a bare <code>dict</code> and never the deprecated <code>typing.Dict</code>. A hidden test compares the stored objects, so it can tell the spellings apart.</li><li>A fixed shape gets <code>tuple[int, float]</code>. A variable length gets <code>tuple[float, ...]</code>, ellipsis and all. Swap the two and the hidden test knows.</li><li>Annotate the container you build, not the signature alone. Four functions, four locals, four bracket forms.</li><li>Group with <code>setdefault</code> on a plain dict. <code>defaultdict</code> is banned here, because the return says <code>dict</code> and the printed form has to match what the annotation claims.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>30</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def group_readings(rows: list[tuple[str, float]]) -> dict[str, list[float]]:
+    # TODO: annotate the dict you build, then one setdefault and one append per row
+
+
+def tally(values: tuple[float, ...]) -> tuple[int, float]:
+    # TODO: annotate the running total as a float, then return the count and the total
+
+
+def busiest(groups: dict[str, list[float]]) -> str | None:
+    # TODO: annotate the answer so far as str | None. No labels at all means None.
+
+
+def flatten(groups: dict[str, list[float]]) -> list[tuple[str, float]]:
+    # TODO: annotate the list you build, then one pair per reading
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def group_readings(rows: list[tuple[str, float]]) -> dict[str, list[float]]:
+    groups: dict[str, list[float]] = {}
+    for label, value in rows:
+        groups.setdefault(label, []).append(value)
+    return groups
+
+
+def tally(values: tuple[float, ...]) -> tuple[int, float]:
+    total: float = 0.0
+    for value in values:
+        total = total + value
+    return (len(values), total)
+
+
+def busiest(groups: dict[str, list[float]]) -> str | None:
+    best: str | None = None
+    best_count: int = -1
+    for label, values in groups.items():
+        if len(values) > best_count:
+            best = label
+            best_count = len(values)
+    return best
+
+
+def flatten(groups: dict[str, list[float]]) -> list[tuple[str, float]]:
+    rows: list[tuple[str, float]] = []
+    for label, values in groups.items():
+        for value in values:
+            rows.append((label, value))
+    return rows
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>LOG = [("radar", 1.5), ("power", 0.5), ("radar", 2.5), ("radar", 4.0), ("power", 1.5)]
+groups = group_readings(LOG)
+print(groups)
+print(group_readings([]))
+print(flatten(groups))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>{'radar': [1.5, 2.5, 4.0], 'power': [0.5, 1.5]}
+{}
+[('radar', 1.5), ('radar', 2.5), ('radar', 4.0), ('power', 0.5), ('power', 1.5)]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>readings: tuple[float, ...] = (1.5, 2.5, 4.0)
+print(tally(readings))
+print(tally(()))
+print(busiest({"radar": [1.5, 2.5, 4.0], "power": [0.5, 1.5]}))
+print(busiest({}))
+print(busiest({"radar": [], "power": []}))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>(3, 8.0)
+(0, 0.0)
+radar
+None
+radar</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+import types
+assert group_readings.__annotations__ == {"rows": list[tuple[str, float]], "return": dict[str, list[float]]}, "rule broken: write every bracket in full, in the modern spelling"
+assert flatten.__annotations__ == {"groups": dict[str, list[float]], "return": list[tuple[str, float]]}, "rule broken: write every bracket in full, in the modern spelling"
+assert tally.__annotations__ == {"values": tuple[float, ...], "return": tuple[int, float]}, "rule broken: a variable length is tuple[float, ...] and a fixed pair is tuple[int, float]"
+assert busiest.__annotations__["groups"] == dict[str, list[float]], "rule broken: write every bracket in full, in the modern spelling"
+assert isinstance(busiest.__annotations__["return"], types.UnionType), "rule broken: write str | None, not the older Optional spelling"
+group_src = inspect.getsource(group_readings)
+assert "groups: dict[str, list[float]]" in group_src, "rule broken: annotate the container you build"
+assert "setdefault(" in group_src, "rule broken: group with setdefault on a plain dict"
+assert "defaultdict" not in group_src, "rule broken: group with setdefault on a plain dict"
+assert "total: float" in inspect.getsource(tally), "rule broken: annotate the running total as a float"
+assert "best: str | None" in inspect.getsource(busiest), "rule broken: annotate the answer so far as str | None"
+assert "rows: list[tuple[str, float]]" in inspect.getsource(flatten), "rule broken: annotate the container you build"
+count, total = tally((0.5,))
+print(count, total)
+print(tally(())[1], type(tally(())[1]).__name__)
+print(busiest(group_readings([("aft", 1.0), ("fwd", 2.0), ("fwd", 3.0)])))
+print(flatten({"fwd": [9.0]}))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>1 0.5
+0.0 float
+fwd
+[('fwd', 9.0)]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 12.3: The Lie Detector!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write four annotated functions that show an annotation checking nothing at runtime and guards that do the checking instead.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Hand two strings to a Java method that wants two integers and the build stops.</p>
+<pre>static int add(int a, int b) { return a + b; }
+
+add("1", "2");
+// error: incompatible types: String cannot be converted to int</pre>
+<p>The class file never exists. The mistake cannot reach a test rig, let alone a flight computer. Every
+type you wrote in the first tier buys you that guarantee in Java, and the compiler enforces it before anything
+runs.</p>
+<p>Now the same function in Python, annotated exactly as the first tier taught you.</p>
+<pre>def add(a: int, b: int) -&gt; int:
+    return a + b
+
+print(add("1", "2"))   # 12</pre>
+<p>No error. No warning. The signature promised two integers and an integer back, and what actually
+happened was that <code>"1" + "2"</code> concatenated two strings into the string <code>"12"</code>,
+which the function returned. The annotation said <code>int</code> and the value is a
+<code>str</code>.</p>
+<p>This is the enforcement gap, and it is the most important thing in this topic. Annotations are
+inert at runtime. Python records each one in <code>__annotations__</code> and then runs your code as
+though you had written none of them. Nothing is coerced. Nothing is rejected.</p>
+<p>The type checker from the earlier tiers does the checking, and it runs at your desk or in CI, over the source.
+It never runs inside the running program. Draw the line there. A checker sees the values your source
+constructs, and it cannot see a value that arrives at runtime from a file, a socket, a message queue,
+a database row or a hardware bus.</p>
+<p>For a safety-critical codebase that has one consequence worth writing on the wall. "We have type
+hints" is not "this input was validated". They are separate claims, and only the second one is a
+safety property. Reading an annotation as a guarantee about a runtime value is a real defect, and a
+review that accepts <code>-&gt; float</code> as evidence that a float arrived has accepted
+nothing.</p>
+<p>The repair is a boundary. Everything crossing into your program from outside gets an explicit check
+that raises. Everything inside stays annotated and unguarded, because the checker already covers the
+inside, and a guard on every call would cost you the speed that made the annotations free.</p>
+<p>Two builtins do the work. <code>isinstance(value, int)</code> asks whether a value is an integer,
+and it is Java's <code>instanceof</code>. <code>raise</code> throws, as you saw in the exceptions topic.</p>
+<pre>if not isinstance(raw, str):
+    raise TypeError(f"read_pressure needs a str, got {type(raw).__name__}")</pre>
+<p>Pick the error to match the failure. A <code>TypeError</code> means the wrong kind of thing turned
+up, so a list where a string was wanted. A <code>ValueError</code> means the right kind of thing
+carried an impossible value, so a pressure of 300 bar on a 250 bar line. Java splits these the same
+way with <code>ClassCastException</code> and <code>IllegalArgumentException</code>, and swapping them
+misleads whoever reads the log at 3am.</p>
+<p>One trap is waiting, and the dictionaries and sets topic already showed you the cause. <code>bool</code> is a subclass of
+<code>int</code>, so <code>isinstance(True, int)</code> is <code>True</code> and a guard written with
+<code>isinstance</code> alone accepts <code>True</code> as the number 1. Where an integer means a
+count of fuel rods, that is not a value you want silently promoted. Reject <code>bool</code> with its
+own test before you accept <code>int</code>.</p>
+<p>At a large boundary, an HTTP request or a queue message, production code often declares the shape
+once with a validation library such as Pydantic instead of writing the checks by hand. This exercise
+stays in the standard library so that you can see what such a library does for you.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write four functions, all of them annotated.</p>
+<ul>
+<li><code>naive_add(a, b)</code> is the exhibit. Annotate it for two integers and an integer back, then
+leave the body as a bare <code>return a + b</code> with no checks at all.</li>
+<li><code>lie_report()</code> takes no arguments and returns a string. Call <code>naive_add</code> with
+the two strings <code>"1"</code> and <code>"2"</code>, read the declared return type out of
+<code>naive_add.__annotations__["return"]</code> and take its <code>__name__</code>, take
+<code>type(result).__name__</code> for what came back, and return
+<code>declared int, returned str '12'</code>. The quotes around the value come from the
+<code>!r</code> conversion you met in the strings topic.</li>
+<li><code>checked_add(a, b)</code> has the same signature and validates both arguments. It raises
+<code>TypeError</code> with the message <code>checked_add needs an int for a, got str</code>, naming
+the offending parameter and the type that turned up. Check <code>a</code> first, then
+<code>b</code>.</li>
+<li><code>read_pressure(raw)</code> takes a string and returns a float. Anything that is not a string
+raises <code>TypeError</code> with the message
+<code>read_pressure needs a str, got NoneType</code>. Convert the string with
+<code>float()</code>, annotate the result as a local variable, and raise <code>ValueError</code> with
+the message <code>pressure 300.0 is outside 0.0 to 250.0</code> when the reading falls outside that
+range. Both ends of the range are allowed.</li>
+</ul>
+<p><code>type(x).__name__</code> gives you the type name as a string, which is the same call you used
+in the dictionaries and sets topic. For <code>None</code> it gives <code>NoneType</code>.</p>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Never trust an annotation to check anything at runtime. The only thing that checks a value is a line you wrote yourself.</li><li>Leave <code>naive_add</code> unguarded. It is the exhibit, not the fix, and a hidden test fails you for defending it.</li><li>Validate with <code>isinstance</code> and <code>raise</code>. <code>assert</code> is banned, because <code>python -O</code> deletes every assert in the file and takes your boundary with it.</li><li>Reject <code>True</code> where you want an integer. The dictionaries and sets topic told you <code>bool</code> is an <code>int</code>, so <code>isinstance</code> on its own is not a guard.</li><li>Wrong kind of thing raises <code>TypeError</code>. Right kind of thing, impossible value raises <code>ValueError</code>. Do not swap them.</li><li>Annotate all four signatures, the guarded ones included. Validating by hand is not a reason to stop writing types.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>32</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def naive_add(a, b):
+    # TODO: annotate the signature. Add no checks. This one is the exhibit.
+    return a + b
+
+
+def lie_report():
+    # TODO: annotate the return. Call naive_add with two strings, then report the lie.
+
+
+def checked_add(a, b):
+    # TODO: annotate, then guard a and then b with isinstance and raise TypeError
+
+
+def read_pressure(raw):
+    # TODO: annotate. A non-str raises TypeError. Out of range raises ValueError.
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def naive_add(a: int, b: int) -> int:
+    return a + b
+
+
+def lie_report() -> str:
+    result = naive_add("1", "2")
+    declared: str = naive_add.__annotations__["return"].__name__
+    actual: str = type(result).__name__
+    return f"declared {declared}, returned {actual} {result!r}"
+
+
+def checked_add(a: int, b: int) -> int:
+    if isinstance(a, bool) or not isinstance(a, int):
+        raise TypeError(f"checked_add needs an int for a, got {type(a).__name__}")
+    if isinstance(b, bool) or not isinstance(b, int):
+        raise TypeError(f"checked_add needs an int for b, got {type(b).__name__}")
+    return a + b
+
+
+def read_pressure(raw: str) -> float:
+    if not isinstance(raw, str):
+        raise TypeError(f"read_pressure needs a str, got {type(raw).__name__}")
+    value: float = float(raw)
+    if value < 0.0 or value > 250.0:
+        raise ValueError(f"pressure {value} is outside 0.0 to 250.0")
+    return value
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(naive_add(3, 4))
+print(naive_add("1", "2"))
+print(naive_add([1], [2]))
+print(lie_report())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>7
+12
+[1, 2]
+declared int, returned str '12'</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(checked_add(3, 4))
+for bad in ("1", 2.5, True, None):
+    try:
+        checked_add(bad, 4)
+    except TypeError as exc:
+        print(exc)
+print(read_pressure("101.3"))
+for raw in (None, 12, "300.0", "-1.0"):
+    try:
+        read_pressure(raw)
+    except (TypeError, ValueError) as exc:
+        print(type(exc).__name__, exc)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>7
+checked_add needs an int for a, got str
+checked_add needs an int for a, got float
+checked_add needs an int for a, got bool
+checked_add needs an int for a, got NoneType
+101.3
+TypeError read_pressure needs a str, got NoneType
+TypeError read_pressure needs a str, got int
+ValueError pressure 300.0 is outside 0.0 to 250.0
+ValueError pressure -1.0 is outside 0.0 to 250.0</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+assert naive_add.__annotations__ == {"a": int, "b": int, "return": int}, "rule broken: annotate every signature"
+assert checked_add.__annotations__ == {"a": int, "b": int, "return": int}, "rule broken: annotate every signature"
+assert read_pressure.__annotations__ == {"raw": str, "return": float}, "rule broken: annotate every signature"
+assert lie_report.__annotations__ == {"return": str}, "rule broken: annotate the return even with no parameters"
+naive_src = inspect.getsource(naive_add)
+assert "isinstance" not in naive_src and "raise" not in naive_src, "rule broken: naive_add stays unguarded, it is the exhibit"
+checked_src = inspect.getsource(checked_add)
+assert "isinstance" in checked_src and "raise TypeError" in checked_src, "rule broken: guard with isinstance and raise TypeError"
+pressure_src = inspect.getsource(read_pressure)
+assert "raise TypeError" in pressure_src and "raise ValueError" in pressure_src, "rule broken: wrong type raises TypeError, impossible value raises ValueError"
+assert "assert " not in checked_src + pressure_src, "rule broken: validate with raise, never with assert"
+print(checked_add(-2, 2), read_pressure("0.0"), read_pressure("250.0"))
+print(naive_add("safety", "critical"))
+try:
+    checked_add(1, True)
+except TypeError as exc:
+    print(exc)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>0 0.0 250.0
+safetycritical
+checked_add needs an int for b, got bool</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+</quiz>

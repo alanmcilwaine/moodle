@@ -1,0 +1,948 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 21.1: The Block That Cleans Itself!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write three functions that drive a supplied valve through a <code>with</code> statement.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java shuts a resource for you with try-with-resources.</p>
+<pre>try (Valve valve = new Valve("inlet")) {
+    valve.flow(5);
+}</pre>
+<p>The compiler accepts that only when <code>Valve</code> implements <code>AutoCloseable</code>. On the
+way out of the block it calls <code>close()</code> for you.</p>
+<p>Before that syntax arrived you wrote the shape by hand, and plenty of code still does.</p>
+<pre>Valve valve = new Valve("inlet");
+try {
+    valve.flow(5);
+} finally {
+    valve.close();
+}</pre>
+<p>Python has one statement for both, and it is called <code>with</code>.</p>
+<pre>with Valve("inlet") as valve:
+    valve.flow(5)</pre>
+<h4>What the statement does</h4>
+<p>Three things happen, and only the middle one is yours.</p>
+<pre>with Valve("inlet") as valve:      the object is asked to open, and hands back a value
+    valve.flow(5)                  your work, with no shutting anywhere in it
+                                   the object is asked to shut, right here</pre>
+<p>The name after <code>as</code> catches whatever the opening step handed back. In this exercise that
+is the valve itself, which is the common case.</p>
+<h4>The object decides what leaving means</h4>
+<p>Java fixes the method name. Every <code>AutoCloseable</code> gets closed, and closing is all the
+language knows how to ask for. Python asks the object two questions instead, through a pair of dunder
+methods called <code>__enter__</code> and <code>__exit__</code>. The object fills them with whatever
+arriving and leaving are supposed to mean for it.</p>
+<p>For a valve that is shutting. For a transaction it is a commit or a rollback. For a lock it is a
+release, and for a changed setting it is putting the old value back. The block above holds none of
+that. It holds the work and nothing else.</p>
+<p>There is no interface to implement either. Any object carrying the two methods can go after
+<code>with</code>. The supplied <code>Valve</code> class shows you both. Reading them is fine, and
+writing your own is the next tier.</p>
+<h4>Leaving happens either way</h4>
+<p>This is the part worth proving to yourself. The shutting step runs when the block finishes, when the
+block raises, and when the block hands back a value with <code>return</code>. Your first function
+returns from inside the block, and the log still records the valve shutting afterwards.</p>
+<p>Running the cleanup is not the same as handling the failure. When the block raises, the valve shuts
+and the exception then carries on out to the caller. Catching it stays a separate job, and the third
+function does that with a <code>try</code> wrapped round the outside of the <code>with</code>.</p>
+<p>Look at what has gone from the Python. The word <code>finally</code> never appears. A
+<code>finally</code> block at the call site means every caller has to remember it, and one forgetful
+caller leaves a valve open. <code>with</code> moves the remembering out of the caller and into the
+object, once.</p>
+<h4>Reading the log</h4>
+<p><code>LOG</code> is a module-level list the supplied class writes to, so you can see the order of
+events without touching a file. The tests print it. Every test after the first clears it first, so each
+one starts from nothing.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>The answer box already holds <code>LOG</code> and the <code>Valve</code> class. Leave both alone.
+<code>valve.flow(litres)</code> records the flow and hands back the number of litres.</p>
+<ul>
+<li><code>pour(name, litres)</code> drives a <code>Valve(name)</code> through a <code>with</code> block
+and returns what <code>valve.flow(litres)</code> hands back. Return from inside the block.</li>
+<li><code>pour_many(names, litres)</code> takes a list of names. It opens one valve per name, each in
+its own <code>with</code> block, and returns the total of every flow.</li>
+<li><code>pour_and_fail(name)</code> opens a valve, calls <code>valve.flow(1)</code>, then raises
+<code>ValueError("line burst")</code> inside the block. Catch that <code>ValueError</code> outside the
+<code>with</code> as <code>problem</code> and return <code>f"caught {problem}"</code>.</li>
+</ul>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Every function drives the valve through a <code>with</code> statement. A hidden test looks for the word.</li><li>Do not write <code>finally</code> anywhere. The valve shuts itself, and that is the whole point.</li><li>Do not call <code>__enter__</code> or <code>__exit__</code> by hand. The <code>with</code> statement calls both for you.</li><li>Leave the supplied <code>Valve</code> class and the <code>LOG</code> list alone.</li><li>Annotate every signature, parameters and return alike.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>36</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from types import TracebackType
+
+LOG: list[str] = []
+
+
+# Supplied. Do not change this class.
+class Valve:
+    """A valve that must be shut again however the block ends."""
+
+    def __init__(self, name: str) -> None:
+        self.name = name
+
+    def flow(self, litres: int) -> int:
+        LOG.append(f"flow {self.name} {litres}")
+        return litres
+
+    def __enter__(self) -> "Valve":
+        LOG.append(f"open {self.name}")
+        return self
+
+    def __exit__(self, exc_type: type[BaseException] | None,
+                 exc_value: BaseException | None,
+                 traceback: TracebackType | None) -> None:
+        LOG.append(f"shut {self.name}")
+
+
+def pour(name: str, litres: int) -> int:
+    # TODO: one with block, and return valve.flow(litres) from inside it
+
+
+def pour_many(names: list[str], litres: int) -> int:
+    # TODO: one valve per name, one with block each, return the total
+
+
+def pour_and_fail(name: str) -> str:
+    # TODO: flow 1, raise ValueError("line burst") inside the block,
+    #       catch it outside the with as problem, return f"caught {problem}"
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from types import TracebackType
+
+LOG: list[str] = []
+
+
+# Supplied. Do not change this class.
+class Valve:
+    """A valve that must be shut again however the block ends."""
+
+    def __init__(self, name: str) -> None:
+        self.name = name
+
+    def flow(self, litres: int) -> int:
+        LOG.append(f"flow {self.name} {litres}")
+        return litres
+
+    def __enter__(self) -> "Valve":
+        LOG.append(f"open {self.name}")
+        return self
+
+    def __exit__(self, exc_type: type[BaseException] | None,
+                 exc_value: BaseException | None,
+                 traceback: TracebackType | None) -> None:
+        LOG.append(f"shut {self.name}")
+
+
+def pour(name: str, litres: int) -> int:
+    with Valve(name) as valve:
+        return valve.flow(litres)
+
+
+def pour_many(names: list[str], litres: int) -> int:
+    total = 0
+    for name in names:
+        with Valve(name) as valve:
+            total += valve.flow(litres)
+    return total
+
+
+def pour_and_fail(name: str) -> str:
+    try:
+        with Valve(name) as valve:
+            valve.flow(1)
+            raise ValueError("line burst")
+    except ValueError as problem:
+        return f"caught {problem}"
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(pour("inlet", 5))
+print(LOG)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>5
+['open inlet', 'flow inlet 5', 'shut inlet']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>LOG.clear()
+print(pour_many(["a", "b"], 2))
+print(LOG)
+LOG.clear()
+print(pour_and_fail("outlet"))
+print(LOG)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>4
+['open a', 'flow a 2', 'shut a', 'open b', 'flow b 2', 'shut b']
+caught line burst
+['open outlet', 'flow outlet 1', 'shut outlet']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+for fn in (pour, pour_many, pour_and_fail):
+    src = inspect.getsource(fn)
+    assert "with " in src, "rule broken: every function drives the valve through a with statement"
+    assert "finally" not in src, "rule broken: the valve shuts itself, so write no finally"
+    assert "__enter__" not in src and "__exit__" not in src, "rule broken: let with call them for you"
+LOG.clear()
+print(pour("relay", 0))
+print(pour_many([], 9))
+print(LOG)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>0
+0
+['open relay', 'flow relay 0', 'shut relay']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 21.2: The Exception Eater!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write two context manager classes of your own, and one function that runs work inside the first.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java's try-with-resources needs <code>AutoCloseable</code>, and the whole interface is one method.</p>
+<pre>public interface AutoCloseable {
+    void close() throws Exception;
+}</pre>
+<p><code>close()</code> is told nothing. It takes no arguments, so it cannot see whether the block
+finished or threw, it cannot record which, and it has no way to stop an exception on its way out.</p>
+<p>Python asks for two methods and tells them everything.</p>
+<pre>class Session:
+    def __enter__(self) -&gt; list[int]:
+        ...
+
+    def __exit__(self, exc_type, exc_value, traceback) -&gt; None:
+        ...</pre>
+<p>Both are dunder methods from the dunder methods topic, so Python calls them and you never call them
+by name. There is no interface to implement and nothing to declare. Any object carrying the pair can go
+after <code>with</code>.</p>
+<h4>What __enter__ hands back</h4>
+<p>The name after <code>as</code> is bound to the return of <code>__enter__</code>, and to nothing
+else. Most managers return <code>self</code>, which is why people read <code>as</code> as "the object I
+opened". It is not that. Return a list and <code>as</code> binds a list.</p>
+<pre>with Session("run-1") as readings:
+    readings.append(3)</pre>
+<p>Here <code>readings</code> is a plain list, because that is what <code>__enter__</code> handed back.
+The session object never gets a name at all. Java scopes the resource to the block and takes the name
+away at the closing brace. Python does not. <code>readings</code> is an ordinary name and it still
+works after the block has ended, which is how the last function below returns it.</p>
+<h4>What __exit__ is told</h4>
+<p>Three arguments arrive after <code>self</code>.</p>
+<pre>__exit__(self, exc_type, exc_value, traceback)
+          |        |          |          |
+          |        |          |          where it was raised
+          |        |          the exception object itself
+          |        the exception class
+          the manager
+
+clean exit    ->  None, None, None
+block raised  ->  SensorError, SensorError("-1 is below zero"), traceback</pre>
+<p>So <code>exc_type is None</code> is the entire test for "did the block work". When it is not
+<code>None</code>, <code>exc_type.__name__</code> gives you the class name as a string. Their types are
+<code>type[BaseException] | None</code>, <code>BaseException | None</code> and
+<code>TracebackType | None</code>. That last name comes from the <code>types</code> module and you have
+to import it.</p>
+<h4>The return value, and the trap</h4>
+<p>Now the part with no Java equivalent, and the heart of this tier. What <code>__exit__</code> returns
+decides what happens to the exception.</p>
+<pre>return True     the exception is thrown away, the caller sees nothing
+return False    the exception carries on out to the caller
+return None     the exception carries on out to the caller</pre>
+<p>Truthy and falsey come from the truth and None topic. Return anything truthy and Python swallows the
+failure. A function that ends without a <code>return</code> hands back <code>None</code>, which is
+falsey, so the safe behaviour is the default behaviour. You have to type something to break it.</p>
+<p>Consider what swallowing costs in a safety-critical system. A reading fails, the manager returns
+<code>True</code>, the caller carries on as though the sample arrived, and the report says the run
+passed. The failure is not logged as a failure anywhere, because nothing above the manager ever heard
+about it. That is the worst defect this course can teach you to write.</p>
+<p>So you write it once, here, on purpose. <code>Muffler</code> below swallows, and a test shows you a
+raise that vanishes without trace. <code>Session</code> does the honest thing beside it. Put them next
+to each other, watch the difference, and then never reach for the swallowing form again.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>The answer box already holds <code>LOG</code>, a module-level list the tests read, and the supplied
+<code>SensorError</code> exception. Leave both alone. Every test after the first clears
+<code>LOG</code> before it starts.</p>
+<ul>
+<li><code>Session(name)</code> holds the name and an empty list called <code>readings</code>. On entry
+it appends <code>f"start {name}"</code> to <code>LOG</code> and hands back that
+<code>readings</code> list. On exit it appends <code>f"end {name} clean"</code> after a block that
+finished, or <code>f"end {name} SensorError"</code> after a block that raised, using the exception
+class name. It lets the exception through.</li>
+<li><code>Muffler(name)</code> appends <code>f"start {name}"</code> on entry and hands back itself. On
+exit it appends <code>f"end {name}"</code>, stores the exception's message text in
+<code>self.swallowed</code>, and swallows the exception. After a clean block
+<code>self.swallowed</code> stays <code>None</code>.</li>
+<li><code>take(name, values)</code> opens a <code>Session(name)</code>, appends each value to the list
+bound by <code>as</code>, and raises <code>SensorError(f"{value} is below zero")</code> on the first
+value under zero. After the block it returns that list.</li>
+</ul>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li><code>Session.__exit__</code> hands back a falsey value. Work out which values suppress, then never return one by accident.</li><li><code>Muffler.__exit__</code> hands back a truthy value. It is here as the counter-example, not as a pattern to copy.</li><li><code>Session.__enter__</code> hands back the readings list, not the session. A hidden test checks the type.</li><li>Write no <code>except</code> and no <code>finally</code> inside <code>take</code>. The manager owns the cleanup and the caller owns the catch.</li><li>Annotate every signature, the three <code>__exit__</code> parameters included. Import <code>TracebackType</code> from <code>types</code>.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>34</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from types import TracebackType
+
+LOG: list[str] = []
+
+
+# Supplied. Do not change this exception.
+class SensorError(Exception):
+    """Raised when a reading cannot be trusted."""
+
+
+class Session:
+    # TODO: __init__ holds the name and an empty readings list
+    # TODO: __enter__ logs the start and hands back the readings list
+    # TODO: __exit__ logs the outcome and lets the exception through
+
+
+class Muffler:
+    # TODO: __init__ holds the name and sets self.swallowed to None
+    # TODO: __enter__ logs the start and hands back self
+    # TODO: __exit__ logs the end, stores the message, and swallows
+
+
+def take(name: str, values: list[int]) -> list[int]:
+    # TODO: one with block over Session(name), append each value,
+    #       raise SensorError on the first negative, return the list
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from types import TracebackType
+
+LOG: list[str] = []
+
+
+# Supplied. Do not change this exception.
+class SensorError(Exception):
+    """Raised when a reading cannot be trusted."""
+
+
+class Session:
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.readings: list[int] = []
+
+    def __enter__(self) -> list[int]:
+        LOG.append(f"start {self.name}")
+        return self.readings
+
+    def __exit__(self, exc_type: type[BaseException] | None,
+                 exc_value: BaseException | None,
+                 traceback: TracebackType | None) -> None:
+        outcome = "clean" if exc_type is None else exc_type.__name__
+        LOG.append(f"end {self.name} {outcome}")
+
+
+class Muffler:
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.swallowed: str | None = None
+
+    def __enter__(self) -> "Muffler":
+        LOG.append(f"start {self.name}")
+        return self
+
+    def __exit__(self, exc_type: type[BaseException] | None,
+                 exc_value: BaseException | None,
+                 traceback: TracebackType | None) -> bool:
+        self.swallowed = None if exc_value is None else str(exc_value)
+        LOG.append(f"end {self.name}")
+        # Returning True throws the failure away. This class is the counter-example.
+        return True
+
+
+def take(name: str, values: list[int]) -> list[int]:
+    with Session(name) as readings:
+        for value in values:
+            if value < 0:
+                raise SensorError(f"{value} is below zero")
+            readings.append(value)
+    return readings
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(take("run-1", [3, 7]))
+print(LOG)
+LOG.clear()
+with Session("demo") as readings:
+    readings.append(42)
+print(readings, type(readings).__name__)
+print(LOG)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[3, 7]
+['start run-1', 'end run-1 clean']
+[42] list
+['start demo', 'end demo clean']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>LOG.clear()
+try:
+    take("run-2", [3, -1, 9])
+except SensorError as problem:
+    print("escaped:", problem)
+print(LOG)
+LOG.clear()
+with Muffler("quiet") as muffler:
+    raise SensorError("pressure lost")
+print("the caller saw nothing")
+print(muffler.swallowed)
+print(LOG)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>escaped: -1 is below zero
+['start run-2', 'end run-2 SensorError']
+the caller saw nothing
+pressure lost
+['start quiet', 'end quiet']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+probe = Session("probe")
+assert isinstance(probe.__enter__(), list), "rule broken: Session.__enter__ hands back the readings list"
+assert probe.__exit__(None, None, None) is not True, "rule broken: Session.__exit__ must not suppress"
+assert not probe.__exit__(SensorError, SensorError("x"), None), "rule broken: Session.__exit__ hands back a falsey value"
+assert Muffler("loud").__exit__(SensorError, SensorError("y"), None), "rule broken: Muffler.__exit__ hands back a truthy value"
+src = inspect.getsource(take)
+assert "with " in src, "rule broken: take drives the Session through a with statement"
+assert "finally" not in src, "rule broken: the Session owns the cleanup, so write no finally"
+assert "except" not in src, "rule broken: let the exception leave take"
+LOG.clear()
+print(take("run-3", []))
+print(LOG)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[]
+['start run-3', 'end run-3 clean']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 21.3: With Great Power!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write a transaction manager as a class, write the same behaviour again as a generator, and open several at once with <code>ExitStack</code>.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java's try-with-resources calls <code>close()</code> on the way out of the block.</p>
+<pre>try (Transaction t = new Transaction("run-1")) {
+    openValve("inlet");
+}</pre>
+<p><code>close()</code> cannot see whether the block threw. It gets no exception. So it cannot choose
+between a commit and a rollback, and it cannot stop the exception either. To roll back you write the
+catch yourself.</p>
+<pre>Transaction t = new Transaction("run-1");
+try {
+    openValve("inlet");
+    t.commit();
+} catch (RuntimeException e) {
+    t.rollback();
+    throw e;
+}</pre>
+<p>That <code>try</code> belongs to the caller, and every caller repeats it.</p>
+<p>A Python <b>context manager</b> is any object with <code>__enter__</code> and <code>__exit__</code>.
+The <code>with</code> statement calls <code>__enter__</code> on the way in. It calls
+<code>__exit__</code> on the way out, however the block ends. Whatever <code>__enter__</code> returns
+is what <code>as</code> binds.</p>
+<pre>with Transaction("run-1") as t:
+    open_valve("inlet")</pre>
+<p><code>__exit__</code> takes three arguments after <code>self</code>. On a clean exit all three are
+<code>None</code>. On a failure they are the exception class, the exception object and the traceback.
+The manager therefore knows what went wrong and decides what to journal. Java has no equivalent. Their
+types are <code>type[BaseException] | None</code>, <code>BaseException | None</code> and
+<code>TracebackType | None</code>, and that last name comes from the <code>types</code> module.</p>
+<p>The value <code>__exit__</code> returns decides what happens to the exception. Return a truthy
+value and Python swallows the exception. Return a falsey one and the exception carries on to the
+caller. Truthy and falsey are from the truth and None topic. <code>True</code> is truthy.
+<code>False</code> and <code>None</code> are falsey. A function that ends without a <code>return</code>
+gives back <code>None</code>, so the safe case is the default case. Return <code>True</code> by
+accident and a failed run reports clean.</p>
+<p>A safety-critical system that hides a failure has done the worst thing it can do. Work out which
+value suppresses, and never return it.</p>
+<p>You can write the same manager as a generator instead. A generator is a function with a
+<code>yield</code> in it, from the generators topic. <code>@contextlib.contextmanager</code> turns one
+into a context manager.</p>
+<pre>from contextlib import contextmanager
+
+
+@contextmanager
+def transaction(name: str) -&gt; Iterator[str]:
+    print("BEGIN")
+    try:
+        yield name
+    finally:
+        print("END")</pre>
+<p>Everything before the single <code>yield</code> is the setup. The yielded value is what
+<code>as</code> binds. Everything after the <code>yield</code> is the teardown. When the block raises,
+Python throws that exception back in at the <code>yield</code>. Without <code>try</code> and
+<code>finally</code> round it, the teardown never runs and the exception walks straight out.</p>
+<p><code>contextlib.ExitStack</code> holds however many managers you turn out to need. Each
+<code>stack.enter_context(manager)</code> pushes one manager and returns its <code>__enter__</code>
+value. Leaving the <code>with</code> unwinds them in reverse order.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>The answer box already holds six things. <code>JOURNAL</code> and <code>ATTEMPTS</code> are
+module-level lists the tests read. <code>PENDING_FAILURES</code> counts the failures still to come.
+<code>ValveError</code> is the exception class. <code>retry</code> is your decorator from the
+decorators topic. <code>open_valve</code> carries <code>@retry(3)</code> and fails the first
+<code>PENDING_FAILURES</code> times you call it. Leave all six alone.</p>
+<ul>
+<li><code>Transaction(name)</code> appends <code>f"BEGIN {name}"</code> on entry and returns itself.
+On exit it appends <code>f"COMMIT {name}"</code> after a clean block and
+<code>f"ROLLBACK {name}"</code> after a failure. It sets <code>self.last_exception</code> to
+<code>None</code> or to the exception class name, and it lets the exception through. One instance must
+survive being used twice.</li>
+<li><code>transaction(name)</code> is the same behaviour written as a generator with
+<code>@contextmanager</code>. It yields the name and writes the same journal lines.</li>
+<li><code>open_many(names)</code> opens one <code>Transaction</code> per name inside a single
+<code>ExitStack</code> and returns how many it opened.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Return a falsey value from <code>__exit__</code>. Work out which value suppresses, then never return it by accident.</li><li>Put <code>try</code> and <code>finally</code> round the one <code>yield</code> in the generator version. One <code>yield</code>, no more.</li><li>Write no <code>try</code> and <code>finally</code> at any call site. Moving it inside the manager is the entire point of the pattern.</li><li>Do not turn <code>retry</code> into a context manager. Work out why <code>__exit__</code> cannot run the block again, and write the reason in a comment.</li><li>Hold no state that a second <code>with</code> on the same instance would trip over. The tests reuse one <code>Transaction</code>.</li><li>Annotate every signature, <code>__enter__</code> and <code>__exit__</code> included. Those three exit parameters have real types, so write them out.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>52</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[import functools
+from collections.abc import Callable, Iterable, Iterator
+from contextlib import contextmanager, ExitStack
+from types import TracebackType
+from typing import Any
+
+JOURNAL: list[str] = []
+ATTEMPTS: list[str] = []
+PENDING_FAILURES = 2
+
+
+# Supplied. Do not change this exception.
+class ValveError(Exception):
+    pass
+
+
+# Supplied from the decorators topic. Do not change it.
+def retry(times: int) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    def decorate(func: Callable[..., Any]) -> Callable[..., Any]:
+        @functools.wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            last = None
+            for _ in range(times):
+                try:
+                    return func(*args, **kwargs)
+                except ValveError as exc:
+                    last = exc
+            raise last
+        return wrapper
+    return decorate
+
+
+# Supplied. Do not change it.
+@retry(3)
+def open_valve(name: str) -> str:
+    """Open the named valve. It sticks for a while first."""
+    global PENDING_FAILURES
+    ATTEMPTS.append(name)
+    if PENDING_FAILURES > 0:
+        PENDING_FAILURES -= 1
+        raise ValveError(f"{name} stuck")
+    return f"{name} open"
+
+
+class Transaction:
+    # TODO: __init__, __enter__ and __exit__
+
+
+# TODO: transaction(name), the same behaviour as a generator with @contextmanager
+
+
+def open_many(names: Iterable[str]) -> int:
+    # TODO: one ExitStack, one Transaction per name, return how many
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[import functools
+from collections.abc import Callable, Iterable, Iterator
+from contextlib import contextmanager, ExitStack
+from types import TracebackType
+from typing import Any
+
+JOURNAL: list[str] = []
+ATTEMPTS: list[str] = []
+PENDING_FAILURES = 2
+
+
+# Supplied. Do not change this exception.
+class ValveError(Exception):
+    pass
+
+
+# Supplied from the decorators topic. Do not change it.
+def retry(times: int) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    def decorate(func: Callable[..., Any]) -> Callable[..., Any]:
+        @functools.wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            last = None
+            for _ in range(times):
+                try:
+                    return func(*args, **kwargs)
+                except ValveError as exc:
+                    last = exc
+            raise last
+        return wrapper
+    return decorate
+
+
+# Supplied. Do not change it.
+@retry(3)
+def open_valve(name: str) -> str:
+    """Open the named valve. It sticks for a while first."""
+    global PENDING_FAILURES
+    ATTEMPTS.append(name)
+    if PENDING_FAILURES > 0:
+        PENDING_FAILURES -= 1
+        raise ValveError(f"{name} stuck")
+    return f"{name} open"
+
+
+class Transaction:
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.last_exception: str | None = None
+
+    def __enter__(self) -> "Transaction":
+        JOURNAL.append(f"BEGIN {self.name}")
+        return self
+
+    def __exit__(self, exc_type: type[BaseException] | None,
+                 exc_value: BaseException | None,
+                 traceback: TracebackType | None) -> bool:
+        self.last_exception = None if exc_type is None else exc_type.__name__
+        JOURNAL.append(f"{'COMMIT' if exc_type is None else 'ROLLBACK'} {self.name}")
+        # Returning True here would swallow the failure and report a clean run.
+        return False
+
+
+@contextmanager
+def transaction(name: str) -> Iterator[str]:
+    JOURNAL.append(f"BEGIN {name}")
+    done = False
+    try:
+        yield name
+        done = True
+    finally:
+        JOURNAL.append(f"{'COMMIT' if done else 'ROLLBACK'} {name}")
+
+
+# A retry cannot be a context manager. __exit__ is handed the exception only after
+# the block has already finished running, and it has no way to run those statements
+# a second time. A decorator can, because it holds the callable itself.
+
+
+def open_many(names: Iterable[str]) -> int:
+    with ExitStack() as stack:
+        for name in names:
+            stack.enter_context(Transaction(name))
+        return len(names)
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>run = Transaction("run-1")
+with run:
+    print(open_valve("inlet"))
+print(run.last_exception, len(ATTEMPTS))
+
+PENDING_FAILURES = 99
+try:
+    with run:
+        open_valve("outlet")
+except ValveError as exc:
+    print("escaped:", exc)
+print(run.last_exception)
+for line in JOURNAL:
+    print(line)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>inlet open
+None 3
+escaped: outlet stuck
+ValveError
+BEGIN run-1
+COMMIT run-1
+BEGIN run-1
+ROLLBACK run-1</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>JOURNAL.clear()
+PENDING_FAILURES = 2
+with transaction("gen-1") as name:
+    print(name, open_valve("inlet"))
+
+PENDING_FAILURES = 99
+try:
+    with transaction("gen-2"):
+        open_valve("outlet")
+except ValveError as exc:
+    print("escaped:", exc)
+for line in JOURNAL:
+    print(line)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>gen-1 inlet open
+escaped: outlet stuck
+BEGIN gen-1
+COMMIT gen-1
+BEGIN gen-2
+ROLLBACK gen-2</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>JOURNAL.clear()
+PENDING_FAILURES = 0
+print(open_many(["a", "b", "c"]))
+print(JOURNAL)
+JOURNAL.clear()
+try:
+    with ExitStack() as stack:
+        for name in ["x", "y"]:
+            stack.enter_context(transaction(name))
+        raise ValveError("mid-stack failure")
+except ValveError as exc:
+    print("escaped:", exc)
+print(JOURNAL)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>3
+['BEGIN a', 'BEGIN b', 'BEGIN c', 'COMMIT c', 'COMMIT b', 'COMMIT a']
+escaped: mid-stack failure
+['BEGIN x', 'BEGIN y', 'ROLLBACK y', 'ROLLBACK x']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+
+probe = Transaction("probe")
+assert probe.__exit__(ValveError, ValveError("x"), None) is not True, "rule broken: __exit__ must not suppress"
+gen_src = inspect.getsource(transaction)
+assert "finally" in gen_src, "rule broken: wrap the yield in try/finally"
+assert gen_src.count("yield") == 1, "rule broken: exactly one yield"
+assert "finally" not in inspect.getsource(open_many), "rule broken: no try/finally at the call site"
+here = Transaction.__module__
+owners = [v for v in list(globals().values())
+          if isinstance(v, type) and getattr(v, "__module__", "") == here and "__enter__" in vars(v)]
+assert len(owners) == 1, "rule broken: retry is not a context manager"
+
+JOURNAL.clear()
+PENDING_FAILURES = 1
+with Transaction("probe-1"):
+    print(open_valve("relay"))
+print(open_many(["p", "q"]))
+print(JOURNAL)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>relay open
+2
+['BEGIN probe-1', 'COMMIT probe-1', 'BEGIN p', 'BEGIN q', 'COMMIT q', 'COMMIT p']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+</quiz>

@@ -1,0 +1,790 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 15.1: One Def, Many Calls!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write three functions whose optional values sit in the signature as defaults.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java has no default parameter values. When you want a short call and a long call, you write the
+method twice and let the short one delegate.</p>
+<pre>String describe(String valveId) {
+    return describe(valveId, 3.5);
+}
+
+String describe(String valveId, double pressureKpa) {
+    return valveId + " at " + pressureKpa + " kPa";
+}</pre>
+<p>Two signatures, one behaviour, and the constant <code>3.5</code> buried in a method body where no
+caller can see it. Add a timeout and you write a third overload. Python replaces the whole set with one
+<code>def</code>.</p>
+<pre>def describe(valve_id: str, pressure_kpa: float = 3.5) -&gt; str:
+    return f"{valve_id} at {pressure_kpa} kPa"</pre>
+<p><code>= 3.5</code> in the parameter list makes <code>pressure_kpa</code> a <b>default parameter</b>.
+A caller who omits it gets <code>3.5</code>. A caller who supplies it gets what they supplied. The
+value now sits in the signature, so it reaches the reader, the documentation and the editor's hint
+rather than hiding in a body.</p>
+<p>One ordering rule comes with it. Every parameter carrying a default has to sit after every parameter
+without one, because Python fills the positional slots from the left. Break that and the
+<code>def</code> line itself is refused with <code>SyntaxError</code>.</p>
+<p>Now the call site. Java matches arguments by position and by nothing else. Python lets a caller pass
+an argument by name.</p>
+<pre>reading("V1", timeout_s=5)</pre>
+<p>An argument passed by name is a <b>keyword argument</b>. An argument matched by position alone is a
+<b>positional argument</b>, and Java has only the second kind. The keyword form sends <code>5</code> to
+the parameter called <code>timeout_s</code> whatever position that parameter sits in, so the call above
+skips straight over <code>pressure_kpa</code> and leaves it on its default. Java cannot skip a middle
+argument at all, and its answer is another overload.</p>
+<p>Name every argument and the order stops mattering.</p>
+<pre>reading(timeout_s=1, valve_id="V3", pressure_kpa=2.0)</pre>
+<p>Two limits apply. Keyword arguments have to come after positional ones in a call, and the parser
+refuses anything else. A parameter already filled by position may not then be filled by name, and that
+one raises <code>TypeError: reading() got multiple values for argument 'valve_id'</code>. Read the
+message as the interpreter telling you the same slot was filled twice.</p>
+<p>One more fact about the default, and it carries further than it looks. Python works the default
+value out once, at the moment the <code>def</code> statement runs, and stores it on the function
+object. Read <code>describe.__defaults__</code> and you find it sitting there as
+<code>(3.5,)</code>.</p>
+<p>A name wrapped in double underscores is called a <b>dunder</b>, short for double underscore. It
+marks a name the language owns. <code>__defaults__</code> is one of them, and it holds a tuple of every
+default the function was born with.</p>
+<p>Java's short overload behaves the other way round. Its body runs on every call, so its
+<code>3.5</code> is produced afresh each time. The Python default is produced once and handed out
+forever. For a number that difference costs you nothing. For a value that can be changed in place it
+costs you a great deal, and that is the whole of the next tier.</p>
+<p>One convention about spacing. Without an annotation you write <code>timeout_s=30</code> with no
+spaces at all. With an annotation you write <code>timeout_s: int = 30</code> with spaces round the
+equals sign. Every Python reader expects both forms in their place.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p><code>STANDARD_KPA</code> already sits in the answer box. Use it as the default rather than typing
+the number twice.</p>
+<ul>
+<li><code>describe(valve_id: str, pressure_kpa: float = STANDARD_KPA) -&gt; str</code> returns
+<code>V1 at 3.5 kPa</code> for the valve <code>V1</code> at the standard pressure.</li>
+<li><code>reading(valve_id: str, pressure_kpa: float = STANDARD_KPA, timeout_s: int = 30) -&gt; str</code>
+returns the three values separated by single spaces, so <code>V1 3.5 30</code>.</li>
+<li><code>quick_check(valve_id: str) -&gt; str</code> calls <code>reading</code> with a timeout of five
+seconds and returns what comes back. It leaves the pressure alone, which means naming the argument it
+does set and mentioning the pressure nowhere.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p>
+</div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Write one <code>def</code> per name. A second <code>def</code> under the same name is not an overload, it is a rebinding, and the first one is gone.</li><li>Put the default in the signature. No <code>if</code> in a body to patch up a missing argument.</li><li>Let <code>quick_check</code> skip the pressure by naming the timeout. Neither <code>3.5</code> nor <code>STANDARD_KPA</code> appears anywhere inside it.</li><li>Annotate every parameter and every return, with spaces round the equals sign wherever a parameter carries both an annotation and a default.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>16</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[STANDARD_KPA = 3.5
+
+
+def describe(valve_id: str, pressure_kpa: float = STANDARD_KPA) -> str:
+    # TODO: one line, and no second def for the short call
+
+
+def reading(valve_id: str, pressure_kpa: float = STANDARD_KPA, timeout_s: int = 30) -> str:
+    # TODO: the three values, single spaces between them
+
+
+def quick_check(valve_id: str) -> str:
+    # TODO: call reading with a five second timeout, naming that argument
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[STANDARD_KPA = 3.5
+
+
+def describe(valve_id: str, pressure_kpa: float = STANDARD_KPA) -> str:
+    return f"{valve_id} at {pressure_kpa} kPa"
+
+
+def reading(valve_id: str, pressure_kpa: float = STANDARD_KPA, timeout_s: int = 30) -> str:
+    return f"{valve_id} {pressure_kpa} {timeout_s}"
+
+
+def quick_check(valve_id: str) -> str:
+    return reading(valve_id, timeout_s=5)
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(describe("V1"))
+print(describe("V2", 7.0))
+print(describe.__defaults__)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>V1 at 3.5 kPa
+V2 at 7.0 kPa
+(3.5,)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(reading("V1"))
+print(reading("V1", timeout_s=5))
+print(reading(timeout_s=1, valve_id="V3", pressure_kpa=2.0))
+print(quick_check("V4"))
+print(reading.__defaults__)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>V1 3.5 30
+V1 3.5 5
+V3 2.0 1
+V4 3.5 5
+(3.5, 30)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>try:
+    reading()
+except TypeError as exc:
+    print(exc)
+try:
+    reading("V1", 2.0, valve_id="V2")
+except TypeError as exc:
+    print(exc)
+try:
+    reading("V1", 2.0, 5, 9)
+except TypeError as exc:
+    print(exc)
+try:
+    reading("V1", mode="fast")
+except TypeError as exc:
+    print(exc)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>reading() missing 1 required positional argument: 'valve_id'
+reading() got multiple values for argument 'valve_id'
+reading() takes from 1 to 3 positional arguments but 4 were given
+reading() got an unexpected keyword argument 'mode'</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import ast
+import inspect
+import pathlib
+import re
+
+# Parse the file rather than scanning its text. CodeRunner stores a second copy
+# of the answer in a string, and a text scan would count that copy too.
+tree = ast.parse(pathlib.Path(inspect.getsourcefile(describe)).read_text())
+written = inspect.getsource(describe) + inspect.getsource(reading)
+call = inspect.getsource(quick_check)
+for label in ("describe", "reading", "quick_check"):
+    defs = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == label]
+    assert len(defs) == 1, "rule broken: one def per name"
+assert not re.search(r"\bif\b", written), "rule broken: put the default in the signature"
+assert describe.__defaults__ == (3.5,), "rule broken: the default belongs in the signature"
+assert reading.__defaults__ == (3.5, 30), "rule broken: both defaults belong in the signature"
+assert "timeout_s=" in call, "rule broken: name the argument you are setting"
+assert "STANDARD_KPA" not in call, "rule broken: quick_check leaves the pressure alone"
+for name in ("valve_id", "pressure_kpa", "timeout_s", "return"):
+    assert name in reading.__annotations__, "rule broken: annotate every parameter and the return"
+for name in ("valve_id", "return"):
+    assert name in describe.__annotations__, "rule broken: annotate every parameter and the return"
+    assert name in quick_check.__annotations__, "rule broken: annotate every parameter and the return"
+
+print(quick_check("V9"))
+print(describe("V9"), reading("V9"))
+print(sorted(reading.__annotations__))
+print(describe(pressure_kpa=0.0, valve_id="V0"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>V9 3.5 5
+V9 at 3.5 kPa V9 3.5 30
+['pressure_kpa', 'return', 'timeout_s', 'valve_id']
+V0 at 0.0 kPa</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 15.2: The Default That Remembers!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write two repaired functions whose defaults are built fresh on every call.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java has no default parameter values. When you want a short call and a long call, you write two
+methods and let the short one delegate.</p>
+<pre>void record(String event) {
+    record(event, new ArrayList&lt;&gt;());
+}
+
+void record(String event, List&lt;String&gt; journal) {
+    journal.add(event);
+}</pre>
+<p>Python writes one <code>def</code> and puts the value straight into the signature.</p>
+<pre>def record(event, journal=[]):
+    journal.append(event)
+    return journal</pre>
+<p>Read that as the Java pair above and you read it wrong. <code>new ArrayList&lt;&gt;()</code> runs on
+every call to the short overload. The <code>[]</code> runs exactly once, at the moment the
+<code>def</code> statement itself executes.</p>
+<p>Python builds that empty list once and stores it on the function object. A function is an object
+here, and every object carries <b>attributes</b>. An attribute is a named value living on an object,
+the way a field lives on a Java instance. <code>record.__defaults__</code> is one such attribute. It
+holds a tuple of every default value the function was born with, and the list is in it.</p>
+<p>A name wrapped in double underscores is called a <b>dunder</b>, short for double underscore. It
+marks a name the language owns.</p>
+<p>So every call that omits <code>journal</code> appends to the same list, and that list lives as long
+as the process does. It reads like a local variable. It behaves like a <code>static</code> field.</p>
+<p>The repair is the <code>None</code> sentinel from the dictionaries topic. <code>None</code> is
+Python's <code>null</code>, and a sentinel is a value you park in a slot to mean "the caller gave me
+nothing".</p>
+<pre>def record(event: str, journal: list[str] | None = None) -&gt; list[str]:
+    if journal is None:
+        journal = []
+    journal.append(event)
+    return journal</pre>
+<p><code>None</code> is immutable, so freezing it costs you nothing. The fresh list now gets built in
+the body, and the body runs on every call. Read <code>list[str] | None</code> as "a list of strings or
+nothing at all", which is the honest description of a parameter carrying a sentinel.</p>
+<p>Write <code>is None</code> here, never <code>if not journal</code>. The truthiness topic showed you
+that an empty list is falsey, which means Python reads it as false in a condition. A caller who hands
+you an empty list wants that list appended to. <code>if not journal</code> would throw it away and hand
+back a different one.</p>
+<p>The trap is wider than lists. <b>Any</b> expression in a default is frozen when the <code>def</code>
+line runs. Name a module-level variable in a default and you capture the value it held at import time.
+A <b>module-level</b> name is bound at the top of the file, outside every function. It is the closest
+thing Python has to a <code>static</code> field. Rebind that name later and the default does not
+notice.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Three things already sit in the answer box. <code>SHIFT</code> is a module-level string.
+<code>broken_record</code> and <code>broken_label</code> carry the bug. Leave all three exactly as they
+are, because the tests put the bug on screen before they put the fix on screen.</p>
+<ul>
+<li><code>record(event: str, journal: list[str] | None = None) -&gt; list[str]</code> appends
+<code>event</code> to <code>journal</code> and returns it. Two calls that omit <code>journal</code>
+never see each other's data. A caller who supplies a list gets that same list object back with the
+event appended.</li>
+<li><code>label(event: str, shift: str | None = None) -&gt; str</code> returns <code>night: handover</code> for the event
+<code>handover</code> under the shift <code>night</code>. When the caller omits <code>shift</code>, read
+the value <code>SHIFT</code> holds right now rather than a copy frozen at import time.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p>
+</div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Never put a mutable literal in a parameter list again, for the rest of this course. <code>= []</code>, <code>= {}</code> and <code>= set()</code> are all banned.</li><li>Fix it with <code>is None</code>. <code>if not journal</code> is banned, because it also fires on a caller's legitimately empty list.</li><li>Do not dodge the trap with a <code>global</code>, a class attribute or <code>functools</code>. One sentinel and one line.</li><li>Leave <code>broken_record</code> and <code>broken_label</code> untouched. The bug goes on screen before the fix does.</li><li>Annotate both signatures you write, parameters and return alike. A sentinel parameter is <code>list[str] | None</code>, never bare <code>list[str]</code>, and never <code>Optional</code>.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>26</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[SHIFT = "night"
+
+
+# Supplied and broken. Do not change these two.
+def broken_record(event, journal=[]):
+    journal.append(event)
+    return journal
+
+
+def broken_label(event, shift=SHIFT):
+    return f"{shift}: {event}"
+
+
+def record(event: str, journal: list[str] | None = None) -> list[str]:
+    # TODO: build the fresh list in the body, not in the signature
+
+
+def label(event: str, shift: str | None = None) -> str:
+    # TODO: read SHIFT now, not at import time
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[SHIFT = "night"
+
+
+# Supplied and broken. Do not change these two.
+def broken_record(event, journal=[]):
+    journal.append(event)
+    return journal
+
+
+def broken_label(event, shift=SHIFT):
+    return f"{shift}: {event}"
+
+
+def record(event: str, journal: list[str] | None = None) -> list[str]:
+    if journal is None:
+        journal = []
+    journal.append(event)
+    return journal
+
+
+def label(event: str, shift: str | None = None) -> str:
+    if shift is None:
+        shift = SHIFT
+    return f"{shift}: {event}"
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(broken_record("pump trip"))
+print(broken_record("valve stuck"))
+print(broken_record("pump trip"))
+print(broken_record.__defaults__)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>['pump trip']
+['pump trip', 'valve stuck']
+['pump trip', 'valve stuck', 'pump trip']
+(['pump trip', 'valve stuck', 'pump trip'],)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(record("pump trip"))
+print(record("valve stuck"))
+mine = ["earlier"]
+print(record("relay fault", mine))
+print(mine)
+print(record.__defaults__)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>['pump trip']
+['valve stuck']
+['earlier', 'relay fault']
+['earlier', 'relay fault']
+(None,)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>SHIFT = "day"
+print(broken_label("handover"))
+print(broken_label.__defaults__)
+print(label("handover"))
+print(label("handover", "swing"))
+print(label.__defaults__)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>night: handover
+('night',)
+day: handover
+swing: handover
+(None,)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+import re
+
+fixed = inspect.getsource(record) + inspect.getsource(label)
+assert "is None" in fixed, "rule broken: fix it with is None"
+assert not re.search(r"if\s+not\s+journal", fixed), "rule broken: use is None, not falsiness"
+assert not re.search(r"\bglobal\b", fixed), "rule broken: no global"
+assert "functools" not in fixed, "rule broken: no functools trickery"
+assert not re.search(r"\bclass\b", fixed), "rule broken: no class attribute"
+for fn in (record, label):
+    assert fn.__defaults__ == (None,), "rule broken: the only default is the None sentinel"
+assert isinstance(broken_record.__defaults__[0], list), "leave broken_record exactly as it is"
+
+empty = []
+print(record("solo", empty) is empty)
+print(record("a"), record("b"))
+print(label("x"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>True
+['a'] ['b']
+day: x</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 15.3: No Positional Smuggling!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write one function with positional-only and keyword-only parameters, plus a wrapper that passes everything through.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java gives you one name and many signatures. The compiler picks the method by the argument types.</p>
+<pre>void openValve(String id) { ... }
+void openValve(String id, double kPa) { ... }
+void openValve(String id, double kPa, int timeoutS) { ... }</pre>
+<p>Python has no overloading at all. A <code>def</code> statement binds a name, the same way
+<code>x = 5</code> binds a name. Write <code>def open_valve</code> three times and the third binding
+wins. The first two are gone, and nothing warns you.</p>
+<p>One Python signature carries the work of the whole overload set, and of the Builder pattern, and of
+the <code>Map&lt;String, Object&gt;</code> options bag. Start with one idea Java does not have.</p>
+<p>A Python caller may pass an argument by name. <code>open_valve("V1", timeout_s=5)</code> sends
+<code>5</code> to the parameter called <code>timeout_s</code>, whatever position that parameter sits
+in. An argument passed by name is a <b>keyword argument</b>. An argument matched by position alone is a
+<b>positional argument</b>. Java has only the second kind.</p>
+<p>Four pieces of grammar build on that.</p>
+<p><code>*args</code> collects any leftover positional arguments into a tuple. It is Java varargs with
+no type and no last-parameter restriction.</p>
+<p><code>**kwargs</code> collects any leftover keyword arguments into a dict. Java has nothing like it.
+The names arrive as keys and the values arrive as values, and you read the result with everything you
+learned in the dictionaries topic.</p>
+<p>A bare <code>*</code> in the parameter list is a wall. Every parameter after it is
+<b>keyword-only</b>, so a caller must name it. No argument can slide into the wrong slot by sitting in
+the wrong position.</p>
+<p>A <code>/</code> in the parameter list is the opposite wall. Every parameter before it is
+<b>positional-only</b>, so a caller may not name it. The identifier belongs to you, and renaming it
+later breaks nobody.</p>
+<pre>def open_valve(valve_id, /, *, pressure_kpa, timeout_s=30, **audit):
+    ...</pre>
+<p>Call it with <code>open_valve("V1", pressure_kpa=3.5, operator="rangi")</code>. The first argument
+fills <code>valve_id</code> by position, and <code>pressure_kpa</code> arrives by name.
+<code>timeout_s</code> falls back to <code>30</code>.</p>
+<p><code>operator</code> matches no parameter at all, so <code>**audit</code> collects it as
+<code>{'operator': 'rangi'}</code>.</p>
+<p>The same two stars work at the call site, where they spread instead of collect.
+<code>f(*items)</code> unpacks a tuple into positional arguments. <code>f(**options)</code> unpacks a
+dict into keyword arguments. That gives you a pass-through wrapper that names no parameter at all.</p>
+<pre>def forward(*args: object, **kwargs: object) -&gt; str:
+    return open_valve(*args, **kwargs)</pre>
+<p>Now the annotations. The type hints topic told you that an annotation looks like a Java type
+declaration and that nothing at run time checks it. This exercise is where you watch that hold.</p>
+<p>The interpreter evaluates each annotation, stores the results in the <code>__annotations__</code>
+dict on the function object, and then ignores them forever. Pass a <code>str</code> where you annotated
+<code>float</code> and the call succeeds. There is no compiler here, and there are no checked
+exceptions.</p>
+<p>An annotation on a star parameter describes one collected item rather than the whole collection, so
+<code>**audit: str</code> says every audit value is a string, not that <code>audit</code> is one.</p>
+<p>One test call breaks a wall on purpose. <code>open_valve(valve_id="V1", pressure_kpa=3.5)</code>
+passes <code>valve_id</code> by name. <code>valve_id</code> sits before the <code>/</code>, so it is
+positional-only and that name matches no parameter.</p>
+<p>The name is not thrown away though. <code>**audit</code> collects it as an audit field, the
+positional slot stays empty, and the error reads <code>missing 1 required positional argument</code>.
+Read that message as proof that the wall held.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Three <code>legacy_valve</code> definitions already sit in the answer box. Leave them alone. They
+exist so the first test can prove that only the last one survived.</p>
+<pre>def open_valve(valve_id, /, *, pressure_kpa, timeout_s=30, **audit):
+    ...</pre>
+<ul>
+<li><code>open_valve</code> with exactly the signature shown above, plus an annotation on every
+parameter and on the return. Annotate <code>valve_id</code> as <code>str</code>,
+<code>pressure_kpa</code> as <code>float</code>, <code>timeout_s</code> as <code>int</code>,
+<code>audit</code> as <code>str</code> and the return as <code>str</code>. Return this exact
+string.
+<pre>f"{valve_id} to {pressure_kpa} kPa over {timeout_s}s {audit}"</pre></li>
+<li><code>forward(*args: object, **kwargs: object) -&gt; str</code>, which calls <code>open_valve</code> and returns its result.
+<code>forward</code> must not mention a single one of <code>open_valve</code>'s parameter names.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p>
+</div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Write exactly one <code>def</code> for <code>open_valve</code>. Do not dispatch on <code>len(args)</code> or <code>isinstance</code>, which is an overload table written by hand.</li><li>Put every safety-relevant parameter after a bare <code>*</code>, so no call site can slide an argument into the wrong slot. Put the identifier before a <code>/</code>, so no call site can rename it.</li><li>Collect the audit fields with <code>**</code>. A plain dict parameter is a different contract.</li><li>Annotate every parameter and the return, then read <code>__annotations__</code> and watch the annotations stop nothing.</li><li>Let <code>forward</code> name none of <code>open_valve</code>'s parameters. Two stars in, two stars out.</li><li>Annotate <code>forward</code> as well. Anything at all may pass through it, so its star parameters take <code>object</code> rather than <code>Any</code>, and it still returns <code>str</code>.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>24</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[# Three Java-style overloads. Supplied. Do not change them.
+def legacy_valve(valve_id):
+    return f"one arg: {valve_id}"
+
+
+def legacy_valve(valve_id, pressure_kpa):
+    return f"two args: {valve_id} {pressure_kpa}"
+
+
+def legacy_valve(valve_id, pressure_kpa, timeout_s):
+    return f"three args: {valve_id} {pressure_kpa} {timeout_s}"
+
+
+def open_valve(valve_id, /, *, pressure_kpa, timeout_s=30, **audit):
+    # TODO: annotate every parameter and the return, then return the exact string
+
+
+def forward(*args, **kwargs):
+    # TODO: annotate both star parameters and the return, then spread straight through.
+    # TODO: name no parameter of open_valve.
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[# Three Java-style overloads. Supplied. Do not change them.
+def legacy_valve(valve_id):
+    return f"one arg: {valve_id}"
+
+
+def legacy_valve(valve_id, pressure_kpa):
+    return f"two args: {valve_id} {pressure_kpa}"
+
+
+def legacy_valve(valve_id, pressure_kpa, timeout_s):
+    return f"three args: {valve_id} {pressure_kpa} {timeout_s}"
+
+
+def open_valve(valve_id: str, /, *, pressure_kpa: float, timeout_s: int = 30, **audit: str) -> str:
+    return f"{valve_id} to {pressure_kpa} kPa over {timeout_s}s {audit}"
+
+
+def forward(*args: object, **kwargs: object) -> str:
+    return open_valve(*args, **kwargs)
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(legacy_valve.__code__.co_argcount)
+try:
+    legacy_valve("V1")
+except TypeError as exc:
+    print(exc)
+print(legacy_valve("V1", 3.5, 10))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>3
+legacy_valve() missing 2 required positional arguments: 'pressure_kpa' and 'timeout_s'
+three args: V1 3.5 10</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(open_valve("V1", pressure_kpa=3.5))
+print(open_valve("V2", pressure_kpa=7.0, timeout_s=5, operator="rangi", ticket="T-88"))
+call = ("V3",)
+opts = {"pressure_kpa": 1.25, "site": "kaitaia"}
+print(forward(*call, **opts))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>V1 to 3.5 kPa over 30s {}
+V2 to 7.0 kPa over 5s {'operator': 'rangi', 'ticket': 'T-88'}
+V3 to 1.25 kPa over 30s {'site': 'kaitaia'}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>try:
+    open_valve(valve_id="V1", pressure_kpa=3.5)
+except TypeError as exc:
+    print(exc)
+try:
+    open_valve("V1", 3.5)
+except TypeError as exc:
+    print(exc)
+print(open_valve.__annotations__)
+print(open_valve("V9", pressure_kpa="not a number at all"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>open_valve() missing 1 required positional argument: 'valve_id'
+open_valve() takes 1 positional argument but 2 were given
+{'valve_id': &lt;class 'str'&gt;, 'pressure_kpa': &lt;class 'float'&gt;, 'timeout_s': &lt;class 'int'&gt;, 'audit': &lt;class 'str'&gt;, 'return': &lt;class 'str'&gt;}
+V9 to not a number at all kPa over 30s {}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+
+src = inspect.getsource(open_valve)
+wrapper = inspect.getsource(forward)
+kinds = {name: str(p.kind) for name, p in inspect.signature(open_valve).parameters.items()}
+assert src.count("def open_valve") == 1, "rule broken: exactly one def for open_valve"
+assert kinds["valve_id"] == "POSITIONAL_ONLY", "rule broken: valve_id sits before a /"
+assert kinds["pressure_kpa"] == "KEYWORD_ONLY", "rule broken: pressure_kpa sits after a bare *"
+assert kinds["timeout_s"] == "KEYWORD_ONLY", "rule broken: timeout_s sits after a bare *"
+assert kinds["audit"] == "VAR_KEYWORD", "rule broken: collect the audit fields with **"
+assert "isinstance" not in src and "len(args)" not in src, "rule broken: no hand-written dispatch"
+for name in ("valve_id", "pressure_kpa", "timeout_s", "audit"):
+    assert name in open_valve.__annotations__, "rule broken: annotate every parameter"
+    assert name not in wrapper, "rule broken: forward must not name a parameter"
+assert "return" in open_valve.__annotations__, "rule broken: annotate the return"
+
+print(list(kinds.values()))
+print(open_valve.__annotations__["pressure_kpa"].__name__)
+print(forward("V5", pressure_kpa=2.5, timeout_s=1))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>['POSITIONAL_ONLY', 'KEYWORD_ONLY', 'KEYWORD_ONLY', 'VAR_KEYWORD']
+float
+V5 to 2.5 kPa over 1s {}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+</quiz>

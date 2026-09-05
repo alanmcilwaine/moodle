@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 02.1: George Boole Rides Again!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A returning officer runs an election and checks whether each proposal has passed. The parish is voting on a statue of George Boole. Write the officer's three checks without using either word on the red line below.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Boolean_types">Boolean types</a>. Read both sentences. What kind of values are <code>true</code> and <code>false</code>? What is their type called?</li><li><a href="https://go.dev/ref/spec#Comparison_operators">Comparison operators</a>. Read the first sentence. What type of value do the six listed operators produce?</li><li><a href="https://go.dev/ref/spec#The_zero_value">The zero value</a>. Find the sentence that lists a default value for each kind of type. What value does a <code>string</code> declared with <code>var</code> contain before any assignment?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java developer might use an <code>if</code> that returns one banned word on each branch. They might also check for a null name. The red line bans both words, so you cannot write that <code>if</code>.</p><pre>if (age >= 18) {
+    return true;
+}
+return false;</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>true</code>, <code>false</code>. <b>Required:</b> <code>var</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find the four default values in The zero value. Which one applies to a <code>string</code>?</li><li>The first sentence under Comparison operators gives the type of <code>ayes &gt; votes</code>. Say that type aloud.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func eligible(age int) bool {
+	// TODO
+}
+
+func registered(name string) bool {
+	// TODO
+}
+
+func carried(ayes, votes int) bool {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func eligible(age int) bool {
+	return age >= 18
+}
+
+func registered(name string) bool {
+	var unentered string
+	return name != unentered
+}
+
+func carried(ayes, votes int) bool {
+	return 2*ayes > votes
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "true false", "required": "var"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(eligible(17), eligible(18), registered("George Boole"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>false true true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(carried(4, 7), carried(3, 6))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true false</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(registered("Mary Everest"), registered(""), eligible(0))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true false false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(carried(50, 100), carried(51, 100), carried(0, 0))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>false true false</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 02.2: Short Declaration Showdown!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A bottle store keeps one count of the bottles in its cellar, five to a crate. On a delivery day the storeman first sends five bottles to the tasting bench. The supplier then matches whatever is left on the shelf, so the count doubles. He reports the new total at the counter. Both steps happen inside one <code>if</code>, in that order, on the total the starter code declares.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Short_variable_declarations">Short variable declarations</a>. What declaration is <code>:=</code> shorthand for? Where can it appear? Find the paragraph beginning "Unlike regular variable declarations". When can <code>:=</code> reuse a name? Does reuse declare a new variable or assign to the existing one?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java developer might replace <code>var</code> with <code>:=</code> on every declaration. That substitution is not correct on every line.</p><pre>var total = crates * 5;
+var taken = total - 5;</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find "same block" in the paragraph beginning "Unlike regular variable declarations". Is the body of your <code>if</code> the same block as the surrounding function?</li><li>Find the declaration for which <code>:=</code> is shorthand. Does that longer form declare a variable or change one?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func stocktake(crates int, delivery bool) int {
+	total := crates * 5
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func stocktake(crates int, delivery bool) int {
+	total := crates * 5
+	if delivery {
+		total = total - 5
+		total = total * 2
+	}
+	return total
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(stocktake(3, false), stocktake(0, false))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>15 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(stocktake(2, true))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>10</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(stocktake(4, true), stocktake(1, true))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>30 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(stocktake(7, true), stocktake(7, false))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>60 35</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 02.3: Constants of the Universe!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>An observatory tracks the planets in order from the Sun. Number all eight, starting with Mercury, by declaring constants with the counter from the specification. Mercury is position 1, Neptune is position 8, and position 0 names no planet. <code>inner</code> reports whether a position is one of the four planets nearest the Sun, and <code>isPlanet</code> reports whether a position names any of the eight. <code>between</code> counts the planets strictly between two positions, given in either order.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Iota">Iota</a>. Read the first two sentences. Where does the count start? What does "in that constant declaration" limit? In the last example block, what value does a named line without an expression receive?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java developer might use <code>enum Planet { MERCURY, VENUS }</code> with <code>ordinal()</code>. Another option is a row of manually numbered <code>static final int</code> fields. Go has neither an <code>enum</code> keyword nor <code>final</code>.</p><pre>static final int MERCURY = 1;
+static final int VENUS = 2;</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>iota</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>The second sentence of Iota gives the starting value. Compare it with Mercury's required position.</li><li>The section's last sentence explains how Go repeats the previous expression list. Inspect the example above that sentence.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>24</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+// TODO declare the eight planets here
+
+func inner(p int) bool {
+	// TODO
+}
+
+func between(a, b int) int {
+	// TODO
+}
+
+func isPlanet(p int) bool {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+const (
+	mercury = iota + 1
+	venus
+	earth
+	mars
+	jupiter
+	saturn
+	uranus
+	neptune
+)
+
+func inner(p int) bool {
+	return p >= mercury && p <= mars
+}
+
+func between(a, b int) int {
+	gap := b - a
+	if a > b {
+		gap = a - b
+	}
+	return gap - 1
+}
+
+func isPlanet(p int) bool {
+	if p < mercury {
+		return false
+	}
+	return p <= neptune
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "iota"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(inner(earth), inner(jupiter))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true false</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(between(mercury, mars), between(mars, mercury))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2 2</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(earth, neptune)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>3 8</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(inner(0), isPlanet(0), isPlanet(neptune), isPlanet(9), between(neptune, mercury))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>false false true false 6</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

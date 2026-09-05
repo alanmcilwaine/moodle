@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 06.1: Verbs of Format!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A museum display card identifies an exhibit and describes its recorded value. The curator also wants each card to show the value's Go type, so a count cannot be mistaken for a mass.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/fmt#hdr-Printing">fmt, the Printing section</a>. Check the verb list at the top. Which verb prints a value's type? Which verb prints a string as it would appear in a Go file?</li><li><a href="https://pkg.go.dev/fmt#hdr-Printing">fmt, the same section</a>. Find the float row in the table headed The default format for %v. Find the paragraph about precision. What precision does %g use when none is specified?</li><li><a href="https://pkg.go.dev/fmt#hdr-Printing">fmt, the paragraph naming the four printing families</a>. Which family adds a newline? Does Printf belong to that family?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java developer might use <code>String.format</code>, type quote marks around <code>%s</code>, and call <code>System.out.println</code> for the newline. Java's <code>%s</code> does not escape the string. Java has no formatting verb for a value's type.</p><pre>System.out.println(String.format("Count: %d", count));
+System.out.println("Title: \"" + title + "\"");</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>Println</code>. <b>Required:</b> <code>%T</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Two verbs in the Printing section mention Go syntax. Read both and choose the verb for a string.</li><li>Find default format and read the row for float types. Also read the paragraph about precision.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>14</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "fmt"
+
+func card(wing, exhibit string, count int, mass float64) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+func card(wing, exhibit string, count int, mass float64) {
+	fmt.Printf("%s wing: %q\nCount: %d\nMass: %v %T\n", wing, exhibit, count, mass, mass)
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "Println", "required": "%T"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[card("East", "Rosetta Stone", 1, 760.5)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>East wing: "Rosetta Stone"
+Count: 1
+Mass: 760.5 float64</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[card("West", "Terracotta Warriors", 8, 150.25)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>West wing: "Terracotta Warriors"
+Count: 8
+Mass: 150.25 float64</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[card("North", "The \"Thinker\"", 1, 180)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>North wing: "The \"Thinker\""
+Count: 1
+Mass: 180 float64</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[card("Dome", "Earth\t(model)", 1, 5.972e24)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Dome wing: "Earth\t(model)"
+Count: 1
+Mass: 5.972e+24 float64</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 06.2: A Rune with a View!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A hotel charges for engraving each letter of a guest's name on a brass door plate. The invoice for Zoë Müller is wrong. Fix the billing program.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/strings#what-is-a-string">Strings, bytes, runes and characters in Go, the section What is a string</a>. What does a string contain?</li><li><a href="https://go.dev/blog/strings#printing-strings">The same article, Printing strings</a>. Find the byte-by-byte loop and the following sentence. What does a string index access? What does the loop's <code>len</code> limit count?</li><li><a href="https://go.dev/blog/strings#range-loops">The same article, Range loops</a>. What two values does each iteration produce? What does the first value count?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, <code>length()</code> and <code>indexOf</code> both appear to operate on letters. Go's <code>len</code> and string indexes use a different unit.</p><pre>int letters = name.length();
+int at = name.indexOf('M');</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>utf8</code>, <code>RuneCountInString</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find the sentence in Range loops that defines the loop index. Can you use that index as the letter position?</li><li>Find the sentence in Printing strings that defines a string index. What does <code>len</code> count instead?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>20</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func letterCount(name string) int {
+	// TODO
+}
+
+func letterIndex(name string, letter rune) int {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func letterCount(name string) int {
+	n := 0
+	for range name {
+		n++
+	}
+	return n
+}
+
+func letterIndex(name string, letter rune) int {
+	n := 0
+	for _, r := range name {
+		if r == letter {
+			return n
+		}
+		n++
+	}
+	return -1
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "utf8 RuneCountInString"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(letterCount("Smith"), letterIndex("Smith", 'i'))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>5 2</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(letterCount("Anna Bell"), letterIndex("Anna Bell", 'z'))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>9 -1</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(letterCount("Zoë Müller"), letterIndex("Zoë Müller", 'M'))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>10 4</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(letterCount("Ólafur"), letterIndex("Ólafur", 'f'))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>6 3</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 06.3: The Builder Retires!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A signwriter builds banners from many pieces of text. The old program joins one piece at a time and takes all day. Write a faster version that builds each banner as one strip without using glue. <code>spaced</code> puts one space between neighbouring letters and none at either end, and É counts as one letter. <code>underlined</code> writes the word, a newline, then one dash for each letter, so É earns one dash. <code>marquee</code> joins the copies as the example shows and also returns the strip's length in bytes, so É counts twice there.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/strings#Builder">strings.Builder</a>. Read the type documentation and its method list. What setup does a Builder need before the first write? Which methods accept a string, a rune, and a byte?</li><li><a href="https://pkg.go.dev/strings#Builder.Len">Builder.Len</a>. Read its sentence. What does Len count? According to the final equation, what does that count equal?</li><li><a href="https://pkg.go.dev/strings#Builder.WriteRune">Builder.WriteRune</a>. Read both sentences. What does WriteRune append? What does its first return value count?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java developer might use <code>new StringBuilder()</code>, chain <code>append</code> calls, and finish with <code>toString()</code>. Another option is plain <code>+</code> inside a loop. Go's Builder has none of those methods, and the red line bans <code>+</code>.</p><pre>StringBuilder sb = new StringBuilder();
+for (char c : word.toCharArray()) sb.append(c).append(' ');
+return sb.toString().trim();</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>+</code>, <code>Sprintf</code>. <b>Required:</b> <code>strings.Builder</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Read the third sentence of the Builder documentation before looking for a constructor.</li><li>Apply the equation at the end of Len's sentence to CAFÉ before writing <code>marquee</code>.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>30</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "strings"
+
+func spaced(word string) string {
+	// TODO
+}
+
+func underlined(word string) string {
+	// TODO
+}
+
+func marquee(word string, copies int) (string, int) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "strings"
+
+func spaced(word string) string {
+	var b strings.Builder
+	for i, r := range word {
+		if i > 0 {
+			b.WriteByte(' ')
+		}
+		b.WriteRune(r)
+	}
+	return b.String()
+}
+
+func underlined(word string) string {
+	var b strings.Builder
+	b.WriteString(word)
+	b.WriteByte('\n')
+	for range word {
+		b.WriteByte('-')
+	}
+	return b.String()
+}
+
+func marquee(word string, copies int) (string, int) {
+	var b strings.Builder
+	for i := 0; i < copies; i++ {
+		if i > 0 {
+			b.WriteString(" * ")
+		}
+		b.WriteString(word)
+	}
+	return b.String(), b.Len()
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "+ Sprintf", "required": "strings.Builder"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(spaced("SALE"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>S A L E</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(underlined("OPEN"))
+fmt.Println(marquee("SALE", 3))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>OPEN
+----
+SALE * SALE * SALE 18</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(spaced("CAFÉ"))
+fmt.Println(underlined("CAFÉ"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>C A F É
+CAFÉ
+----</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(marquee("CAFÉ", 2))
+s, n := marquee("CAFÉ", 0)
+fmt.Printf("%q %d\n", s, n)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>CAFÉ * CAFÉ 13
+"" 0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

@@ -1,0 +1,667 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 08.1: Sorted, Not Stirred!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>You write four functions that change a job queue in place and sort a list of sites two ways.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java gives a list one of two personalities depending on how you built it.</p>
+<pre>List&lt;String&gt; jobs = new ArrayList&lt;&gt;(List.of("scan", "flush"));
+jobs.add("upload");                    // fine, an ArrayList changes
+
+List&lt;String&gt; fixed = List.of("scan", "flush");
+fixed.add("upload");                   // UnsupportedOperationException at run time
+
+Collections.sort(jobs);                                  // sorts jobs itself, returns void
+List&lt;String&gt; fresh = jobs.stream().sorted().toList();    // new list, jobs untouched</pre>
+<p>Python has one list and it always changes. A list literal such as <code>["scan", "flush"]</code> has
+no read-only cousin, so nothing here throws <code>UnsupportedOperationException</code>. The fixed
+sequence Python does have arrives later in the course.</p>
+<p>Changing an object where it stands, rather than building a new one, is called <b>mutating</b> it. The
+change happens <b>in place</b>, so every name pointing at that list sees the result. These five list
+methods all mutate.</p>
+<ul>
+<li><code>jobs.append(x)</code> adds one item to the end.</li>
+<li><code>jobs.extend(other)</code> adds every item of another list to the end.</li>
+<li><code>jobs.insert(0, x)</code> puts <code>x</code> at position 0 and shifts the rest right.</li>
+<li><code>jobs.remove(x)</code> removes the first item whose <b>value</b> equals <code>x</code>. Java's
+<code>List.remove(1)</code> removes the item sitting at index 1, so read this one twice.</li>
+<li><code>jobs.pop()</code> removes the last item and returns it. <code>jobs.pop(0)</code> removes and
+returns the first.</li>
+</ul>
+<p>Four of those five return <code>None</code>, which is Python's null. Only <code>pop</code> hands
+anything back, because it is the only one with something to give. That convention runs through the whole
+language. A method that mutates returns nothing.</p>
+<p>Sorting shows the split most clearly, because Python spells the two halves of
+<code>Collections.sort</code> and <code>stream().sorted()</code> with two names that look almost
+identical.</p>
+<pre>sites = ["Taupo", "Kaikoura", "Napier"]
+
+fresh = sorted(sites)      # a function. Returns a new sorted list and leaves sites alone
+print(sites)               # ['Taupo', 'Kaikoura', 'Napier']
+
+sites.sort()               # a method. Sorts sites itself and returns None
+print(sites)               # ['Kaikoura', 'Napier', 'Taupo']</pre>
+<p>The trap is one line long.</p>
+<pre>sites = sites.sort()       # sites now holds None</pre>
+<p>Nothing complains. The name <code>sites</code> holds <code>None</code>, and the sorted list has been
+thrown away. Python reports the mistake several lines later, when something calls a list method on
+<code>None</code> and raises <code>AttributeError: 'NoneType' object has no attribute 'index'</code>.
+The traceback, which is Python's stack trace, points at that innocent later line rather than at the
+assignment that caused the problem.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Write four functions.</p>
+<ul>
+<li><code>load_queue(jobs, arrivals)</code> changes <code>jobs</code> in place and returns nothing. Add
+the string <code>calibrate</code> at the end, then add every item of <code>arrivals</code> at the end,
+then put the string <code>power_on</code> at the front. In that order.</li>
+<li><code>clear_one(jobs, unwanted)</code> removes the first item equal to <code>unwanted</code>, then
+removes the last item and returns it.</li>
+<li><code>ranked(sites)</code> returns a new sorted list and leaves the caller's list as it found it.</li>
+<li><code>rank_here(sites)</code> sorts the caller's list in place and returns whatever the method hands
+back. The test prints that value on purpose.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Change the list you were given. Build no new list inside <code>load_queue</code> or <code>clear_one</code>.</li><li>Make every change with the five methods above. No <code>+=</code>, no <code>del</code>, and no assigning to a slice.</li><li>Never write <code>sites = sites.sort()</code>. Meet that line here and never type it again.</li><li>Write no loop, and do not call <code>len()</code>.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def load_queue(jobs, arrivals):
+    # TODO: append, extend, then insert at the front. Return nothing
+
+
+def clear_one(jobs, unwanted):
+    # TODO: remove the unwanted value, then pop the last item and return it
+
+
+def ranked(sites):
+    # TODO: return a new sorted list, leaving the caller's list alone
+
+
+def rank_here(sites):
+    # TODO: sort the caller's list in place and return what the method gives you
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def load_queue(jobs, arrivals):
+    jobs.append("calibrate")
+    jobs.extend(arrivals)
+    jobs.insert(0, "power_on")
+
+
+def clear_one(jobs, unwanted):
+    jobs.remove(unwanted)
+    return jobs.pop()
+
+
+def ranked(sites):
+    return sorted(sites)
+
+
+def rank_here(sites):
+    return sites.sort()
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>jobs = ["scan", "flush", "scan"]
+print(load_queue(jobs, ["upload", "report"]))
+print(jobs)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>None
+['power_on', 'scan', 'flush', 'scan', 'calibrate', 'upload', 'report']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>queue = ["scan", "flush", "scan", "purge"]
+print(clear_one(queue, "scan"))
+print(queue)
+sites = ["Taupo", "Kaikoura", "Napier"]
+print(ranked(sites))
+print(sites)
+print(rank_here(sites))
+print(sites)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>purge
+['flush', 'scan']
+['Kaikoura', 'Napier', 'Taupo']
+['Taupo', 'Kaikoura', 'Napier']
+None
+['Kaikoura', 'Napier', 'Taupo']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+loader = inspect.getsource(load_queue)
+clearer = inspect.getsource(clear_one)
+whole = loader + clearer + inspect.getsource(ranked) + inspect.getsource(rank_here)
+assert "for " not in whole and "while " not in whole, "rule broken: the methods do the work, write no loop"
+assert "len(" not in whole, "rule broken: do not call len()"
+assert "+=" not in whole and "del " not in whole, "rule broken: use the five methods"
+assert "return" not in loader, "rule broken: load_queue changes the list and returns nothing"
+assert ".append(" in loader and ".extend(" in loader and ".insert(" in loader, "rule broken: append, extend, insert"
+assert ".remove(" in clearer and ".pop(" in clearer, "rule broken: remove then pop"
+assert "sorted(" in inspect.getsource(ranked), "rule broken: ranked returns a new list from sorted()"
+assert "sorted(" not in inspect.getsource(rank_here), "rule broken: rank_here calls the .sort() method"
+assert ".sort()" in inspect.getsource(rank_here), "rule broken: rank_here calls the .sort() method"
+assert "= sites.sort()" not in whole, "rule broken: that line throws the sorted list away"
+lost = rank_here(["delta", "alpha"])
+print(lost is None)
+try:
+    print(lost.index("alpha"))
+except AttributeError as problem:
+    print("AttributeError:", problem)
+solo = ["only"]
+load_queue(solo, [])
+print(solo)
+print(clear_one(solo, "power_on"))
+print(solo)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>True
+AttributeError: 'NoneType' object has no attribute 'index'
+['power_on', 'only', 'calibrate']
+calibrate
+['only']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 08.2: Mutants Assemble!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>You write three functions that tidy, rotate and sort a list of readings without touching the caller's copy.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java sorts a list two ways and both of them read clearly at the call site.</p>
+<pre>List&lt;Integer&gt; copy = new ArrayList&lt;&gt;(readings);
+Collections.sort(copy);                              // in place, returns void
+List&lt;Integer&gt; fresh = readings.stream().sorted().toList();   // new list</pre>
+<p>Python splits the same pair across two names that look almost identical.</p>
+<ul>
+<li><code>sorted(readings)</code> is a function. It returns a <b>new</b> sorted list and leaves
+<code>readings</code> as it found it.</li>
+<li><code>readings.sort()</code> is a method. It sorts <code>readings</code> itself and returns
+<code>None</code>.</li>
+</ul>
+<p><code>None</code> is Python's null. Write <code>best = readings.sort()</code> and the line runs
+without complaint. Three lines later <code>best.count(5)</code> raises
+<code>AttributeError: 'NoneType' object has no attribute 'count'</code>. The traceback, which is
+Python's stack trace, points at that later line rather than at the assignment that caused the problem.
+Python returns <code>None</code> from every list method that changes the list in place.</p>
+<p>These are the list methods this exercise needs.</p>
+<ul>
+<li><code>readings.append(x)</code> adds one item to the end.</li>
+<li><code>readings.extend(other)</code> adds every item of another list to the end.</li>
+<li><code>readings.insert(0, x)</code> puts <code>x</code> at position 0 and shifts the rest right.</li>
+<li><code>readings.remove(x)</code> removes the first item equal to <code>x</code> and raises
+<code>ValueError</code> when there is none.</li>
+<li><code>readings.pop()</code> removes the last item and returns it. <code>pop(0)</code> removes and
+returns the first.</li>
+<li><code>readings.index(x)</code> returns the position of the first item equal to <code>x</code>.</li>
+<li><code>readings.count(x)</code> returns how many items equal <code>x</code>.</li>
+<li><code>x in readings</code> is <code>True</code> when <code>x</code> appears at least once.</li>
+</ul>
+<p>One of those methods is a trap for a Java developer. Java's <code>List.remove(1)</code> removes the
+item at index 1. Python's <code>readings.remove(1)</code> removes the first item whose <b>value</b> is
+1. Same spelling, different job.</p>
+<p><code>remove</code> deletes one item per call. To delete every occurrence of a value, keep calling
+it while the value is still present. Python writes a <code>while</code> loop with no brackets around
+the test and no braces around the body. The indented lines below the header are the body.</p>
+<pre>while 5 in work:
+    work.remove(5)</pre>
+<p>One idea here matters more than the rest. A function that changes a list its caller still holds has
+changed the caller's data. Copy the list first with <code>readings[:]</code> from the slicing topic, work
+on the copy, and return the copy.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Write three functions.</p>
+<ul>
+<li><code>tidy(readings, drop)</code> returns a new sorted list. Every item equal to <code>drop</code>
+is gone, and the two calibration bounds <code>0</code> and <code>100</code> are added. The caller's
+list is unchanged when you return.</li>
+<li><code>rotate(readings)</code> returns a new list where the last item has moved to the front and
+everything else has shifted right. The caller's list is unchanged.</li>
+<li><code>sort_result(readings)</code> returns whatever <code>.sort()</code> hands back when you call
+it on a copy. The test prints that value on purpose.</li>
+</ul>
+<p>The tests print the caller's list after each call, so an in-place method on the parameter fails
+them.</p>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Leave the caller's list exactly as you found it. Call no changing method on the parameter itself.</li><li>Do not write a <code>for</code> loop. The list methods, <code>in</code>, <code>while</code> and <code>sorted()</code> are enough.</li><li>Do not call <code>len()</code>.</li><li>Print the <code>None</code> from <code>sort_result</code> on purpose. Meeting it by accident three lines later is the failure this exercise prevents.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>16</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def tidy(readings, drop):
+    # TODO: copy first, drop every occurrence, add 0 and 100, return a sorted new list
+
+
+def rotate(readings):
+    # TODO: copy first, then pop the last item and insert it at the front
+
+
+def sort_result(readings):
+    # TODO: call .sort() on a copy and return what it gives you
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def tidy(readings, drop):
+    work = readings[:]
+    while drop in work:
+        work.remove(drop)
+    work.extend([0, 100])
+    return sorted(work)
+
+
+def rotate(readings):
+    work = readings[:]
+    work.insert(0, work.pop())
+    return work
+
+
+def sort_result(readings):
+    return readings[:].sort()
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>site = [72, 5, 91, 5, 40, 5]
+print(tidy(site, 5))
+print(site)
+print(tidy([12, 12, 12], 12))
+print(tidy([], 7))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[0, 40, 72, 91, 100]
+[72, 5, 91, 5, 40, 5]
+[0, 100]
+[0, 100]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>queue = ["north", "south", "east"]
+print(rotate(queue))
+print(queue)
+print(rotate([1]))
+print(sort_result([3, 1, 2]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>['east', 'north', 'south']
+['north', 'south', 'east']
+[1]
+None</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (tidy, rotate, sort_result))
+assert "for " not in whole, "rule broken: no for loop"
+assert "len(" not in whole, "rule broken: do not call len()"
+assert "readings.append(" not in whole, "rule broken: leave the caller's list alone"
+assert "readings.remove(" not in whole, "rule broken: leave the caller's list alone"
+assert "readings.extend(" not in whole, "rule broken: leave the caller's list alone"
+assert "readings.insert(" not in whole, "rule broken: leave the caller's list alone"
+assert "readings.sort(" not in whole, "rule broken: leave the caller's list alone"
+assert "readings.pop(" not in whole, "rule broken: leave the caller's list alone"
+assert "sorted(" in inspect.getsource(tidy), "rule broken: tidy must use sorted()"
+original = [9, 4, 9, 1]
+snapshot = original[:]
+tidy(original, 9)
+rotate(original)
+sort_result(original)
+print(original == snapshot)
+print(original.count(9), original.index(4), 9 in original, 7 in original)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>True
+2 1 True False</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 08.3: Attack of the Clones!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>You write five functions that build grids, empty lists in place, rebind a parameter, and copy a nested structure.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java passes references by value, and so does Python. Reassign a parameter inside a method and the
+caller sees nothing. Change the object the parameter points at and the caller sees everything. You
+already know this rule. Python developers break it for the same reason Java developers do. Reassigning
+a parameter and changing the object it points at look almost the same on the page.</p>
+<pre>void replace(List&lt;int[]&gt; batches) { batches = new ArrayList&lt;&gt;(); }  // caller unaffected
+void wipe(List&lt;int[]&gt; batches)    { batches.clear(); }              // caller sees empty</pre>
+<p>Python has no <code>new</code>, so nothing on the page tells you a copy happened. Assignment in
+Python never copies. A name is a label tied to an object, and <code>b = a</code> ties a second label to
+the same object.</p>
+<pre>a = [1, 2]
+b = a
+b.append(3)
+print(a)        # [1, 2, 3]</pre>
+<p>Copying is a separate act. <code>readings[:]</code> from the slicing topic makes a <b>shallow
+copy</b>, which is a new outer list holding the same inner objects. <code>new ArrayList&lt;&gt;(old)</code>
+in Java is shallow in exactly the same way. When the items are themselves lists, both copies still share
+those lists.</p>
+<p>Now the trap that survives your tests. In Java, <code>new int[3][3]</code> allocates three separate
+rows. The Python spelling that looks the same does not.</p>
+<pre>grid = [[0] * 3] * 3        # looks like three rows
+grid[0][0] = 9
+print(grid)                 # [[9, 0, 0], [9, 0, 0], [9, 0, 0]]</pre>
+<p>The inner <code>[0] * 3</code> builds one row. The outer <code>* 3</code> then stores three
+references to that one row. Write one cell and you write all three, because there is only one row. A
+test that checks <code>grid[0][0] == 9</code> passes, which is why this bug reaches production.</p>
+<p>Do not type that expression in this exercise. Build the sharing by hand instead, so you can see what
+the star was doing.</p>
+<p>To copy a nested structure properly, the standard library has <code>copy.deepcopy</code>. It walks
+the whole structure and rebuilds every level.</p>
+<pre>import copy
+deep = copy.deepcopy(records)</pre>
+<p>One function below needs a loop. Where Java writes <code>for (int[] batch : batches)</code>, Python
+writes <code>for batch in batches:</code>. There are no brackets around the header and no braces around
+the body. The indented lines below the header are the body.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Write five functions.</p>
+<ul>
+<li><code>shared_grid()</code> returns a three-by-three grid of zeros where all three rows are the same
+list object. Bind one row to a name, then put that name in the outer list three times.</li>
+<li><code>independent_grid()</code> returns a three-by-three grid of zeros where the three rows are
+three separate lists.</li>
+<li><code>wipe(batches)</code> empties every inner list so the caller sees empty lists afterwards. It
+returns nothing. <code>batch.clear()</code> empties a list in place.</li>
+<li><code>replace(batches)</code> binds the parameter name to a brand-new list <code>[[9, 9]]</code>
+and returns it. The caller's list stays as it was, which is the point of the function.</li>
+<li><code>shallow_and_deep(records)</code> returns two copies of <code>records</code>. The shallow copy
+first, then the deep copy. Return them as one bare comma-separated expression.</li>
+</ul>
+<p>The tests change an item through each copy and then print the original, so only a real deep copy
+passes the last test.</p>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not use <code>*</code> to repeat a row. Build the sharing by hand so you can see what it shares.</li><li>Never fix a mutating function by rebinding its parameter. Rebinding is invisible to the caller.</li><li>Import <code>copy</code> only once you can say out loud why a shallow copy cannot do the job.</li><li>Write no loop inside <code>independent_grid</code>. Three list literals, typed out.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>22</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[import copy
+
+
+def shared_grid():
+    # TODO: bind one row to a name, then put that name in the outer list three times
+
+
+def independent_grid():
+    # TODO: three separate list literals, no star
+
+
+def wipe(batches):
+    # TODO: empty every inner list in place, return nothing
+
+
+def replace(batches):
+    # TODO: rebind the parameter to [[9, 9]] and return it
+
+
+def shallow_and_deep(records):
+    # TODO: return the shallow copy, then the deep copy
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[import copy
+
+
+def shared_grid():
+    row = [0, 0, 0]
+    return [row, row, row]
+
+
+def independent_grid():
+    return [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+
+def wipe(batches):
+    for batch in batches:
+        batch.clear()
+
+
+def replace(batches):
+    batches = [[9, 9]]
+    return batches
+
+
+def shallow_and_deep(records):
+    return records[:], copy.deepcopy(records)
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>grid = shared_grid()
+print(grid)
+grid[0][0] = 9
+print(grid)
+print(grid[0] is grid[1])
+good = independent_grid()
+good[0][0] = 9
+print(good)
+print(good[0] is good[1])</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+[[9, 0, 0], [9, 0, 0], [9, 0, 0]]
+True
+[[9, 0, 0], [0, 0, 0], [0, 0, 0]]
+False</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>batches = [[1, 2], [3], [4, 5]]
+print(replace(batches))
+print(batches)
+wipe(batches)
+print(batches)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[[9, 9]]
+[[1, 2], [3], [4, 5]]
+[[], [], []]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (shared_grid, independent_grid, wipe, replace, shallow_and_deep))
+assert "* 3" not in whole and "*3" not in whole and "] *" not in whole, "rule broken: no star repetition for rows"
+assert "for " not in inspect.getsource(independent_grid), "rule broken: three literals, no loop"
+assert "batches =" not in inspect.getsource(wipe), "rule broken: rebinding is not a fix"
+assert "deepcopy(" in whole, "rule broken: a shallow copy cannot do the job"
+original = [["a"], ["b"]]
+shallow, deep = shallow_and_deep(original)
+shallow[0].append("x")
+deep[1].append("y")
+print(original)
+print(shallow)
+print(deep)
+print(shallow[0] is original[0], deep[0] is original[0])</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[['a', 'x'], ['b']]
+[['a', 'x'], ['b']]
+[['a'], ['b', 'y']]
+True False</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+</quiz>

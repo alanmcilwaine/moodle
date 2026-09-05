@@ -1,0 +1,778 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 17.1: No New Is Good News!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write an instrument class with an initialiser and two methods, plus two functions that build one and read its counter.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>You have written Java classes for years, so read what follows for the differences rather
+than for the concept. Here is a class that remembers a running total, first in Java.</p>
+<pre>public class Tally {
+    private int count;
+
+    public Tally(int start) {
+        this.count = start;
+    }
+
+    public void add(int amount) {
+        this.count += amount;
+    }
+}</pre>
+<p>Here is the same class in Python.</p>
+<pre>class Tally:
+    def __init__(self, start: int) -&gt; None:
+        self.count = start
+
+    def add(self, amount: int) -&gt; None:
+        self.count += amount</pre>
+<p>Five things changed. Take them one at a time.</p>
+<h4>The class header carries no modifier</h4>
+<p>No <code>public</code>, no <code>final</code>, no
+<code>abstract</code>. The word <code>class</code>, the name, a colon, and an indented body. That is
+the whole header.</p>
+<h4>The initialiser is not named after the class</h4>
+<p>Java makes you repeat <code>Tally</code>, so
+renaming the class means renaming its constructor too. Python calls the method <code>__init__</code>
+in every class ever written, so there is nothing to keep in step. Two underscores at each end of a
+name make a <b>dunder</b>, short for double underscore, and this one is said out loud as "dunder
+init".</p>
+<p>It is not quite a constructor either. Python builds the empty object first, then hands it to
+<code>__init__</code> to fill in. <code>__init__</code> hands nothing back, which is why it is
+annotated <code>-&gt; None</code> like any other method that returns nothing. Return a value from it
+and Python raises <code>TypeError</code>.</p>
+<h4>There is no <code>new</code></h4>
+<p>Call the class itself, the way you would call a function.</p>
+<pre>running = Tally(0)
+running.add(5)</pre>
+<h4><code>self</code> is written out every time</h4>
+<p>Java hides <code>this</code> and lets you drop
+it, so a bare <code>count</code> inside a method might be a field, a parameter or a local, and you
+read the rest of the class to find out which. Python makes the receiver the first parameter of every
+method and makes you type it. <code>self.count</code> is unmistakably the attribute, and
+<code>count</code> is unmistakably local.</p>
+<p>You never pass it at the call site. Writing <code>running.add(5)</code> passes
+<code>running</code> in as <code>self</code> and <code>5</code> in as <code>amount</code>. The name
+<code>self</code> is a convention rather than a keyword, and every Python programmer keeps to it.
+Leave it off a method header and Python raises <code>TypeError</code> the first time anyone calls
+that method.</p>
+<p>Because <code>self</code> is an ordinary parameter, a method is an ordinary function that happens
+to live inside a class. <code>Tally.add(running, 5)</code> does exactly what
+<code>running.add(5)</code> does, and one of the tests below proves it on your own class.</p>
+<h4>There are no field declarations</h4>
+<p>Java lists <code>count</code> at the top of the class and
+the compiler rejects any name it has not seen there. Python has no such list. Python calls a field an
+<b>attribute</b>, and an attribute starts existing the moment you assign to it. Assign every one of
+them to <code>self</code> inside <code>__init__</code>, so a reader meets the full set in one place
+and no instance ever goes without one.</p>
+<p>Assigning a name in the class body instead, outside every method, means something else entirely.
+The next tier of this topic is about what it means, and about the bug it causes. Until then, put
+every attribute in <code>__init__</code>.</p>
+<h4>There is no <code>private</code></h4>
+<p>One more absence. No <code>protected</code>, no package
+scope, nothing. Every attribute is reachable from outside, from anywhere, always. A single leading
+underscore on a name asks other programmers to keep out.</p>
+<pre>self._recalibrations = 0</pre>
+<p>It is a request, not a lock. Nothing enforces it, and one of the functions below makes you read
+such an attribute from outside the class to prove it. Python does have a second trick, written with
+two leading underscores, and the last tier of this topic covers what it really does.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write one class and two functions.</p>
+<ul>
+<li><code>Instrument</code>, built from a <code>tag</code> and a <code>reading</code>.
+<code>__init__</code> stores both and starts <code>self._recalibrations</code> at <code>0</code>.</li>
+<li><code>describe()</code> returns <code>f"{tag} reads {reading}"</code>, for example
+<code>TI-101 reads 21.5</code>.</li>
+<li><code>recalibrate(reading)</code> replaces the stored reading and adds one to
+<code>self._recalibrations</code>.</li>
+<li><code>first_reading(tag, reading)</code> builds one <code>Instrument</code> and returns its
+<code>describe()</code>.</li>
+<li><code>peek_underscore(instrument)</code> reads <code>_recalibrations</code> off the instrument
+from outside the class and returns
+<code>f"the underscore stopped nothing: {..}"</code> with the count in the slot.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not write the word <code>new</code>. Calling the class is the whole of it.</li><li>Name the initialiser <code>__init__</code>. A method named <code>Instrument</code> is a Java constructor that will never run.</li><li>Write <code>self</code> as the first parameter of every method, and never pass it at a call site.</li><li>Assign every attribute to <code>self</code> inside <code>__init__</code>. Declare nothing in the class body.</li><li>Do not write a method whose name starts with <code>get_</code> or <code>set_</code>. Reach for the attribute directly.</li><li>Annotate every signature. <code>__init__</code> hands nothing back, so it gets <code>-&gt; None</code>. Never annotate <code>self</code>.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>26</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[class Instrument:
+    # TODO: __init__ storing tag and reading, and starting self._recalibrations at 0
+    # TODO: describe() and recalibrate(reading)
+    pass
+
+
+def first_reading(tag: str, reading: float) -> str:
+    # TODO: build one Instrument and hand back its describe()
+
+
+def peek_underscore(instrument: Instrument) -> str:
+    # TODO: read _recalibrations off the instrument and return the f-string
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[class Instrument:
+    def __init__(self, tag: str, reading: float) -> None:
+        self.tag = tag
+        self.reading = reading
+        self._recalibrations = 0
+
+    def describe(self) -> str:
+        return f"{self.tag} reads {self.reading}"
+
+    def recalibrate(self, reading: float) -> None:
+        self.reading = reading
+        self._recalibrations += 1
+
+
+def first_reading(tag: str, reading: float) -> str:
+    return Instrument(tag, reading).describe()
+
+
+def peek_underscore(instrument: Instrument) -> str:
+    return f"the underscore stopped nothing: {instrument._recalibrations}"
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>gauge = Instrument("TI-101", 21.5)
+print(gauge.describe())
+gauge.recalibrate(22.0)
+print(gauge.describe())
+print(first_reading("PI-204", 3.0))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>TI-101 reads 21.5
+TI-101 reads 22.0
+PI-204 reads 3.0</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>one = Instrument("FT-9", 1.0)
+two = Instrument("FT-9", 1.0)
+one.recalibrate(9.5)
+print(one.describe(), "|", two.describe())
+print(peek_underscore(one), "|", peek_underscore(two))
+print(Instrument.describe(one))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>FT-9 reads 9.5 | FT-9 reads 1.0
+the underscore stopped nothing: 1 | the underscore stopped nothing: 0
+FT-9 reads 9.5</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+src = inspect.getsource(Instrument)
+assert "def __init__" in src, "rule broken: fill the instance in __init__"
+assert "self:" not in src, "rule broken: never annotate self"
+assert "-&gt; None" in src, "rule broken: __init__ hands nothing back, so annotate it -&gt; None"
+assert "get_" not in src and "set_" not in src, "rule broken: no accessor pair"
+assert "Instrument(" in inspect.getsource(first_reading), "rule broken: build it by calling the class"
+declared = set(Instrument.__dict__) | set(getattr(Instrument, "__annotations__", {}))
+assert "tag" not in declared and "reading" not in declared, "rule broken: attributes are born in __init__"
+fresh = Instrument("ZZ-9", 0.0)
+print(hasattr(fresh, "tag"), hasattr(fresh, "_recalibrations"))
+fresh.recalibrate(1.5)
+fresh.recalibrate(2.5)
+print(peek_underscore(fresh))
+print(Instrument.describe(fresh))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>True True
+the underscore stopped nothing: 2
+ZZ-9 reads 2.5</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 17.2: Self Service!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write a station class whose readings belong to each instance, plus a function that shows what goes wrong when they do not.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Here is a small class in Java.</p>
+<pre>public class Station {
+    private final String name;
+    private final List&lt;Integer&gt; readings = new ArrayList&lt;&gt;();
+
+    public Station(String name) {
+        this.name = name;
+    }
+
+    public void addReading(int value) {
+        this.readings.add(value);
+    }
+}</pre>
+<p>Here is the same class in Python.</p>
+<pre>class Station:
+    def __init__(self, name: str) -&gt; None:
+        self.name = name
+        self.readings: list[int] = []
+
+    def add_reading(self, value: int) -&gt; None:
+        self.readings.append(value)</pre>
+<p>Four things changed. Take them one at a time.</p>
+<h4>There are no field declarations</h4>
+<p>Java lists <code>name</code> and <code>readings</code> at the
+top of the class. Python has no such list. Python calls a field an <b>attribute</b>, and an attribute
+starts existing the moment you assign to it. The place where you assign it decides who owns it.</p>
+<h4><code>__init__</code> is the initialiser, not the constructor</h4>
+<p>Two underscores at each end of
+a name make a <b>dunder</b>, short for double underscore. You met the word in the previous tier of this topic. Say this one out
+loud as "dunder init". Python builds the empty object first, then calls <code>__init__</code> to fill
+it in. You never write <code>new</code>. Call the class itself.</p>
+<pre>north = Station("north")</pre>
+<h4><code>self</code> is written out every time</h4>
+<p>Java hides <code>this</code> and lets you drop
+it. Python makes it the first parameter of every method and makes you type it. You never pass it at
+the call site. Writing <code>north.add_reading(10)</code> passes <code>north</code> in as
+<code>self</code>. Leave <code>self</code> off a method and Python raises <code>TypeError</code> the
+first time anyone calls that method.</p>
+<h4>There are no access modifiers</h4>
+<p>No <code>private</code>, no <code>public</code>, no
+<code>final</code>. Every attribute is reachable from outside. A leading underscore on a name asks
+other programmers to keep out. It is a promise, not a lock. Because everything is reachable anyway, a
+<code>getX</code> and <code>setX</code> pair buys nothing, so Python code reads and writes the
+attribute directly.</p>
+<p>Now the trap. It catches Java developers more often than anything else in this topic. Assign a name
+in the <b>class body</b>, outside every method, and you have not declared a field. You have written the
+equivalent of a Java <code>static</code> field.</p>
+<pre>class LeakyStation:
+    readings: list[int] = []
+    count: int = 0</pre>
+<p>There is one list and every instance shares it. Append through one station and every other station
+sees the new reading. The integer fails the other way round. <code>self.count += 1</code> reads the
+shared <code>0</code>, adds one, then binds the result to the instance. The class attribute never
+changes, so one station grows a <code>count</code> of its own while <code>LeakyStation.count</code>
+still reports <code>0</code>.</p>
+<p>You have met this aliasing bug twice already. The mutation and aliasing topic showed one list
+reached through two names. The signatures and defaults topic showed one default argument reused
+across calls. Here the same bug hides in a class body.</p>
+<p>Not every class attribute is wrong. A value that belongs to the class rather than to any one
+instance belongs in the class body. A unit string is the usual case, so the fixed <code>Station</code>
+keeps one.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>The answer box already holds <code>LeakyStation</code>. Leave it broken. Write the rest.</p>
+<ul>
+<li><code>leak_demo()</code> builds a <code>LeakyStation</code> named <code>north</code> and one named
+<code>south</code>. Add the readings <code>10</code> and <code>12</code> to <code>north</code> only.
+Return <code>f"south sees {..} readings and LeakyStation.count is {..}"</code>. The first slot holds
+how many readings <code>south</code> can see. The second holds <code>LeakyStation.count</code>.</li>
+<li><code>Station</code> with a class attribute <code>UNIT</code> set to <code>"degC"</code> and an
+<code>__init__</code> that takes <code>name</code>.</li>
+<li><code>add_reading(value)</code> adds one reading to this station.</li>
+<li><code>count()</code> returns how many readings this station holds.</li>
+<li><code>average()</code> returns the mean of this station's readings rounded to one decimal place.
+An empty station averages <code>0.0</code>.</li>
+<li><code>label()</code> returns the name and the unit, for example <code>north (degC)</code>.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Create every mutable attribute inside <code>__init__</code>. The fix is one line, so do not rename anything to dodge it.</li><li>Do not write <code>__slots__</code>, a metaclass, or the <code>copy</code> module. None of them is the answer.</li><li>Write <code>self</code> as the first parameter of every method.</li><li>Do not write a method whose name starts with <code>get_</code> or <code>set_</code>.</li><li>Do not edit <code>LeakyStation</code>. It is the exhibit, not the exercise.</li><li>Keep <code>UNIT</code> in the class body. It is the one name that belongs there.</li><li>Annotate every signature you write. Parameters and the return, and a method that hands back nothing still gets <code>-&gt; None</code>.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>32</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[class LeakyStation:
+    readings: list[int] = []
+    count: int = 0
+
+    def __init__(self, name: str) -> None:
+        self.name = name
+
+    def add_reading(self, value: int) -> None:
+        self.readings.append(value)
+        self.count += 1
+
+
+def leak_demo() -> str:
+    # TODO: build north and south, add 10 and 12 to north only, return the f-string
+
+
+class Station:
+    # TODO: keep UNIT here, and give every instance its own readings in __init__
+    pass
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[class LeakyStation:
+    readings: list[int] = []
+    count: int = 0
+
+    def __init__(self, name: str) -> None:
+        self.name = name
+
+    def add_reading(self, value: int) -> None:
+        self.readings.append(value)
+        self.count += 1
+
+
+def leak_demo() -> str:
+    north = LeakyStation("north")
+    south = LeakyStation("south")
+    north.add_reading(10)
+    north.add_reading(12)
+    return f"south sees {len(south.readings)} readings and LeakyStation.count is {LeakyStation.count}"
+
+
+class Station:
+    UNIT: str = "degC"
+
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.readings: list[int] = []
+
+    def add_reading(self, value: int) -> None:
+        self.readings.append(value)
+
+    def count(self) -> int:
+        return len(self.readings)
+
+    def average(self) -> float:
+        if not self.readings:
+            return 0.0
+        return round(sum(self.readings) / len(self.readings), 1)
+
+    def label(self) -> str:
+        return f"{self.name} ({Station.UNIT})"
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(leak_demo())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>south sees 2 readings and LeakyStation.count is 0</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>north = Station("north")
+south = Station("south")
+north.add_reading(10)
+north.add_reading(13)
+south.add_reading(4)
+print(north.count(), south.count())
+print(north.average(), south.average())
+print(north.label())
+print(Station("empty").average())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>2 1
+11.5 4.0
+north (degC)
+0.0</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+src = inspect.getsource(Station)
+body = src.split("def __init__")[0]
+assert "[]" not in body, "rule broken: no mutable attribute in the class body"
+assert "self.readings" in src, "rule broken: readings must be born in __init__"
+assert "__slots__" not in src, "rule broken: no __slots__"
+assert "get_" not in src and "set_" not in src, "rule broken: no accessors"
+assert "copy" not in src, "rule broken: no copy module"
+a = Station("a")
+b = Station("b")
+a.add_reading(1)
+print(a.readings is b.readings, Station.UNIT, a.UNIT is Station.UNIT)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>False degC True</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 17.3: Getters Get Gone!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Rewrite a temperature class so a property replaces its getter and setter pair without one call site changing.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java teaches you never to expose a field. Turn <code>celsius</code> from a field into a computed
+value later and every call site breaks. So you write the pair up front, before anything needs it.</p>
+<pre>public double getCelsius() {
+    return celsius;
+}
+
+public void setCelsius(double value) {
+    if (value &lt; -273.15) {
+        throw new IllegalArgumentException(value + " is below absolute zero");
+    }
+    this.celsius = value;
+}</pre>
+<p>Python removes the reason for the pair. A plain attribute can grow validation later without one call
+site changing. So you start with the attribute and add the checks only when you need them. The tool
+that does it is the <b>property</b>.</p>
+<pre>class Temperature:
+    def __init__(self, celsius: float) -&gt; None:
+        self.celsius = celsius
+
+    @property
+    def celsius(self) -&gt; float:
+        return self._celsius
+
+    @celsius.setter
+    def celsius(self, value: float) -&gt; None:
+        if value &lt; -273.15:
+            raise ValueError(f"{value} is below absolute zero")
+        self._celsius = value</pre>
+<p>A line starting with <code>@</code> above a <code>def</code> is a <b>decorator</b>. It names a
+function that takes the function below it and hands back a replacement. You write your own decorator
+later in the course. Here you only apply the ones Python ships.</p>
+<p><code>@property</code> turns <code>celsius</code> into a method that runs on plain attribute access.
+<code>@celsius.setter</code> attaches the matching method that runs on plain attribute assignment. The
+call sites never change.</p>
+<pre>reading = Temperature(21.5)
+print(reading.celsius)      # runs the getter
+reading.celsius = 40        # runs the setter, which validates
+reading.celsius = -300      # raises ValueError</pre>
+<p>The stored number needs a name of its own. The property already owns the name <code>celsius</code>,
+so an assignment to <code>self.celsius</code> inside the setter would call the setter again and never
+stop. The convention is one leading underscore, <code>self._celsius</code>.</p>
+<p>Define a getter with no setter and the attribute becomes read only. Assign to it and Python raises
+<code>AttributeError</code>. That is how you expose a value computed from other values.</p>
+<h4>Raise, never assert</h4>
+<p>Reject a bad value with <code>raise ValueError(...)</code>. Python has an
+<code>assert</code> statement, and it looks like the shorter way to write the same check. Run Python
+with the <code>-O</code> flag and every <code>assert</code> disappears from the program. Your
+validation disappears with it.</p>
+<p>Java's static factory becomes a <b>classmethod</b>.</p>
+<pre>@classmethod
+def from_fahrenheit(cls, value: float) -&gt; "Temperature":
+    return cls((value - 32) * 5 / 9)</pre>
+<p>A classmethod takes the class as its first parameter instead of the instance, and the parameter is
+named <code>cls</code> by convention. The whole gain comes from writing <code>cls</code> rather than a
+hard-coded class name. Call <code>BuoyTemperature.from_fahrenheit(32)</code> and <code>cls</code> is
+<code>BuoyTemperature</code>, so a subclass gets a subclass back. A Java static factory that says
+<code>new Temperature(...)</code> can never do that. The return type sits in quotes because the class
+is still being read when Python reaches that line, so the bare name would not resolve.</p>
+<p>A <b>staticmethod</b> takes neither <code>self</code> nor <code>cls</code>. It is a plain function
+that lives in the class namespace because that is where a reader will look for it.</p>
+<p>Last, name mangling. Two leading underscores inside a class body are not <code>private</code>.</p>
+<pre>self.__site = "rig-7"</pre>
+<p>Python rewrites that name to <code>self._Temperature__site</code>, using the class name. The rewrite
+stops a subclass from clashing with a name it did not know existed. Anyone who knows the rule can still
+read the attribute from outside, and the last function below makes you do exactly that.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>The answer box holds the old accessor version and the call sites that use it. Rewrite the class so
+those call sites work untouched. Write these.</p>
+<ul>
+<li><code>Temperature</code> with a class attribute <code>ABSOLUTE_ZERO</code> set to
+<code>-273.15</code>.</li>
+<li><code>__init__(celsius)</code> sets <code>self.__site</code> to <code>"rig-7"</code>, then assigns
+<code>celsius</code> through the property so the validation runs during construction too.</li>
+<li>A <code>celsius</code> property with a <code>@celsius.setter</code>. A value below <code>ABSOLUTE_ZERO</code> raises
+<code>ValueError(f"{value} is below absolute zero")</code>.</li>
+<li>A read-only <code>fahrenheit</code> property returning <code>celsius * 9 / 5 + 32</code>.</li>
+<li><code>from_fahrenheit(value)</code> as a classmethod built with <code>cls</code>.</li>
+<li><code>is_freezing(celsius)</code> as a staticmethod returning whether the value is <code>0</code> or
+below.</li>
+<li><code>BuoyTemperature</code>, a subclass of <code>Temperature</code> with an empty body. Python needs
+a statement there, so write <code>pass</code>, which does nothing on purpose.</li>
+<li><code>peek_mangled(reading)</code> reads the mangled attribute from outside the class and returns
+<code>f"_Temperature__site = {..}"</code> with its value.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not leave a method whose name starts with <code>get_</code> or <code>set_</code>. A hidden test reads your source.</li><li>Do not add a pair of brackets to a call site. If you edited <code>t.celsius</code>, you solved a different problem.</li><li>Reject a bad value with <code>raise ValueError</code>. Do not write the word <code>assert</code>.</li><li>Do not store <code>fahrenheit</code> in <code>__init__</code>. Assigning to it must raise.</li><li>Build the alternative constructor with <code>cls</code>, never with the name <code>Temperature</code>.</li><li>Read the mangled attribute by its real name. Do not use <code>getattr</code> tricks or <code>__dict__</code>.</li><li>Annotate every signature, properties and classmethods included. A getter that hides its return type is a getter you have to read twice.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>34</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[# The version you are replacing. Delete it once your property version works.
+#
+#     class Temperature:
+#         def __init__(self, celsius: float) -> None:
+#             self.celsius = celsius
+#
+#         def get_celsius(self) -> float:
+#             return self.celsius
+#
+#         def set_celsius(self, value: float) -> None:
+#             self.celsius = value
+#
+# The call sites below must keep working exactly as written:
+#     reading.celsius
+#     reading.celsius = 40
+
+
+class Temperature:
+    # TODO: ABSOLUTE_ZERO, __init__ with self.__site, celsius property and setter,
+    # TODO: read-only fahrenheit, from_fahrenheit classmethod, is_freezing staticmethod
+    pass
+
+
+class BuoyTemperature(Temperature):
+    pass
+
+
+def peek_mangled(reading: Temperature) -> str:
+    # TODO: read the mangled attribute off reading, return the f-string with its value
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[class Temperature:
+    ABSOLUTE_ZERO: float = -273.15
+
+    def __init__(self, celsius: float) -> None:
+        self.__site = "rig-7"
+        self.celsius = celsius
+
+    @property
+    def celsius(self) -> float:
+        return self._celsius
+
+    @celsius.setter
+    def celsius(self, value: float) -> None:
+        if value < Temperature.ABSOLUTE_ZERO:
+            raise ValueError(f"{value} is below absolute zero")
+        self._celsius = value
+
+    @property
+    def fahrenheit(self) -> float:
+        return self._celsius * 9 / 5 + 32
+
+    @classmethod
+    def from_fahrenheit(cls, value: float) -> "Temperature":
+        return cls((value - 32) * 5 / 9)
+
+    @staticmethod
+    def is_freezing(celsius: float) -> bool:
+        return celsius <= 0
+
+
+class BuoyTemperature(Temperature):
+    pass
+
+
+def peek_mangled(reading: Temperature) -> str:
+    return f"_Temperature__site = {reading._Temperature__site}"
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>t = Temperature(21.5)
+print(t.celsius)
+t.celsius = 40
+print(t.celsius)
+print(t.fahrenheit)
+print(Temperature.is_freezing(-4), Temperature.is_freezing(4))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>21.5
+40
+104.0
+True False</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>try:
+    Temperature(-300)
+except ValueError as problem:
+    print("ValueError:", problem)
+try:
+    t = Temperature(10)
+    t.fahrenheit = 100
+except AttributeError as problem:
+    print("AttributeError caught")
+boiling = Temperature.from_fahrenheit(212)
+print(boiling.celsius)
+buoy = BuoyTemperature.from_fahrenheit(32)
+print(type(buoy).__name__, buoy.celsius)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>ValueError: -300 is below absolute zero
+AttributeError caught
+100.0
+BuoyTemperature 0.0</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+src = inspect.getsource(Temperature)
+assert "get_" not in src and "set_" not in src, "rule broken: no accessor methods"
+assert "assert " not in src, "rule broken: raise ValueError, never assert"
+assert "@property" in src, "rule broken: use @property"
+assert "@classmethod" in src and "cls(" in src, "rule broken: build with cls"
+assert "@staticmethod" in src, "rule broken: add a @staticmethod"
+print(peek_mangled(Temperature(0)))
+print(hasattr(Temperature(0), "__site"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>_Temperature__site = rig-7
+False</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+</quiz>

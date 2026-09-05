@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 00.2: Smoke Test the Tester!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A function <code>abs(n int) int</code> exists but its body is hidden. Write a test file that proves it returns the absolute value of <code>n</code>. Your tests run against the real <code>abs</code> and against deliberately broken variants. The suite must pass on the real one and fail on every broken one. Infrastructure check question, not part of the course.</p></div>]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_testwriter</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>20</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "testing"
+
+func TestAbs(t *testing.T) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "testing"
+
+func TestAbs(t *testing.T) {
+	cases := []struct {
+		name string
+		in   int
+		want int
+	}{
+		{"positive", 3, 3},
+		{"negative", -3, 3},
+		{"zero", 0, 0},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := abs(c.in); got != c.want {
+				t.Errorf("abs(%d) = %d, want %d", c.in, got, c.want)
+			}
+		})
+	}
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "goto"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text>correct</text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>PASS</text></expected>
+            <extra><text><![CDATA[package main
+
+func abs(n int) int {
+	if n < 0 {
+		return -n
+	}
+	return n
+}
+]]></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text>mutant1</text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>FAIL</text></expected>
+            <extra><text><![CDATA[package main
+
+func abs(n int) int {
+	return n
+}
+]]></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text>mutant2</text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>FAIL</text></expected>
+            <extra><text><![CDATA[package main
+
+func abs(n int) int {
+	return -n
+}
+]]></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

@@ -1,0 +1,945 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 18.1: Super Is Not Automatic!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write a subclass that chains to its base, plus two functions that expose a missing chain and a class's resolution order.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java extends a class with a keyword, and it writes one line of your constructor for you without
+telling you.</p>
+<pre>public class Sensor {
+    protected final String name;
+    protected final List&lt;Double&gt; readings = new ArrayList&lt;&gt;();
+
+    public Sensor(String name) {
+        this.name = name;
+    }
+
+    public String describe() {
+        return name + " holds " + readings.size() + " readings";
+    }
+}
+
+public class PressureSensor extends Sensor {
+    private final String unit;
+
+    public PressureSensor(String name, String unit) {
+        super(name);
+        this.unit = unit;
+    }
+
+    @Override
+    public String describe() {
+        return super.describe() + " in " + unit;
+    }
+}</pre>
+<p>Here is the same pair in Python.</p>
+<pre>class PressureSensor(Sensor):
+    def __init__(self, name: str, unit: str) -&gt; None:
+        super().__init__(name)
+        self.unit = unit
+
+    def describe(self) -&gt; str:
+        return f"{super().describe()} in {self.unit}"</pre>
+<p>Four things changed, and one of them will bite you this week.</p>
+<h4>The parent goes in parentheses</h4>
+<p>There is no <code>extends</code> keyword and no
+<code>implements</code>. Write the parent's name in brackets after the child's name and the subclass
+exists.</p>
+<h4>Python does not chain constructors</h4>
+<p>This is the one that bites. Leave <code>super(name)</code>
+out of a Java constructor and javac inserts a call to the no-argument parent constructor for you, or
+refuses to compile when there is not one. Python inserts nothing at all. A subclass
+<code>__init__</code> that forgets <code>super().__init__(name)</code> is legal Python, runs without a
+murmur, and hands back an object where <code>self.name</code> and <code>self.readings</code> were never
+created.</p>
+<p>Nothing raises at the point of the mistake. The object gets built, returned and passed around. The
+first method that reaches for a missing attribute raises <code>AttributeError</code>, and by then you
+are a long way from the constructor that caused it.</p>
+<h4>Overriding needs no keyword</h4>
+<p>Define a method in the subclass with the same name as one in the
+parent and yours wins. Nothing like <code>@Override</code> holds you to the spelling, so a typo quietly
+makes a new method instead, and the parent's version keeps running for the rest of the program. A later
+tier of this topic adds the marker that makes that promise checkable.</p>
+<h4><code>super()</code> takes brackets</h4>
+<p>Java writes <code>super.describe()</code>. Python writes
+<code>super().describe()</code>, because <code>super()</code> is a call that hands back a proxy object
+standing in for the parent. Inside a class body Python works out the arguments that call needs, so you
+type the empty brackets and nothing else.</p>
+<p>Call the parent's version rather than copying what it returns. <code>super().describe()</code> still
+tells the truth after somebody edits the parent, and a copied sentence goes stale in silence.</p>
+<p>Last, the part Java has not got. A Python class may list more than one parent.</p>
+<pre>class LoggedAlarmSensor(Sensor, Logged, Alarmed):
+    pass</pre>
+<p>Two parents can define the same method, so Python needs a rule for which one wins. The rule produces
+the <b>method resolution order</b>, written MRO, which is the list of classes Python walks through when
+it looks a name up. Every class carries its own list as <code>__mro__</code>, and that list runs
+broadly left to right across the parents you wrote. It finishes at <code>object</code>, because every
+class in Python inherits from <code>object</code> in the end.</p>
+<p>Recognise multiple inheritance when you read it. Do not reach for it yet.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>The answer box holds <code>Sensor</code> and four more classes. Leave all five exactly as they are,
+including the broken one. Write these three.</p>
+<ul>
+<li><code>PressureSensor</code>, a subclass of <code>Sensor</code>, taking <code>name</code> and
+<code>unit</code>. Chain to the base with <code>super().__init__(name)</code>, then store
+<code>unit</code>. Override <code>describe</code> to return
+<code>f"{super().describe()} in {unit}"</code>. Write no <code>add</code> method, because the inherited
+one already works.</li>
+<li><code>forgot_super()</code> builds <code>ForgetfulSensor("p1", "bar")</code>, calls
+<code>describe()</code> on it inside a <code>try</code>, catches the <code>AttributeError</code>, and
+returns <code>f"AttributeError: {..}"</code> with the message text in the slot.</li>
+<li><code>mro_names(target)</code> returns the <code>__name__</code> of every class in
+<code>target.__mro__</code>, in order.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Call <code>super().__init__(name)</code>. Python chains nothing for you, and that is the line Java was writing behind your back.</li><li>Do not assign <code>self.name</code>, and do not go near <code>readings</code>. The base owns both, and a copy of its work is a copy that drifts.</li><li>Build <code>describe</code> on top of <code>super().describe()</code>. Retyping the base sentence makes it stale the day somebody edits the parent.</li><li>Reach the parent through <code>super()</code>. Writing <code>Sensor.describe(self)</code> works today and breaks the day the hierarchy moves.</li><li>Do not edit the supplied block. <code>ForgetfulSensor</code> stays broken, because it is the exhibit.</li><li>Annotate every signature. <code>__init__</code> gets <code>-&gt; None</code>, and <code>self</code> never gets an annotation.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>42</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[class Sensor:
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.readings: list[float] = []
+
+    def add(self, value: float) -> None:
+        self.readings.append(value)
+
+    def describe(self) -> str:
+        return f"{self.name} holds {len(self.readings)} readings"
+
+
+class ForgetfulSensor(Sensor):
+    # The exhibit. No super().__init__ call, so no name and no readings.
+    def __init__(self, name: str, unit: str) -> None:
+        self.unit = unit
+
+
+class Logged:
+    def label(self) -> str:
+        return "logged"
+
+
+class Alarmed:
+    def label(self) -> str:
+        return "alarmed"
+
+
+class LoggedAlarmSensor(Sensor, Logged, Alarmed):
+    pass
+
+
+# Everything above is given. Do not change it. Write your answer below.
+
+# TODO: PressureSensor(Sensor) with __init__(name, unit) and an overridden describe
+
+
+def forgot_super() -> str:
+    # TODO: build a ForgetfulSensor, call describe(), catch AttributeError, return the f-string
+
+
+def mro_names(target: type) -> list[str]:
+    # TODO: return the __name__ of every class in target.__mro__
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[class Sensor:
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.readings: list[float] = []
+
+    def add(self, value: float) -> None:
+        self.readings.append(value)
+
+    def describe(self) -> str:
+        return f"{self.name} holds {len(self.readings)} readings"
+
+
+class ForgetfulSensor(Sensor):
+    # The exhibit. No super().__init__ call, so no name and no readings.
+    def __init__(self, name: str, unit: str) -> None:
+        self.unit = unit
+
+
+class Logged:
+    def label(self) -> str:
+        return "logged"
+
+
+class Alarmed:
+    def label(self) -> str:
+        return "alarmed"
+
+
+class LoggedAlarmSensor(Sensor, Logged, Alarmed):
+    pass
+
+
+# Everything above is given. Do not change it. Write your answer below.
+
+class PressureSensor(Sensor):
+    def __init__(self, name: str, unit: str) -> None:
+        super().__init__(name)
+        self.unit = unit
+
+    def describe(self) -> str:
+        return f"{super().describe()} in {self.unit}"
+
+
+def forgot_super() -> str:
+    broken = ForgetfulSensor("p1", "bar")
+    try:
+        broken.describe()
+    except AttributeError as problem:
+        return f"AttributeError: {problem}"
+    return "no error"
+
+
+def mro_names(target: type) -> list[str]:
+    return [step.__name__ for step in target.__mro__]
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>inlet = PressureSensor("inlet", "bar")
+inlet.add(1.5)
+inlet.add(2.5)
+print(inlet.name, inlet.unit)
+print(inlet.readings)
+print(inlet.describe())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>inlet bar
+[1.5, 2.5]
+inlet holds 2 readings in bar</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(forgot_super())
+print(mro_names(PressureSensor))
+print(mro_names(LoggedAlarmSensor))
+print(LoggedAlarmSensor("multi").label())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>AttributeError: 'ForgetfulSensor' object has no attribute 'name'
+['PressureSensor', 'Sensor', 'object']
+['LoggedAlarmSensor', 'Sensor', 'Logged', 'Alarmed', 'object']
+logged</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+src = inspect.getsource(PressureSensor)
+assert "super().__init__" in src, "rule broken: chain to the base initialiser"
+assert "super().describe()" in src, "rule broken: build on the base description"
+assert "self.name" not in src, "rule broken: let super().__init__ set the name"
+assert "readings" not in src, "rule broken: the base owns readings"
+assert "def add" not in src, "rule broken: the inherited add already works"
+assert "Sensor." not in src, "rule broken: reach the parent through super()"
+first = PressureSensor("first", "bar")
+second = PressureSensor("second", "psi")
+first.add(9.0)
+first.add(3.0)
+print(first.describe())
+print(second.describe())
+print(first.readings is second.readings)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>first holds 2 readings in bar
+second holds 0 readings in psi
+False</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 18.2: Fill in the Abstract!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Fill the abstract holes in a supplied safety-check base class with two concrete checks, a custom exception and one demonstration function.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>In Java you write <code>abstract class</code> or <code>interface</code>, then
+<code>extends</code> or <code>implements</code>, and the compiler stops you the moment a method is
+missing. Python has none of those keywords. A base class goes in parentheses after the class name, and
+nothing is checked until the program runs.</p>
+<pre>class RangeCheck(SafetyCheck):
+    ...</pre>
+<p>The three dots are the <b>Ellipsis</b> literal. Python needs a statement inside every body, and the
+dots are a statement, so they stand in for code you have not written. <code>pass</code> from the classes topic
+does the same job.</p>
+<p>Without help, that base would be a suggestion. A subclass could skip a method and Python would only
+complain at the call. The <b>abstract base class</b> closes the gap.</p>
+<pre>from abc import ABC, abstractmethod
+
+class SafetyCheck(ABC):
+    @abstractmethod
+    def evaluate(self, reading: float) -&gt; bool:
+        """Return True when the reading is acceptable."""</pre>
+<p>Inheriting from <code>ABC</code> and marking a method with <code>@abstractmethod</code> makes Python
+refuse to build the object. Call <code>SafetyCheck("base")</code> and you get <code>TypeError</code>
+before a single line of your code runs. A subclass that implements every abstract method builds
+normally.</p>
+<p>The triple-quoted string under <code>evaluate</code> is a <b>docstring</b>. Python needs a statement
+in a body, and a docstring is a statement, so an abstract method needs nothing else.</p>
+<p>Carry your Java habits into this exercise and three more differences catch you.</p>
+<h4>No constructor chaining</h4>
+<p>Java inserts <code>super()</code> for you when you leave it out.
+Python never does. Write a subclass <code>__init__</code> that forgets
+<code>super().__init__(name)</code> and the base's attributes never exist. No compiler stops you. You
+find out when a method reaches for <code>self.failures</code> and gets <code>AttributeError</code>.</p>
+<pre>def __init__(self, name: str, low: float, high: float) -&gt; None:
+    super().__init__(name)
+    self.low = low
+    self.high = high</pre>
+<h4>Nothing is final</h4>
+<p>Every method can be overridden. That makes the template method pattern
+plain. The base writes a concrete <code>run()</code> that calls the abstract hooks, and a subclass
+fills the holes. Some hooks are abstract and force you to write them. Others are concrete and give you
+a default you can replace, and <code>failure_error</code> below is one of those.</p>
+<h4>A custom exception is a subclass and nothing more</h4>
+<p>No checked exceptions, no
+<code>throws</code> clause, no fields required.</p>
+<pre>class OutOfRange(CheckFailed):
+    """Raised when a reading sits outside the allowed band."""</pre>
+<p>Catch the parent and you catch the child, so <code>except CheckFailed</code> still catches an
+<code>OutOfRange</code>.</p>
+<p>Last, the reason Python can live without interfaces. Look at the consumer supplied in the answer
+box.</p>
+<pre>def report(checks: Iterable[SafetyCheck]) -&gt; str:
+    return " | ".join(check.describe() for check in checks)</pre>
+<p>The annotation is a note to a reader and to a type checker, and at run time it stops nothing. This
+function tests no type and calls no <code>isinstance</code>. It calls
+<code>describe()</code> and that is the entire contract. Any object with that method is accepted. This
+is called <b>duck typing</b>, and it is why a Python consumer needs no interface to program against.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>The answer box holds <code>CheckFailed</code>, <code>SafetyCheck</code> and <code>report</code>
+already written. Leave all three exactly as they are. The base sets <code>self.name</code> and
+<code>self.failures</code>, and its <code>run(reading)</code> returns
+<code>f"{name} accepted {reading}"</code> on success, or records the reading and raises
+<code>self.failure_error(reading)</code> on failure. Write the rest.</p>
+<ul>
+<li><code>OutOfRange</code>, a subclass of <code>CheckFailed</code>.</li>
+<li><code>RangeCheck(name, low, high)</code>. <code>evaluate</code> accepts a reading from
+<code>low</code> to <code>high</code> inclusive. <code>describe</code> returns
+<code>f"{name} keeps readings in {low}..{high}"</code>. Override <code>failure_error</code> to return
+<code>OutOfRange(f"{name} rejected {reading} outside {low}..{high}")</code>.</li>
+<li><code>RateOfChangeCheck(name, limit)</code> holds the previous reading, starting at
+<code>None</code>. The first reading is always accepted and becomes the previous one. A later reading
+is accepted when its distance from the previous reading is <code>limit</code> or less. Store a later
+reading as the previous one either way. <code>describe</code> returns
+<code>f"{name} allows jumps up to {limit}"</code>. Leave <code>failure_error</code> alone here, so this
+check raises the plain <code>CheckFailed</code>.</li>
+<li><code>abstract_error()</code> tries to build <code>SafetyCheck("base")</code> and catches the
+<code>TypeError</code>. Return
+<code>f"TypeError and the word abstract appears: {..}"</code>. The slot holds whether
+<code>"abstract"</code> appears in the message text.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not edit <code>SafetyCheck</code>, <code>CheckFailed</code> or <code>report</code>. The tests use them exactly as given.</li><li>Do not write your own <code>run</code>. The base already wrote it, and you are filling the abstract holes.</li><li>Call <code>super().__init__(..)</code> in both subclasses. Python does not chain constructors for you.</li><li>Assign nothing in a class body. Every attribute is born in <code>__init__</code>.</li><li>Do not write <code>isinstance</code> anywhere in your answer.</li><li>Do not register your classes with anything. Matching the shape is the whole interface.</li><li>Annotate every signature, the abstract ones included. A hole in a base class still has a shape, so say what it is.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>44</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from abc import ABC, abstractmethod
+from collections.abc import Iterable
+
+
+class CheckFailed(Exception):
+    """Raised when a safety check rejects a reading."""
+
+
+class SafetyCheck(ABC):
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.failures: list[float] = []
+
+    @abstractmethod
+    def evaluate(self, reading: float) -> bool:
+        """Return True when the reading is acceptable."""
+
+    @abstractmethod
+    def describe(self) -> str:
+        """Return one line of text describing this check."""
+
+    def failure_error(self, reading: float) -> CheckFailed:
+        return CheckFailed(f"{self.name} rejected {reading}")
+
+    def run(self, reading: float) -> str:
+        if self.evaluate(reading):
+            return f"{self.name} accepted {reading}"
+        self.failures.append(reading)
+        raise self.failure_error(reading)
+
+
+def report(checks: Iterable[SafetyCheck]) -> str:
+    return " | ".join(check.describe() for check in checks)
+
+
+# Everything above is given. Do not change it. Write your answer below.
+
+# TODO: OutOfRange, a subclass of CheckFailed
+
+# TODO: RangeCheck(name, low, high) with evaluate, describe and failure_error
+
+# TODO: RateOfChangeCheck(name, limit) with evaluate and describe
+
+
+def abstract_error() -> str:
+    # TODO: build SafetyCheck("base"), catch TypeError, return the f-string
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from abc import ABC, abstractmethod
+from collections.abc import Iterable
+
+
+class CheckFailed(Exception):
+    """Raised when a safety check rejects a reading."""
+
+
+class SafetyCheck(ABC):
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.failures: list[float] = []
+
+    @abstractmethod
+    def evaluate(self, reading: float) -> bool:
+        """Return True when the reading is acceptable."""
+
+    @abstractmethod
+    def describe(self) -> str:
+        """Return one line of text describing this check."""
+
+    def failure_error(self, reading: float) -> CheckFailed:
+        return CheckFailed(f"{self.name} rejected {reading}")
+
+    def run(self, reading: float) -> str:
+        if self.evaluate(reading):
+            return f"{self.name} accepted {reading}"
+        self.failures.append(reading)
+        raise self.failure_error(reading)
+
+
+def report(checks: Iterable[SafetyCheck]) -> str:
+    return " | ".join(check.describe() for check in checks)
+
+
+class OutOfRange(CheckFailed):
+    """Raised when a reading sits outside the allowed band."""
+
+
+class RangeCheck(SafetyCheck):
+    def __init__(self, name: str, low: float, high: float) -> None:
+        super().__init__(name)
+        self.low = low
+        self.high = high
+
+    def evaluate(self, reading: float) -> bool:
+        return self.low <= reading <= self.high
+
+    def describe(self) -> str:
+        return f"{self.name} keeps readings in {self.low}..{self.high}"
+
+    def failure_error(self, reading: float) -> CheckFailed:
+        return OutOfRange(f"{self.name} rejected {reading} outside {self.low}..{self.high}")
+
+
+class RateOfChangeCheck(SafetyCheck):
+    def __init__(self, name: str, limit: float) -> None:
+        super().__init__(name)
+        self.limit = limit
+        self.previous: float | None = None
+
+    def evaluate(self, reading: float) -> bool:
+        if self.previous is None:
+            self.previous = reading
+            return True
+        jump = abs(reading - self.previous)
+        self.previous = reading
+        return jump <= self.limit
+
+    def describe(self) -> str:
+        return f"{self.name} allows jumps up to {self.limit}"
+
+
+def abstract_error() -> str:
+    try:
+        SafetyCheck("base")
+    except TypeError as problem:
+        return f"TypeError and the word abstract appears: {'abstract' in str(problem)}"
+    return "no error"
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>band = RangeCheck("band", 0, 100)
+print(band.run(50))
+try:
+    band.run(140)
+except CheckFailed as problem:
+    print(type(problem).__name__, "-&gt;", problem)
+print(band.failures)
+print(band.describe())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>band accepted 50
+OutOfRange -&gt; band rejected 140 outside 0..100
+[140]
+band keeps readings in 0..100</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>rate = RateOfChangeCheck("rate", 5)
+print(rate.run(10))
+print(rate.run(13))
+try:
+    rate.run(40)
+except CheckFailed as problem:
+    print(type(problem).__name__, "-&gt;", problem)
+print(rate.failures)
+print(report([RangeCheck("band", 0, 100), rate]))
+print(abstract_error())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>rate accepted 10
+rate accepted 13
+CheckFailed -&gt; rate rejected 40
+[40]
+band keeps readings in 0..100 | rate allows jumps up to 5
+TypeError and the word abstract appears: True</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+src = inspect.getsource(RangeCheck) + inspect.getsource(RateOfChangeCheck)
+assert src.count("super().__init__") == 2, "rule broken: call super().__init__ in both classes"
+assert "def run" not in src, "rule broken: do not re-implement run"
+assert "isinstance" not in src, "rule broken: no isinstance"
+assert "isinstance" not in inspect.getsource(report), "rule broken: report must stay duck typed"
+assert issubclass(OutOfRange, CheckFailed), "rule broken: OutOfRange must subclass CheckFailed"
+first = RangeCheck("first", 0, 10)
+second = RangeCheck("second", 0, 10)
+try:
+    first.run(99)
+except CheckFailed:
+    pass
+print(first.failures, second.failures, first.failures is second.failures)
+print(report([first]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[99] [] False
+first keeps readings in 0..10</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 18.3: The Override That Wasn't!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Repair two silent override typos in a four-class hierarchy and give every method that hands back an instance the right return type.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java has <code>@Override</code>. Misspell the method name and javac stops the build, because the
+annotation promises a base method with that exact signature exists.</p>
+<pre>class TemperatureSensor extends Sensor {
+    @Override
+    String describ() { return "temperature " + name; }   // does not compile
+}</pre>
+<p>Python 3.12 added the same marker as <code>typing.override</code>. It is checked by a type checker
+and not at run time, which is the enforcement lesson from the type hints topic again. Its only run-time act is to set
+<code>__override__</code> to <code>True</code> on the function, so a tool can find it later.</p>
+<pre>from typing import override
+
+
+class PressureSensor(Sensor):
+    @override
+    def describe(self) -&gt; str:
+        return f"pressure {self.name}"</pre>
+<p>Without the marker a misspelling costs you the override in silence. <code>def describ</code> in a
+subclass is a valid new method, so Python defines it, keeps the inherited <code>describe</code>, and
+runs the base version for the rest of the program. Nothing raises. The subclass looks specialised and
+behaves like its parent, and the only symptom is a log line that says the wrong thing.</p>
+<p><code>typing.Self</code> arrived in 3.11 and answers a different question. A method that returns its
+own instance has a return type that depends on the class it was called on, and naming the class in the
+annotation freezes that answer at the base.</p>
+<pre>class Sensor:
+    def calibrate(self, offset: float) -&gt; "Sensor":     # the lie
+        return type(self)(self.name, self.value + offset)</pre>
+<p><code>PressureSensor("p1", 1.0).calibrate(0.5)</code> hands back a <code>PressureSensor</code> at
+run time, because <code>type(self)</code> asks the instance what it is. The annotation still claims
+<code>Sensor</code>, so the type checker forgets the subclass and rejects the next
+<code>.bar_reading()</code> call. Write <code>-&gt; Self</code> and the annotation tracks whatever class
+the method was reached through.</p>
+<p>The same applies to an <b>alternative constructor</b>, which is a <code>classmethod</code> that
+builds an instance from something other than the usual arguments. It receives the class as
+<code>cls</code>, so <code>cls(...)</code> already builds the right subclass. Annotate it
+<code>-&gt; Self</code> and the two halves agree.</p>
+<pre>@classmethod
+def from_text(cls, text: str) -&gt; Self:
+    name, _, raw = text.partition("=")
+    return cls(name, float(raw))</pre>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>The answer box holds a four-class hierarchy with two subtle defects in it. Two subclasses each carry
+a method whose name is one character short of the base method it meant to override. Both classes
+therefore inherit the base behaviour and nobody is told.</p>
+<p>Repair the hierarchy.</p>
+<ul>
+<li>Fix both misspellings so each subclass overrides the method it was aiming at.</li>
+<li>Put <code>@override</code> on all three genuine overrides.</li>
+<li>Give <code>calibrate</code> and <code>from_text</code> the return type <code>Self</code>, in
+<code>Sensor</code> and in <code>RelaySensor</code>.</li>
+<li>Leave every method body as it stands. <code>PressureSensor</code> reports
+<code>f"pressure {self.name} at {self.value:.1f} bar"</code>, <code>TemperatureSensor</code> reports
+<code>f"temperature {self.name} at {self.value:.1f} C"</code>, and <code>RelaySensor</code> doubles the
+offset it is given.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Put <code>@override</code> on every method that overrides one. A type checker confirms the promise, and Python never will.</li><li>Write <code>-&gt; Self</code>. Naming the class in the return type becomes a lie the moment somebody subclasses it.</li><li>Build the new instance through <code>type(self)</code> or <code>cls</code>. A hard-coded <code>Sensor(...)</code> hands a subclass back the wrong type.</li><li>Fix the typo in the subclass. Renaming the base method to match the typo makes the tests pass and the design worse.</li><li>Annotate every signature. Parameters and return type, no exceptions.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>44</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from typing import Self, override
+
+
+class Sensor:
+    def __init__(self, name: str, value: float) -> None:
+        self.name = name
+        self.value = value
+
+    def describe(self) -> str:
+        return f"{self.name}={self.value}"
+
+    # TODO: this hands back whatever class it was called on. Say so in the annotation.
+    def calibrate(self, offset: float) -> "Sensor":
+        return type(self)(self.name, self.value + offset)
+
+    # TODO: an alternative constructor. Annotate it the same way.
+    @classmethod
+    def from_text(cls, text: str) -> "Sensor":
+        name, _, raw = text.partition("=")
+        return cls(name, float(raw))
+
+
+class PressureSensor(Sensor):
+    # TODO: this one is spelled correctly. Mark it.
+    def describe(self) -> str:
+        return f"pressure {self.name} at {self.value:.1f} bar"
+
+
+class TemperatureSensor(Sensor):
+    # TODO: this one overrides nothing at all. Find out why, then mark it.
+    def describ(self) -> str:
+        return f"temperature {self.name} at {self.value:.1f} C"
+
+
+class RelaySensor(Sensor):
+    # TODO: and neither does this one.
+    def calibrat(self, offset: float) -> "Sensor":
+        return type(self)(self.name, self.value + offset * 2)
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from typing import Self, override
+
+
+class Sensor:
+    def __init__(self, name: str, value: float) -> None:
+        self.name = name
+        self.value = value
+
+    def describe(self) -> str:
+        return f"{self.name}={self.value}"
+
+    def calibrate(self, offset: float) -> Self:
+        return type(self)(self.name, self.value + offset)
+
+    @classmethod
+    def from_text(cls, text: str) -> Self:
+        name, _, raw = text.partition("=")
+        return cls(name, float(raw))
+
+
+class PressureSensor(Sensor):
+    @override
+    def describe(self) -> str:
+        return f"pressure {self.name} at {self.value:.1f} bar"
+
+
+class TemperatureSensor(Sensor):
+    @override
+    def describe(self) -> str:
+        return f"temperature {self.name} at {self.value:.1f} C"
+
+
+class RelaySensor(Sensor):
+    @override
+    def calibrate(self, offset: float) -> Self:
+        return type(self)(self.name, self.value + offset * 2)
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>sensors = [Sensor("s0", 1.0), PressureSensor("p1", 12.34),
+           TemperatureSensor("t1", 68.55), RelaySensor("r1", 3.0)]
+for sensor in sensors:
+    print(sensor.describe())
+print(hasattr(TemperatureSensor, "describ"), hasattr(RelaySensor, "calibrat"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>s0=1.0
+pressure p1 at 12.3 bar
+temperature t1 at 68.5 C
+r1=3.0
+False False</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>warm = TemperatureSensor("t1", 68.5).calibrate(1.5)
+print(type(warm).__name__, warm.describe())
+relay = RelaySensor("r1", 3.0).calibrate(1.5)
+print(type(relay).__name__, relay.describe())
+built = PressureSensor.from_text("p9=12.5")
+print(type(built).__name__, built.describe())
+print(type(Sensor.from_text("s9=1.5")).__name__)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>TemperatureSensor temperature t1 at 70.0 C
+RelaySensor r1=6.0
+PressureSensor pressure p9 at 12.5 bar
+Sensor</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>from typing import Self, override
+
+
+class Ghost(Sensor):
+    @override
+    def totally_new(self) -&gt; str:
+        return "nothing in Sensor is named this"
+
+
+print(Ghost("g1", 1.0).totally_new())
+print(Ghost.totally_new.__override__)
+print(PressureSensor.describe.__override__)
+print(Sensor.calibrate.__annotations__["return"] is Self)
+print(Sensor.from_text.__annotations__["return"] is Self)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>nothing in Sensor is named this
+True
+True
+True
+True</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+
+for cls, gone in ((TemperatureSensor, "describ"), (RelaySensor, "calibrat")):
+    assert gone not in vars(cls), "rule broken: fix the spelling, do not keep the stray method"
+assert "describe" in vars(Sensor), "rule broken: leave the base method name alone"
+assert "calibrate" in vars(Sensor), "rule broken: leave the base method name alone"
+for cls, method in ((PressureSensor, "describe"), (TemperatureSensor, "describe"),
+                    (RelaySensor, "calibrate")):
+    marked = getattr(vars(cls)[method], "__override__", False)
+    assert marked is True, "rule broken: mark every genuine override with @override"
+for func in (Sensor.calibrate, Sensor.from_text, RelaySensor.calibrate):
+    assert func.__annotations__["return"] is Self, "rule broken: return Self, not the class name"
+for func in (Sensor.calibrate, Sensor.from_text.__func__):
+    assert "Sensor(" not in inspect.getsource(func), "rule broken: build through type(self) or cls"
+
+print(Sensor.from_text("s1=2.5").describe())
+print(type(TemperatureSensor.from_text("t9=70.0").calibrate(0.5)).__name__)
+print(sorted(name for name in vars(RelaySensor) if not name.startswith("__")))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>s1=2.5
+TemperatureSensor
+['calibrate']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+</quiz>

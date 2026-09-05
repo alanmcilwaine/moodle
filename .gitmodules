@@ -1,0 +1,6 @@
+[submodule "plugins/coderunner"]
+	path = plugins/coderunner
+	url = https://github.com/trampgeek/moodle-qtype_coderunner
+[submodule "plugins/adaptive_adapted_for_coderunner"]
+	path = plugins/adaptive_adapted_for_coderunner
+	url = https://github.com/trampgeek/moodle-qbehaviour_adaptive_adapted_for_coderunner

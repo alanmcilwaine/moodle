@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 18.1: Functions Are Values Here Too!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A bottling line sends every bottle through a sequence of processing stations. One station can replace another when both accept and return the same kind of bottle. A station switched off for the shift remains in the sequence.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Function_types">Function types</a>. Read the first sentence, the rule about parameter names, and the final examples. How do you write a function type that accepts an <code>int</code> and returns an <code>int</code>?</li><li>Read the second sentence of the same section. What does an unassigned <code>Step</code> variable hold?</li><li><a href="https://go.dev/ref/spec#Function_literals">Function literals</a>. Read the first sentence and its example. How do you write an unnamed function where a value is expected? What type does it have?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a functional interface plus a lambda or method reference that the compiler converts at the call site.</p><pre>@FunctionalInterface
+interface Step { int apply(int n); }
+
+int applyAll(int x, Step... steps) { ... }</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If the compiler rejects <code>double</code> as a <code>Step</code>, compare your declaration with the section's list of example types.</li><li>If a hidden test panics, reread the second sentence of Function types and ask what an unassigned <code>Step</code> holds.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>20</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+// TODO declare Step, the type of a function that takes an int and returns an int.
+
+// double is fixed. It is one station on the line.
+func double(n int) int {
+	return n * 2
+}
+
+func applyAll(x int, steps ...Step) int {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+type Step func(int) int
+
+// double is fixed. It is one station on the line.
+func double(n int) int {
+	return n * 2
+}
+
+func applyAll(x int, steps ...Step) int {
+	for _, step := range steps {
+		if step == nil {
+			continue
+		}
+		x = step(x)
+	}
+	return x
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(applyAll(3, double, double))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>12</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(applyAll(1, double), applyAll(-3, double, double, double))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2 -24</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(applyAll(3, double, func(n int) int { return n + 1 }))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>7</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[var off Step
+fmt.Println(applyAll(4, double, off, double))
+fmt.Println(applyAll(5))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>16
+5</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[line := []Step{double, nil, func(n int) int { return n - 1 }, double}
+fmt.Println(applyAll(1, line...))
+fmt.Println(applyAll(0, line[1:]...))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>2
+-2</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 18.2: Strategy Dissolved!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A chess leaderboard lists the highest score first and sorts tied players by name. Post the board after both the four-player semi-final and the thirteen-player final.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/sort#Slice">sort.Slice</a>. Read the signature and the sentence that links to the Interface type's Less method. What do <code>i</code> and <code>j</code> index? Which values does <code>less</code> not receive directly?</li><li>Find the sentence about stability. What can happen to two players with the same score?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a Comparator, or a sort by name followed by a sort by score. The second route trusts the name order to survive the score sort.</p><pre>players.sort(comparing(Player::name));
+players.sort(comparing(Player::score).reversed());</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>sort.Slice</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Your <code>less</code> receives two index positions, so reach the players through the slice <code>rank</code> was given.</li><li>If the visible tests pass and a hidden one fails, reread the sentence on equal elements.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>20</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "sort"
+
+// Player is one entry on the club's board.
+type Player struct {
+	Name  string
+	Score int
+}
+
+func rank(players []Player) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "sort"
+
+// Player is one entry on the club's board.
+type Player struct {
+	Name  string
+	Score int
+}
+
+func rank(players []Player) {
+	sort.Slice(players, func(i, j int) bool {
+		if players[i].Score != players[j].Score {
+			return players[i].Score > players[j].Score
+		}
+		return players[i].Name < players[j].Name
+	})
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "sort.Slice"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[board := []Player{{Name: "Bo", Score: 12}, {Name: "Ada", Score: 20}, {Name: "Cy", Score: 15}}
+rank(board)
+for _, p := range board {
+	fmt.Println(p.Name, p.Score)
+}]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Ada 20
+Cy 15
+Bo 12</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[board := []Player{{Name: "Di", Score: 20}, {Name: "Cy", Score: 20}, {Name: "Bo", Score: 20}, {Name: "Ada", Score: 25}}
+rank(board)
+for _, p := range board {
+	fmt.Println(p.Name, p.Score)
+}]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Ada 25
+Bo 20
+Cy 20
+Di 20</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[board := []Player{{"Ada", 10}, {"Bo", 20}, {"Cy", 30}, {"Di", 10}, {"Ed", 20}, {"Fay", 30}, {"Gus", 10}, {"Hal", 20}, {"Ivy", 30}, {"Jo", 10}, {"Kim", 20}, {"Lee", 30}, {"Max", 10}}
+rank(board)
+for _, p := range board {
+	fmt.Println(p.Name, p.Score)
+}]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Cy 30
+Fay 30
+Ivy 30
+Lee 30
+Bo 20
+Ed 20
+Hal 20
+Kim 20
+Ada 10
+Di 10
+Gus 10
+Jo 10
+Max 10</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[board := []Player{{"Max", 30}, {"Lee", 20}, {"Kim", 30}, {"Jo", 20}, {"Ivy", 30}, {"Hal", 20}, {"Gus", 30}, {"Fay", 20}, {"Ed", 30}, {"Di", 20}, {"Cy", 30}, {"Bo", 20}, {"Ada", 30}}
+rank(board)
+for _, p := range board {
+	fmt.Println(p.Name, p.Score)
+}
+var empty []Player
+rank(empty)
+fmt.Println(len(empty))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>Ada 30
+Cy 30
+Ed 30
+Gus 30
+Ivy 30
+Kim 30
+Max 30
+Bo 20
+Di 20
+Fay 20
+Hal 20
+Jo 20
+Lee 20
+0</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 18.3: The Ticket Machine That Remembers!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A fairground ticket machine issues tickets in number order. It has no storage drawer for the current number. The fair uses several machines, and each gate admits a fixed number of visitors before locking.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/tour/moretypes/25">Function closures</a>. Read both paragraphs. What can the returned function do to a variable declared outside its body? What does each closure bind to?</li><li>Run the example. Why do <code>pos</code> and <code>neg</code> print different values on the same line?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a class with a private <code>int</code> field and a <code>next()</code> method. Java keeps the count in the field because a lambda may only read what it captured.</p><pre>class TicketMachine {
+    private int count;
+    int next() { return ++count; }
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>struct</code>, <code>type</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Add a third <code>adder</code> to the page's example and see whether its first result carries on from the other two.</li><li>If two machines count 1, 2, 3, 4 between them, compare where you declared the count with where the example declares <code>sum</code>.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>24</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+func newMachine() func() int {
+	// TODO
+}
+
+func newGate(capacity int) func() bool {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+func newMachine() func() int {
+	count := 0
+	return func() int {
+		count++
+		return count
+	}
+}
+
+func newGate(capacity int) func() bool {
+	admitted := 0
+	return func() bool {
+		if admitted >= capacity {
+			return false
+		}
+		admitted++
+		return true
+	}
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "struct type"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[next := newMachine()
+fmt.Println(next(), next(), next())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>1 2 3</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[admit := newGate(2)
+fmt.Println(admit(), admit(), admit())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true true false</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[a, b := newMachine(), newMachine()
+fmt.Println(a(), a(), b(), a(), b())
+fmt.Println(a(), b())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>1 2 1 3 2
+4 3</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[admit, next := newGate(3), newMachine()
+for i := 0; i < 5; i++ {
+	if admit() {
+		fmt.Println("ticket", next())
+	} else {
+		fmt.Println("locked")
+	}
+}
+shut := newGate(0)
+fmt.Println(shut(), newGate(1)())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>ticket 1
+ticket 2
+ticket 3
+locked
+locked
+false true</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

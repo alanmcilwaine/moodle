@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 02.1: The Counter Is Cancelled!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write two functions, one that prints numbers from <code>range</code> and one that prints the names in a list.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java gives you two ways to walk a sequence. One counts with an index. The other takes each element in turn.</p>
+<pre>for (int i = 0; i &lt; 3; i++) {
+    System.out.println(i);
+}
+for (String site : sites) {
+    System.out.println(site);
+}</pre>
+<p>Python keeps only the second shape. The counted form <code>for (int i = 0; i &lt; n; i++)</code> is not part of the language, and no amount of searching will turn it up.</p>
+<pre>for site in sites:
+    print(site)</pre>
+<p>Read that as "for each site in sites". The loop variable needs no declaration and no type, and Python binds it again on every pass. You are handed the value, never the position.</p>
+<p>When you want numbers, ask <code>range</code> for them.</p>
+<ul>
+<li><code>range(3)</code> hands you 0, 1 and 2. The stop value is never included.</li>
+<li><code>range(n)</code> therefore runs the body <code>n</code> times, and <code>range(0)</code> runs it not at all.</li>
+</ul>
+<p>A <b>list</b> is Python's growable sequence, written with square brackets, as in <code>["north", "east"]</code>. It is the closest thing to an <code>ArrayList</code>. A <code>for</code> loop walks a list directly, with no index and no call to fetch an element.</p>
+<p>In Python <code>def</code> starts a function, so <code>def channel_ids(n):</code> declares a function called <code>channel_ids</code> that takes one argument named <code>n</code>.</p>
+<p>The Java habit to break here is reaching for the index. If your first instinct was <code>range(len(sites))</code>, that instinct is the whole reason this question exists.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><ul><li>Replace each comment in the answer box with a body, indented four spaces under its header.</li><li><code>channel_ids(n)</code> prints every number from 0 up to but not including <code>n</code>, one per line.</li><li><code>list_sites(sites)</code> prints every name in the list <code>sites</code>, one per line, in order.</li></ul><p>Each body is one loop and one <code>print</code>. You pass when each function prints those lines and nothing else.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not write <code>range(len(...))</code>. Walk the list itself.</li><li>Do not index the list. <code>sites[0]</code> is banned.</li><li>Do not create a counter of your own. No <code>i = i + 1</code> and no <code>+=</code>. The loop supplies the values.</li><li>Write <code>for</code> in both bodies. <code>while</code> is off limits here.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>10</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def channel_ids(n):
+    # TODO: loop over range(n) and print each number
+
+def list_sites(sites):
+    # TODO: loop straight over sites and print each name
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def channel_ids(n):
+    for i in range(n):
+        print(i)
+
+def list_sites(sites):
+    for site in sites:
+        print(site)
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>channel_ids(3)
+channel_ids(0)
+print("done")</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>0
+1
+2
+done</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>list_sites(["Kaikoura", "Taupo", "Napier"])</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>Kaikoura
+Taupo
+Napier</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>channel_ids(1)
+list_sites([])
+list_sites(["solo"])
+print("edge cases done")</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>0
+solo
+edge cases done</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+counted = inspect.getsource(channel_ids)
+walked = inspect.getsource(list_sites)
+whole = counted + walked
+assert "range(len" not in whole, "rule broken: no range(len(...))"
+assert "while" not in whole, "rule broken: both loops must be a for"
+assert "+=" not in whole, "rule broken: the loop supplies the values"
+assert "= i + 1" not in whole, "rule broken: no counter of your own"
+assert "range(" in counted, "rule broken: count with range"
+assert "[" not in walked, "rule broken: never index the list"
+channel_ids(2)
+list_sites(["alpha"])</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>0
+1
+alpha</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 02.2: Sheep, Ranged and Listed!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write four functions that print squares, a countdown, a labelled channel list, and a <code>range</code> object.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java gives you two loops for walking a sequence. One counts with an index. The other takes each element in turn.</p>
+<pre>for (int i = 1; i &lt;= 5; i++) {
+    System.out.println(i * i);
+}
+for (String name : names) {
+    System.out.println("CH: " + name);
+}</pre>
+<p>Python has only the second shape. The counted form <code>for (int i = 0; i &lt; n; i++)</code> does not exist anywhere in the language.</p>
+<pre>for name in names:
+    print("CH:", name)</pre>
+<p>Read that as "for each name in names". The loop variable needs no declaration and no type. Python binds it fresh on every pass and hands you the value, never the position.</p>
+<p>To count, ask <code>range</code> for the numbers.</p>
+<ul>
+<li><code>range(5)</code> gives 0, 1, 2, 3, 4. The stop value is never included.</li>
+<li><code>range(1, 6)</code> gives 1, 2, 3, 4, 5. The first value is the start.</li>
+<li><code>range(5, 0, -1)</code> gives 5, 4, 3, 2, 1. The third value is the step, and a negative step counts down.</li>
+</ul>
+<p><code>range</code> is not an array. It produces each number only when the loop asks for one, so printing it shows <code>range(0, 3)</code> rather than the numbers. Wrap it in <code>list(...)</code> to pull the numbers out.</p>
+<p>A <b>list</b> is Python's growable sequence, written with square brackets, as in <code>["north", "east"]</code>. It is the closest thing to an <code>ArrayList</code>.</p>
+<p>The first lines topic taught the colon header and the indented block. A loop body follows those same two rules.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><ul><li>Replace each comment in the answer box with a body, indented four spaces under its header. Every body is one loop or one call.</li><li><code>squares_to_five()</code> prints the square of each number from 1 to 5, one per line. The first argument to <code>range</code> is the start value.</li><li><code>countdown_from(start)</code> prints <code>start</code> down to 1 inclusive, one per line, using a negative step. The step is the third argument to <code>range</code>.</li><li><code>label_channels(names)</code> prints <code>CH:</code> and then the name, once for every name in the list. Use <code>print("CH:", name)</code> so the space lands in the right place.</li><li><code>show_range()</code> prints the <code>range(3)</code> object beside <code>list(range(3))</code> with one call to <code>print</code>. The output is <code>range(0, 3) [0, 1, 2]</code>.</li></ul><p>You pass when each function prints its lines in order and adds nothing else.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not write <code>i += 1</code> or <code>i = i + 1</code>. The loop supplies the values.</li><li>Do not index the list. <code>names[0]</code> is banned and so is <code>range(len(names))</code>.</li><li>Write <code>for</code> in all three loops. <code>while</code> is off limits in this one.</li><li>Do not create a counter variable of your own.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>16</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def squares_to_five():
+    # TODO: loop over range(1, 6) and print each square
+
+def countdown_from(start):
+    # TODO: loop with a negative step and print each number
+
+def label_channels(names):
+    # TODO: loop straight over names and print "CH:" then the name
+
+def show_range():
+    # TODO: print the range(3) object beside list(range(3))
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def squares_to_five():
+    for n in range(1, 6):
+        print(n * n)
+
+def countdown_from(start):
+    for n in range(start, 0, -1):
+        print(n)
+
+def label_channels(names):
+    for name in names:
+        print("CH:", name)
+
+def show_range():
+    print(range(3), list(range(3)))
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>squares_to_five()
+countdown_from(3)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>1
+4
+9
+16
+25
+3
+2
+1</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>label_channels(["north", "east", "vertical"])
+show_range()</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>CH: north
+CH: east
+CH: vertical
+range(0, 3) [0, 1, 2]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>countdown_from(1)
+label_channels([])
+label_channels(["solo"])
+print("edge cases done")</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>1
+CH: solo
+edge cases done</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = inspect.getsource(squares_to_five) + inspect.getsource(countdown_from) + inspect.getsource(label_channels)
+assert "while" not in whole, "rule broken: every loop here must be a for"
+assert "+=" not in whole, "rule broken: the loop supplies the values"
+assert "= n + 1" not in whole and "= i + 1" not in whole, "rule broken: the loop supplies the values"
+assert "range(len" not in whole, "rule broken: no range(len(...))"
+assert "[" not in inspect.getsource(label_channels), "rule broken: never index the list"
+assert "for " in inspect.getsource(countdown_from), "rule broken: use a for loop"
+countdown_from(2)
+show_range()</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>2
+1
+range(0, 3) [0, 1, 2]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 02.3: The Loop Grew an Else!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write three loop functions, one that stops on a sentinel, one that uses <code>break</code> and <code>continue</code>, and one that uses a <code>for ... else</code> clause.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>So far the loop has handed you every value and asked nothing else of you. Some loops cannot work that way, because they do not know in advance how many passes they need.</p>
+<p>Java's <code>while</code> repeats for as long as a condition holds. Python's does the same, without the parentheses and with a colon on the end.</p>
+<pre>int index = 0;
+while (readings[index] != -1) {
+    System.out.println("reading " + readings[index]);
+    index++;
+}</pre>
+<pre>index = 0
+while readings[index] != -1:
+    print("reading", readings[index])
+    index = index + 1</pre>
+<p>Two things carry over from that pair. Python has no <code>++</code> and no <code>--</code>, so you write <code>index = index + 1</code> in full. And <code>readings[index]</code> reads one element by position, counting from 0, the same way a Java array does.</p>
+<p>A value that means "stop here" is a <b>sentinel</b>. The loop above stops when it reads <code>-1</code>, not when it runs out of elements. A sentinel loop is the one place an index of your own belongs. Every other loop in this topic shows why <code>for</code> is the default.</p>
+<p><b>break</b> leaves the loop at once. <b>continue</b> abandons the current pass and starts the next one. Both behave as they do in Java.</p>
+<p>Then the surprise. A Python loop can carry an <code>else</code> clause, and Java has nothing that matches it.</p>
+<pre>for code in codes:
+    if code &gt; 100:
+        print("fault", code)
+        break
+else:
+    print("all clear")</pre>
+<p>The <code>else</code> belongs to the <code>for</code>, not to the <code>if</code>. Read the indentation, because <code>else</code> sits at the same depth as <code>for</code>. It runs when the loop reaches the end of the sequence without meeting a <code>break</code>, and it is skipped when a <code>break</code> fires. An empty list runs it too, because a loop over nothing reaches the end without breaking.</p>
+<p>The keyword is misleading and almost everyone reads it wrong the first time. Read it as "no break" rather than "else". It exists to retire the search flag, the <code>boolean found = false</code> that Java makes you declare, set inside the loop and test underneath it. A <code>while</code> loop takes the same clause on the same terms.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><ul><li><code>drain(readings)</code> walks a list of ints with a <code>while</code> loop and an index of its own. For each reading before the sentinel it prints <code>reading</code> and then the value. When it meets the sentinel <code>-1</code> it stops the loop and prints <code>sentinel reached</code>. Every list handed to it holds a <code>-1</code> somewhere, so the loop always has a way out. Anything sitting after the sentinel is left unread.</li><li><code>scan(codes)</code> walks a list of ints with a <code>for</code> loop. It skips a <code>0</code> with <code>continue</code> and prints nothing for it. It prints <code>abort</code> and leaves with <code>break</code> on the first negative value. Any other value it prints as <code>code</code> and then the value.</li><li><code>find_fault(codes)</code> walks a list of ints with a <code>for</code> loop. On the first value above 100 it prints <code>fault</code> and then the value, then breaks. When no value is above 100 it prints <code>all clear</code> once, from the loop's own <code>else</code> clause. That <code>else</code> sits at the same indentation as the <code>for</code>.</li></ul><p>Write <code>print("reading", value)</code>, <code>print("code", value)</code> and <code>print("fault", value)</code> so the space lands in the right place. You pass when each function prints its lines in order and adds nothing else.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Write <code>while</code> in <code>drain</code>, with an index of your own. A <code>for</code> loop there fails the checker.</li><li>Stop <code>drain</code> on the sentinel. Do not call <code>len</code>.</li><li>Use both <code>continue</code> and <code>break</code> in <code>scan</code>.</li><li>Write the <code>for ... else</code> clause in <code>find_fault</code> and carry no found flag. The words <code>True</code> and <code>False</code> are banned inside that function.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>22</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def drain(readings):
+    # TODO: while loop with an index of your own, stopping at the sentinel -1
+
+def scan(codes):
+    # TODO: for loop using continue on 0 and break on a negative
+
+def find_fault(codes):
+    # TODO: for loop with a break, and an else clause for the no fault case
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def drain(readings):
+    index = 0
+    while readings[index] != -1:
+        print("reading", readings[index])
+        index = index + 1
+    print("sentinel reached")
+
+def scan(codes):
+    for code in codes:
+        if code == 0:
+            continue
+        if code < 0:
+            print("abort")
+            break
+        print("code", code)
+
+def find_fault(codes):
+    for code in codes:
+        if code > 100:
+            print("fault", code)
+            break
+    else:
+        print("all clear")
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>drain([12, 7, -1])
+drain([-1])</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>reading 12
+reading 7
+sentinel reached
+sentinel reached</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>scan([3, 0, 5, -2, 9])
+find_fault([4, 120, 7])
+find_fault([4, 7])</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>code 3
+code 5
+abort
+fault 120
+all clear</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>drain([5, -1, 99])
+scan([0, 0])
+scan([-1, 4])
+find_fault([])
+find_fault([101])
+print("edge cases done")</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>reading 5
+sentinel reached
+abort
+all clear
+fault 101
+edge cases done</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+sentinel = inspect.getsource(drain)
+filtered = inspect.getsource(scan)
+searched = inspect.getsource(find_fault)
+assert "while" in sentinel, "rule broken: drain must use a while loop"
+assert "for " not in sentinel, "rule broken: drain must use a while loop"
+assert "len(" not in sentinel, "rule broken: stop on the sentinel, not on a length"
+assert "continue" in filtered, "rule broken: skip the zero with continue"
+assert "break" in filtered, "rule broken: stop on the negative with break"
+assert "for " in searched, "rule broken: find_fault must use a for loop"
+assert "else" in searched, "rule broken: use the for ... else clause"
+assert "True" not in searched and "False" not in searched, "rule broken: no found flag, the else clause replaces it"
+drain([8, -1])
+scan([2, 0, -5, 3])
+find_fault([200])</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>reading 8
+sentinel reached
+code 2
+abort
+fault 200</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+</quiz>

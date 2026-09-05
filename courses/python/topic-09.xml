@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 09.1: The Lonely Comma!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>You write four functions that build tuples of different shapes.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java hands you an array when you want a fixed number of values, and a record when those values
+deserve names.</p>
+<pre>int[] point = {0, 0};
+point[0] = 99;          // compiles, and the array now holds {99, 0}
+
+record Point(int x, int y) {}</pre>
+<p>The array is fixed in length and wide open to change. Every slot can be written to for as long as
+the array exists. Python's <b>tuple</b> is fixed in both ways at once.</p>
+<p>A tuple is a sequence of values in order, and nothing about it changes after it is built. No slot
+can be written to, no value can be added, and no value can be removed. Reading works exactly as it
+does on a list.</p>
+<pre>point = (0, 0)
+print(point[1])       # 0
+print(len(point))     # 2
+point[0] = 99
+# TypeError: 'tuple' object does not support item assignment</pre>
+<h4>The comma builds the tuple, not the parentheses</h4>
+<p>Parentheses only group, the same way they
+group in arithmetic. <code>(5)</code> is the number five with a pair of parentheses round it. The
+comma is what makes a tuple, so a tuple holding one value needs a trailing comma.</p>
+<pre>pair  = 3, 4      # a tuple of two, no parentheses anywhere
+plain = (5)       # still the number 5
+one   = (5,)      # a tuple of one
+also  = 5,        # the same tuple of one</pre>
+<p>Python prints that trailing comma back at you, so <code>(5,)</code> on screen is how you tell a
+tuple of one from a number wearing parentheses. Type the comma by accident at the end of a return line
+and you hand the caller a tuple where a number was expected. That mistake reads as a typo and lands as
+a type error a long way downstream, so meet it on purpose now.</p>
+<h4>A tuple is not a list of fixed length</h4>
+<p>A list holding two items still allows
+<code>readings[0] = 99</code>. The tuple refuses. That refusal is the whole point, because it lets a
+tuple stand for one thing made of parts, such as a coordinate or a row read from a file, rather than a
+collection you intend to work on.</p>
+<p>The <code>tuple</code> built-in converts any sequence in one call, so <code>tuple([1, 2, 3])</code>
+gives <code>(1, 2, 3)</code> and leaves the original list alone.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Write four functions. Each one returns a value and none of them prints.</p>
+<ul>
+<li><code>origin()</code> takes no arguments and returns a tuple of two zeros.</li>
+<li><code>solo(value)</code> returns a tuple holding <code>value</code> and nothing else.</li>
+<li><code>grouped(value)</code> returns <code>(value)</code>, parentheses and all. Work out its type
+before you run it.</li>
+<li><code>freeze(items)</code> takes a list and returns a tuple of the same items in the same
+order.</li>
+</ul>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Build the tuple of one with a trailing comma. Do not call <code>tuple</code> for it.</li><li>Write no square brackets anywhere. No list literal and no indexing.</li><li>Convert the list in one call. No loop.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>14</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def origin():
+    # TODO: two zeros in one tuple
+
+
+def solo(value):
+    # TODO: the comma is what makes it a tuple
+
+
+def grouped(value):
+    # TODO: return (value) exactly as written
+
+
+def freeze(items):
+    # TODO: one call to the tuple built-in
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def origin():
+    return (0, 0)
+
+
+def solo(value):
+    return value,
+
+
+def grouped(value):
+    return (value)
+
+
+def freeze(items):
+    return tuple(items)
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(origin())
+print(solo(5))
+print(solo("north"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>(0, 0)
+(5,)
+('north',)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(grouped(5))
+print(type(solo(5)).__name__)
+print(type(grouped(5)).__name__)
+print(freeze([1, 2, 3]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>5
+tuple
+int
+(1, 2, 3)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (origin, solo, grouped, freeze))
+assert "[" not in whole, "rule broken: no square brackets, build tuples"
+assert "for " not in whole, "rule broken: the tuple built-in converts the whole list in one call"
+assert "tuple(" not in inspect.getsource(solo), "rule broken: a trailing comma builds the tuple of one"
+print(freeze([]))
+print(solo(None))
+print(len(solo(origin())))
+print(origin() + solo(9))
+point = origin()
+try:
+    point[0] = 99
+except TypeError as problem:
+    print("TypeError:", problem)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>()
+(None,)
+1
+(0, 0, 9)
+TypeError: 'tuple' object does not support item assignment</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 09.2: Left Side Story!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>You write four functions that unpack pairs, lines and characters instead of indexing them.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java pulls a pair apart one index at a time and names each piece on a line of its own.</p>
+<pre>for (Object[] pair : pairs) {
+    String site = (String) pair[0];
+    int count   = (int) pair[1];
+    ...
+}</pre>
+<p>Python takes the whole shape apart in one statement. Writing several names on the left of an
+assignment with a sequence on the right is called <b>unpacking</b>, and Python binds each name to the
+value sitting in the matching position.</p>
+<pre>site, count = ("Kaitaia", 42)
+print(site)     # Kaitaia
+print(count)    # 42</pre>
+<p>The parentheses on the right are optional, as they always are round a tuple. Unpacking works on any
+sequence rather than only on tuples, so a list unpacks and so does a string.</p>
+<pre>a, b, c = "xyz"
+print(b)        # y</pre>
+<h4>The count has to match, and Python checks it while the program runs</h4>
+<p>Ask for two names from
+a three-item tuple and you get <code>ValueError: too many values to unpack (expected 2)</code>. Ask for
+four and you get <code>ValueError: not enough values to unpack (expected 4, got 3)</code>. Java catches
+that mistake while it compiles, so this is a whole class of defect you now have to catch in review and
+in tests instead.</p>
+<h4>One name may carry a star, and it collects whatever is left over</h4>
+<p>The starred name always
+becomes a list, even when there is nothing left for it to collect.</p>
+<pre>*body, footer = ["alpha", "beta", "END"]
+print(body)     # ['alpha', 'beta']
+print(footer)   # END
+
+*body, footer = ["END"]
+print(body)     # []</pre>
+<p>A statement may hold one starred name at most, and the sequence still has to be long enough to fill
+the plain names. Unpacking an empty list into <code>*body, footer</code> raises
+<code>ValueError: not enough values to unpack (expected at least 1, got 0)</code>, because
+<code>footer</code> has nothing to bind to.</p>
+<h4>A value you do not want still needs a name</h4>
+<p>Python has no way to skip a position, so the
+convention is a single underscore. <code>_</code> is an ordinary name that reads as "I am ignoring
+this one", and reviewers read it the same way. The same underscore may appear more than once in one
+statement.</p>
+<pre>_, middle, _ = "abc"
+print(middle)   # b</pre>
+<h4>A for loop unpacks in its header</h4>
+<p>Whatever the loop hands you is taken apart on the spot,
+which deletes the three lines of naming the Java version needs.</p>
+<pre>pairs = [("Kaitaia", 42), ("Otautahi", 7)]
+for site, count in pairs:
+    print(f"{site}: {count}")</pre>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Write four functions. Each one returns a value and none of them prints.</p>
+<ul>
+<li><code>pair_labels(pairs)</code> takes a list of <code>(site, count)</code> tuples and returns a
+list of strings, one per pair, each in the form <code>Kaitaia: 42</code>. Unpack in the loop header
+and build each string with an f-string.</li>
+<li><code>total_count(pairs)</code> takes the same list and returns the counts added together. The
+site is a value you do not want.</li>
+<li><code>strip_footer(lines)</code> takes a list whose last line is a footer and returns a list of
+everything before it. A list holding the footer alone comes back as an empty list.</li>
+<li><code>middle_char(code)</code> takes a string of exactly three characters and returns the middle
+one, without indexing.</li>
+</ul>
+<p>An empty list of pairs is an ordinary input for the first two functions. Work out what each of them
+should return before you run anything.</p>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not index. No <code>[0]</code>, no <code>[1]</code>, no <code>[-1]</code>. Unpack instead.</li><li>Unpack in the <code>for</code> header. Pulling the pair apart on the next line is the Java shape.</li><li>Drop the footer with a starred name. No slicing, no <code>len</code>, no <code>range</code>, no <code>pop</code>.</li><li>Name a value you do not want <code>_</code>.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>16</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def pair_labels(pairs):
+    # TODO: unpack in the for header, build each label with an f-string
+
+
+def total_count(pairs):
+    # TODO: the site is a value you do not want
+
+
+def strip_footer(lines):
+    # TODO: *body, footer = lines
+
+
+def middle_char(code):
+    # TODO: unpack the three characters, name two of them _
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def pair_labels(pairs):
+    labels = []
+    for site, count in pairs:
+        labels.append(f"{site}: {count}")
+    return labels
+
+
+def total_count(pairs):
+    total = 0
+    for _, count in pairs:
+        total += count
+    return total
+
+
+def strip_footer(lines):
+    *body, footer = lines
+    return body
+
+
+def middle_char(code):
+    _, middle, _ = code
+    return middle
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(pair_labels([("Kaitaia", 42), ("Otautahi", 7)]))
+print(total_count([("Kaitaia", 42), ("Otautahi", 7)]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>['Kaitaia: 42', 'Otautahi: 7']
+49</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(strip_footer(["alpha", "beta", "gamma", "END"]))
+print(strip_footer(["END"]))
+print(middle_char("abc"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>['alpha', 'beta', 'gamma']
+[]
+b</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (pair_labels, total_count, strip_footer, middle_char))
+for banned in ("[0]", "[1]", "[2]", "[-1]", "[-2]", "[:", "len(", "range(", ".pop("):
+    assert banned not in whole, "rule broken: unpack instead of indexing, slicing or counting"
+def for_target(function):
+    headers = [line.strip() for line in inspect.getsource(function).splitlines() if line.strip().startswith("for ")]
+    assert headers, "rule broken: loop over the pairs with a for statement"
+    return headers[0][4:headers[0].index(" in ")]
+assert "," in for_target(pair_labels), "rule broken: unpack in the for header"
+assert "," in for_target(total_count), "rule broken: unpack in the for header"
+assert "_" in for_target(total_count), "rule broken: name the site you do not want _"
+assert "*" in inspect.getsource(strip_footer), "rule broken: one starred name collects the body"
+print(pair_labels([]))
+print(total_count([]))
+try:
+    print(strip_footer([]))
+except ValueError as problem:
+    print("ValueError:", problem)
+try:
+    print(pair_labels([("Kaitaia", 42, 3)]))
+except ValueError as problem:
+    print("ValueError:", problem)
+print(middle_char("xyz") + middle_char("123"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[]
+0
+ValueError: not enough values to unpack (expected at least 1, got 0)
+ValueError: too many values to unpack (expected 2)
+y2</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 09.3: Unpack Your Bags!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>You write six functions that return several values at once and unpack them again.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java needs a type to carry three values out of a method, and a spare variable to swap two.</p>
+<pre>record Summary(int low, int high, double mean) {}
+
+Summary summarise(List&lt;Integer&gt; readings) { ... }
+
+int temp = a;
+a = b;
+b = temp;</pre>
+<p>Python needs neither. The comma builds a <b>tuple</b>, which is a fixed sequence of values in order.
+You cannot add to a tuple or change one of its items once it exists. Parentheses around a tuple only
+group it and are usually left out.</p>
+<pre>def summarise(readings):
+    return min(readings), max(readings), sum(readings) / len(readings)
+
+low, high, mean = summarise([4, 9, 2, 7])
+print(low, high, mean)          # 2 9 5.5</pre>
+<p>The <code>return</code> line builds a three-item tuple. The line after it takes that tuple apart and
+binds each item to a name. Taking a sequence apart into names is called <b>unpacking</b>, and it works
+on any sequence, not only tuples.</p>
+<p>Four more forms carry the rest of the lesson.</p>
+<ul>
+<li><code>left, right = right, left</code> swaps two names in one statement. Python builds the whole
+right-hand side first, then binds, so no temporary variable exists.</li>
+<li><code>head, *tail = readings</code> binds the first item to <code>head</code>. The star marks the
+name that collects everything left over, so <code>tail</code> becomes a list of the rest.</li>
+<li><code>first, *middle, last = readings</code> takes both ends and gathers the rest in the middle.
+One statement may hold one starred name at most.</li>
+<li><code>(site, channel), value = record</code> unpacks a nested structure in one statement. The shape
+on the left mirrors the shape on the right.</li>
+</ul>
+<p>Unpacking checks the count at run time. Ask for two names from a three-item tuple and Python raises
+<code>ValueError: too many values to unpack (expected 2)</code>. Ask for four and it raises
+<code>ValueError: not enough values to unpack (expected 4, got 3)</code>. Java catches that mistake at
+compile time, so watch for it in review here.</p>
+<p>One more form has no Java counterpart at all. A trailing comma builds a tuple of one.</p>
+<pre>x = 5,
+print(x)          # (5,)</pre>
+<p>You can type that comma by accident at the end of a return line. The result is a one-item tuple where
+you expected a number. Meet it on purpose now so you recognise it later.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Write six functions. Each one returns a value and none of them prints.</p>
+<ul>
+<li><code>summarise(readings)</code> returns the smallest value, the largest value and the mean, in
+that order. Use the built-in functions <code>min</code>, <code>max</code> and <code>sum</code>.</li>
+<li><code>swapped(left, right)</code> swaps the two names, then returns both in the new order.</li>
+<li><code>split_head(readings)</code> returns the first item and a list of everything after it.</li>
+<li><code>split_ends(readings)</code> returns the first item, a list of the middle, and the last
+item.</li>
+<li><code>unpack_record(record)</code> takes a nested record such as <code>(("A1", 3), 12.5)</code> and
+returns the site, the channel and the value as three separate items.</li>
+<li><code>one_tuple()</code> returns the value that <code>x = 5,</code> produces.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character, brackets and
+commas included.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not index. No <code>[0]</code>, no <code>[1]</code>, no <code>[-1]</code>. Unpack instead of subscripting.</li><li>Build no class, record or holder object to carry three values home.</li><li>Swap the two names in one statement. No temporary variable, and no name containing <code>temp</code> or <code>tmp</code>.</li><li>Return a bare comma-separated expression. Do not wrap the returned tuple in parentheses.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>22</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def summarise(readings):
+    # TODO: return min, max and mean as one bare comma-separated expression
+
+
+def swapped(left, right):
+    # TODO: swap the two names in one statement, then return both
+
+
+def split_head(readings):
+    # TODO: head, *tail = readings
+
+
+def split_ends(readings):
+    # TODO: first, *middle, last = readings
+
+
+def unpack_record(record):
+    # TODO: unpack the nested record in a single statement
+
+
+def one_tuple():
+    # TODO: return the value that x = 5, produces
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def summarise(readings):
+    return min(readings), max(readings), sum(readings) / len(readings)
+
+
+def swapped(left, right):
+    left, right = right, left
+    return left, right
+
+
+def split_head(readings):
+    head, *tail = readings
+    return head, tail
+
+
+def split_ends(readings):
+    first, *middle, last = readings
+    return first, middle, last
+
+
+def unpack_record(record):
+    (site, channel), value = record
+    return site, channel, value
+
+
+def one_tuple():
+    x = 5,
+    return x
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>low, high, mean = summarise([4, 9, 2, 7])
+print(low, high, mean)
+print(summarise([3]))
+print(swapped("north", "south"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>2 9 5.5
+(3, 3, 3.0)
+('south', 'north')</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>head, tail = split_head([10, 20, 30, 40])
+print(head, tail)
+first, middle, last = split_ends([10, 20, 30, 40])
+print(first, middle, last)
+print(split_ends([1, 2]))
+print(unpack_record((("A1", 3), 12.5)))
+value = one_tuple()
+print(value, type(value))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>10 [20, 30, 40]
+10 [20, 30] 40
+(1, [], 2)
+('A1', 3, 12.5)
+(5,) &lt;class 'tuple'&gt;</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (summarise, swapped, split_head, split_ends, unpack_record, one_tuple))
+for banned in ("[0]", "[1]", "[2]", "[-1]", "[-2]"):
+    assert banned not in whole, "rule broken: unpack instead of subscripting"
+assert "class " not in whole, "rule broken: no holder object"
+assert "return (" not in whole, "rule broken: return a bare comma-separated expression"
+assert "temp" not in whole and "tmp" not in whole, "rule broken: swap without a temporary"
+body = inspect.getsource(swapped).strip().splitlines()
+assert len(body) &lt;= 3, "rule broken: swap in a single statement"
+try:
+    a, b = summarise([1, 2, 3])
+except ValueError as problem:
+    print("ValueError:", problem)
+try:
+    a, b, c, d = summarise([1, 2, 3])
+except ValueError as problem:
+    print("ValueError:", problem)
+print(unpack_record((("Z9", 0), 0.0)))
+print(one_tuple() + one_tuple())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>ValueError: too many values to unpack (expected 2)
+ValueError: not enough values to unpack (expected 4, got 3)
+('Z9', 0, 0.0)
+(5, 5)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+</quiz>

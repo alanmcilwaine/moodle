@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 03.1: Def Not a Method!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write two functions that return a solar panel's output for one day and for a week.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>A Java method carries a queue of keywords before you ever reach its name.</p>
+<pre>static int panelOutput(int hours, int rating) {
+    return hours * rating;
+}</pre>
+<p>Python writes the same idea like this.</p>
+<pre>def panel_output(hours, rating):
+    return hours * rating</pre>
+<p>Read the differences one at a time.</p>
+<ul>
+<li><code>def</code> starts the definition. There is no <code>static</code>, no access modifier and no return type in front of the name.</li>
+<li>Parameters are bare names. You never write a type in front of a parameter, and you never write one after it either.</li>
+<li>The header ends with a colon and the body is indented under it, exactly as an <code>if</code> body is. Indentation does the work braces did in Java.</li>
+<li><code>return value</code> hands a value back to the caller, the same way it does in Java.</li>
+<li>Calling looks the same as Java. <code>panel_output(6, 250)</code> runs the body and gives back its result.</li>
+</ul>
+<p>Function names follow the convention variable names follow. Words go in lower case and join with underscores, so Java's <code>panelOutput</code> becomes <code>panel_output</code>.</p>
+<p>Break one habit before you start. Printing and returning are separate acts. <code>print</code> puts text on the screen and hands back nothing. <code>return</code> hands a value to whoever called the function and puts nothing on the screen. The tests below print what your function returns, so a function that prints instead of returning shows <code>None</code> and fails.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><ul><li><code>panel_output(hours, rating)</code> returns the output for one day, which is <code>hours</code> multiplied by <code>rating</code>.</li><li><code>weekly_output(hours, rating)</code> returns seven days of that figure. Work it out by calling <code>panel_output</code> and multiplying its result by 7. Do not repeat the multiplication that <code>panel_output</code> already does.</li></ul><p>Each function is one line of body. If yours is longer, you have written Java. You pass when both functions return the numbers the tests expect.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Return the number. Print it inside the function and the test prints <code>None</code> underneath, and you fail.</li><li>Do not write a type in front of a parameter, and do not write one after it either. <code>hours: int</code> fails the checker.</li><li>Do not put a return type on the header. Python has no <code>-&gt;</code> in this topic.</li><li><code>weekly_output</code> must call <code>panel_output</code>. Rewriting the multiplication yourself fails the checker.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>10</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def panel_output(hours, rating):
+    # TODO: return one day of output
+
+def weekly_output(hours, rating):
+    # TODO: call panel_output and return seven days of it
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def panel_output(hours, rating):
+    return hours * rating
+
+def weekly_output(hours, rating):
+    return panel_output(hours, rating) * 7
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(panel_output(6, 250))
+print(weekly_output(6, 250))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>1500
+10500</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(weekly_output(1, 1))
+print(panel_output(0, 250))
+day_one = panel_output(2, 50)
+day_two = panel_output(3, 50)
+print(day_one + day_two)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>7
+0
+250</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+src = inspect.getsource(panel_output)
+week = inspect.getsource(weekly_output)
+assert "return" in src, "rule broken: panel_output must return its answer"
+assert "print" not in src, "rule broken: return the number, do not print it"
+assert "print" not in week, "rule broken: return the number, do not print it"
+assert "hours:" not in src and "rating:" not in src, "rule broken: no type on a parameter"
+assert "-&gt;" not in src and "-&gt;" not in week, "rule broken: no return type on the header"
+assert "static" not in src and "public" not in src, "rule broken: Python has no static and no public"
+assert "panel_output(" in week, "rule broken: weekly_output must call panel_output"
+print(panel_output(4, 125))
+print(weekly_output(4, 125))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>500
+3500</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 03.2: Two Values, No Wrapper!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write one name at the left margin and four functions covering paired return values, the implicit <code>None</code>, and local scope.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>A Java method hands back one thing. When you need two, you invent a container for them.</p>
+<pre>static int[] summarise(int[] readings) {
+    int count = 0, total = 0;
+    for (int r : readings) { count++; total += r; }
+    return new int[] {count, total};
+}</pre>
+<p>Python returns both and skips the container.</p>
+<pre>def summarise(readings):
+    ...
+    return count, total</pre>
+<p>The comma is the whole trick. Python bundles the two values into a <b>tuple</b>, a fixed group of values that cannot be changed once made. Printing one shows round brackets and commas.</p>
+<pre>print(summarise([4, 5, 6]))     # (3, 15)</pre>
+<p>The caller can also spread the bundle across two names in one line. A later topic covers tuples in full. Two facts carry you through this exercise.</p>
+<pre>count, total = summarise([4, 5, 6])
+print(count, total)             # 3 15</pre>
+<p>Next, the function that hands back nothing. Java makes you write <code>void</code> and then refuses to compile <code>int x = doThing();</code>. Python has no <code>void</code>. A function that reaches its end without a <code>return</code> hands back <code>None</code>, Python's <code>null</code>, and the caller is free to print it.</p>
+<p>Last, where a name lives. In Java, assigning to a field inside a method changes the field. Python works the other way round. A name you assign inside a function is <b>local</b> to that call, and it disappears when the call ends. It never touches a name of the same spelling written at the left margin of the file.</p>
+<pre>threshold = 5
+
+def tighten():
+    threshold = 1        # a new local name, not the one above
+    return threshold
+
+print(tighten())         # 1
+print(threshold)         # 5, untouched</pre>
+<p>Reading works differently from assigning. A function that only reads <code>threshold</code>, and never assigns to it, sees the value at the left margin.</p>
+<p>The empty list is the case a careless answer fails. Count and total both start at zero, so the loop body never runs and the pair comes back as zeros.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><ul><li>Keep <code>threshold</code> at the left margin, bound to <code>5</code>.</li><li><code>summarise(readings)</code> loops over the readings and returns two numbers, how many there were and what they add up to, in that order. An empty list returns <code>0</code> and <code>0</code>.</li><li><code>clear_log()</code> prints <code>log cleared</code> and holds no <code>return</code> statement at all.</li><li><code>over_threshold(reading)</code> returns whether <code>reading</code> is greater than <code>threshold</code>. Read the name, do not assign to it.</li><li><code>tighten()</code> binds a local <code>threshold</code> to <code>1</code> and returns it. The one at the left margin must survive unchanged.</li></ul><p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Hand back both numbers from <code>summarise</code> with a single <code>return</code> and a comma. No list, no wrapper.</li><li>Do not call <code>len</code> or <code>sum</code>. Count and add inside the loop.</li><li>Leave <code>clear_log</code> with no <code>return</code> statement.</li><li>Do not write <code>global</code> or <code>nonlocal</code> anywhere. Reaching out of a function to rebind a name is the habit this exercise is breaking.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>20</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[threshold = 5
+
+def summarise(readings):
+    # TODO: return how many readings there were and what they add up to
+
+def clear_log():
+    # TODO: print "log cleared" and write no return statement
+
+def over_threshold(reading):
+    # TODO: read threshold, do not assign to it
+
+def tighten():
+    # TODO: bind a local threshold to 1 and return it
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[threshold = 5
+
+def summarise(readings):
+    count = 0
+    total = 0
+    for reading in readings:
+        count = count + 1
+        total = total + reading
+    return count, total
+
+def clear_log():
+    print("log cleared")
+
+def over_threshold(reading):
+    return reading > threshold
+
+def tighten():
+    threshold = 1
+    return threshold
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(summarise([4, 5, 6]))
+count, total = summarise([2, 2])
+print(count, total)
+print(summarise([]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>(3, 15)
+2 4
+(0, 0)</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(clear_log())
+print(over_threshold(6))
+print(tighten())
+print(threshold)
+print(over_threshold(2))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>log cleared
+None
+True
+1
+5
+False</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+sm = inspect.getsource(summarise)
+cl = inspect.getsource(clear_log)
+tg = inspect.getsource(tighten)
+ot = inspect.getsource(over_threshold)
+assert "len(" not in sm and "sum(" not in sm, "rule broken: count and add inside the loop"
+assert "return" in sm, "rule broken: summarise must hand back both numbers"
+assert "return" not in cl, "rule broken: clear_log must have no return statement"
+for source in (sm, cl, tg, ot):
+    assert "global" not in source, "rule broken: do not write global"
+    assert "nonlocal" not in source, "rule broken: do not write nonlocal"
+print(summarise([10]))
+print(summarise([1, 2, 3, 4]))
+n, amount = summarise([7, 8])
+print(n)
+print(amount)
+print(tighten())
+print(threshold)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>(1, 10)
+(4, 10)
+2
+15
+1
+5</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 03.3: Return of the Def!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write a <code>collatz_steps</code> function that returns a step count and a <code>log_start</code> function that returns nothing.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>A Java method needs a return type, and often several keywords, in front of its name.</p>
+<pre>static int collatzSteps(int n) {
+    int steps = 0;
+    while (n != 1) {
+        n = (n % 2 == 0) ? n / 2 : 3 * n + 1;
+        steps++;
+    }
+    return steps;
+}</pre>
+<p>Python drops all of that.</p>
+<pre>def collatz_steps(n):
+    steps = 0
+    while n != 1:
+        ...
+        steps = steps + 1
+    return steps</pre>
+<ul>
+<li><code>def</code> starts a function. There is no return type, no <code>static</code>, no access modifier and no <code>throws</code> clause.</li>
+<li>The header ends with a colon and the body is indented, exactly as an <code>if</code> body is.</li>
+<li><code>return value</code> hands a value back to the caller, the same way it does in Java.</li>
+<li>A function that reaches its end without a <code>return</code> hands back <code>None</code>. <code>None</code> is Python's <code>null</code>. Java refuses to compile a method that misses a return. Python runs that function and says nothing.</li>
+<li><code>while condition:</code> repeats the body for as long as the condition holds. It works as Java's <code>while</code> does, without the parentheses and with a colon on the end.</li>
+<li>There is no <code>++</code> and no <code>--</code>. Write <code>steps = steps + 1</code> instead. The text <code>++steps</code> reads as two plus signs in front of a number and changes nothing at all.</li>
+</ul>
+<p>Two arithmetic operators appear in this exercise. <code>n % 2</code> is the remainder, as in Java. <code>n // 2</code> divides and throws the remainder away, which is what <code>/</code> does on two Java ints. A single <code>/</code> in Python always gives a float, so <code>6 / 2</code> is <code>3.0</code>.</p>
+<p>The loops topic gave you the indented loop body. The indentation topic gave you the branch that catches an <code>n</code> of 1 or less.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><ul><li><code>collatz_steps(n)</code> counts the steps needed to reach 1. Halve <code>n</code> with <code>//</code> when it is even. Replace <code>n</code> with <code>3 * n + 1</code> when it is odd. Count every replacement, then return the count once <code>n</code> reaches 1. Return <code>0</code> for any <code>n</code> of 1 or less, before the loop starts.</li><li><code>log_start()</code> prints <code>logger armed</code> and holds no <code>return</code> statement at all. A hidden test prints its result, so you see <code>None</code> appear underneath.</li></ul><p>You pass when <code>collatz_steps(6)</code> returns 8 and <code>collatz_steps(7)</code> returns 16. The tests print those return values, so a function that prints instead of returning shows <code>None</code> and fails.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Return the count. Print it inside the function and the test prints <code>None</code> underneath, and you fail.</li><li>Use <code>while</code> for the loop. <code>for</code> is banned in this one exercise.</li><li>Do not write <code>++</code> or <code>--</code>. Python has neither.</li><li>Call no builtin except <code>print</code>. No <code>sum</code>, no <code>max</code>, no <code>min</code>, no <code>abs</code>, no <code>len</code>.</li><li>Leave <code>log_start</code> with no <code>return</code> statement.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>16</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def collatz_steps(n):
+    # TODO: return the step count. Use a while loop, not a for loop
+
+def log_start():
+    # TODO: print "logger armed" and write no return statement
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def collatz_steps(n):
+    if n <= 1:
+        return 0
+    steps = 0
+    while n != 1:
+        if n % 2 == 0:
+            n = n // 2
+        else:
+            n = 3 * n + 1
+        steps = steps + 1
+    return steps
+
+def log_start():
+    print("logger armed")
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(collatz_steps(6))
+print(collatz_steps(7))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>8
+16</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(collatz_steps(1))
+print(collatz_steps(0))
+print(collatz_steps(-4))
+print(log_start())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>0
+0
+0
+logger armed
+None</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(collatz_steps(2))
+print(collatz_steps(27))
+print(collatz_steps(1000))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>1
+111
+111</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+src = inspect.getsource(collatz_steps)
+assert "while" in src, "rule broken: the loop must be a while"
+assert "for " not in src, "rule broken: no for loop in this one"
+assert "return" in src, "rule broken: the function must return its answer"
+assert "print" not in src, "rule broken: return the count, do not print it"
+assert "++" not in src and "--" not in src, "rule broken: Python has no ++ or --"
+for name in ("sum(", "max(", "min(", "abs(", "len("):
+    assert name not in src, "rule broken: no builtin except print"
+assert "return" not in inspect.getsource(log_start), "rule broken: log_start must not return"
+print(collatz_steps(12))
+print(log_start())</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>9
+logger armed
+None</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+</quiz>

@@ -1,0 +1,760 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 14.1: Pause, Do Not Stop!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write three generator functions that hand out their values one at a time.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java has two ways to hand values out one at a time. The first is the <code>Iterator</code>
+interface, and it costs you a class.</p>
+<pre>class Countdown implements Iterator&lt;Integer&gt; {
+    private int value;
+
+    Countdown(int start) {
+        this.value = start;
+    }
+
+    public boolean hasNext() {
+        return value &gt; 0;
+    }
+
+    public Integer next() {
+        return value--;
+    }
+}</pre>
+<p>Count the moving parts. A class, a field to remember where you got to, and two methods that have to
+agree with each other about what "where you got to" means. Get <code>hasNext</code> out of step with
+<code>next</code> and you either skip a value or run off the end.</p>
+<p>The second way is a stream, which hides the class but pushes the logic into arguments.</p>
+<pre>Stream.iterate(start, v -&gt; v &gt; 0, v -&gt; v - 1);</pre>
+<p>Python needs neither. Write an ordinary function and put the word <code>yield</code> in its body
+where <code>return</code> would go.</p>
+<pre>from collections.abc import Iterator
+
+
+def countdown(start: int) -&gt; Iterator[int]:
+    value = start
+    while value &gt; 0:
+        yield value
+        value -= 1</pre>
+<p>That is the whole thing. The loop counter is an ordinary local variable, and there is no second
+method that has to stay in step with anything.</p>
+<p>A function whose body contains <code>yield</code> anywhere is a <b>generator function</b>. It no
+longer behaves like a normal function when you call it. Calling <code>countdown(3)</code> builds a
+<b>generator object</b> and runs <b>not one line</b> of the body.</p>
+<p>The body starts running when something asks for a value. <code>next(running)</code> runs the body
+until it reaches a <code>yield</code>, hands that value back, and then freezes the function exactly
+where it stands. Local variables and the position in the loop all stay put.</p>
+<p>Ask for the next value and the function thaws and carries on from the line after the
+<code>yield</code>. A <code>for</code> loop and a call to <code>list()</code> both do that asking for
+you, over and over, until the function body ends. When the body ends, <code>next()</code> raises
+<code>StopIteration</code>, and a <code>for</code> loop catches that for you and stops quietly.</p>
+<p>The return annotation is <code>Iterator[int]</code>, and it comes from <code>collections.abc</code>.
+Do not import it from <code>typing</code>, which has held a deprecated copy since Python 3.9. A
+generator function is annotated with what the caller receives, which is an iterator of values, not with
+the type of one <code>yield</code>.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<ul>
+<li><code>countdown(start)</code> yields <code>start</code>, then each number below it, down to 1. Make
+<code>print("countdown is running now")</code> the very first line of the body. The first test proves
+that line does not run when you call the function.</li>
+<li><code>handshake()</code> takes no arguments and yields three strings in order,
+<code>"hello"</code>, then <code>"again"</code>, then <code>"goodbye"</code>. Write three separate
+<code>yield</code> statements and no loop. Each one freezes the function until somebody asks
+again.</li>
+<li><code>letters(word)</code> yields the characters of <code>word</code> one at a time, in order.</li>
+</ul>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not write the word <code>return</code> in any of the three functions. <code>yield</code> is how a value leaves a generator.</li><li>Do not write <code>class</code>. Java needs one to implement <code>Iterator</code>, and that is the boilerplate you are here to delete.</li><li>Do not build a list and hand it back. No <code>append</code>, no list literal.</li><li>Annotate every signature. Import <code>Iterator</code> from <code>collections.abc</code>, never from <code>typing</code>.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from collections.abc import Iterator
+
+
+def countdown(start: int) -> Iterator[int]:
+    # TODO: print "countdown is running now" first, then yield start down to 1
+
+
+def handshake() -> Iterator[str]:
+    # TODO: three yield statements, no loop
+
+
+def letters(word: str) -> Iterator[str]:
+    # TODO: yield one character at a time
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from collections.abc import Iterator
+
+
+def countdown(start: int) -> Iterator[int]:
+    print("countdown is running now")
+    value = start
+    while value > 0:
+        yield value
+        value -= 1
+
+
+def handshake() -> Iterator[str]:
+    yield "hello"
+    yield "again"
+    yield "goodbye"
+
+
+def letters(word: str) -> Iterator[str]:
+    for character in word:
+        yield character
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>running = countdown(3)
+print("called countdown, nothing has run yet")
+print(next(running))
+print(next(running))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>called countdown, nothing has run yet
+countdown is running now
+3
+2</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(list(countdown(2)))
+print(list(handshake()))
+print(list(letters("wat")))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>countdown is running now
+[2, 1]
+['hello', 'again', 'goodbye']
+['w', 'a', 't']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (countdown, handshake, letters))
+assert "return" not in whole, "rule broken: yield is how a value leaves a generator"
+assert "class " not in whole, "rule broken: Python needs no Iterator class"
+assert "append(" not in whole, "rule broken: do not build a list and hand it back"
+assert whole.count("yield") == 5, "rule broken: one yield in countdown, three in handshake, one in letters"
+assert "typing" not in str(countdown.__annotations__["return"]), "rule broken: import Iterator from collections.abc"
+print(type(countdown(3)).__name__)
+print(list(countdown(0)))
+print(list(letters("")))
+print(next(handshake()))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>generator
+countdown is running now
+[]
+[]
+hello</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 14.2: Brackets Cost a Million!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write six functions, each a single <code>return</code> line, that work with generator expressions.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>The comprehensions topic gave you square brackets. Swap them for parentheses and the meaning
+changes completely.</p>
+<pre>[n * n for n in range(1_000_000)]        # a list comprehension, a million ints, built now
+(n * n for n in range(1_000_000))        # a generator expression, no ints, built never</pre>
+<p>The first line builds a list of a million numbers and holds every one of them in memory at the same
+time. The second builds a <b>generator expression</b>, which holds the recipe and nothing else. Work
+that happens only when somebody asks for it is called <b>lazy</b>.</p>
+<p>The size difference is not a rounding error. Ask <code>sys.getsizeof</code> and the list comes back
+at hundreds of kilobytes while the generator comes back at a couple of hundred bytes, whatever the
+limit is. The generator holds one value at a time, so its size never grows with the input.</p>
+<p>Several built-in functions take a bare generator expression as their only argument. You add no
+brackets of your own and no call to collect a result.</p>
+<pre>sum(reading * 10 for reading in readings)
+any(reading &gt; limit for reading in readings)
+all(reading &lt;= limit for reading in readings)</pre>
+<p>Java writes those three as <code>.mapToInt(...).sum()</code>, <code>.anyMatch(...)</code> and
+<code>.allMatch(...)</code>. Python matches Java on the part people forget, which is short-circuiting.
+<code>any</code> stops at the first item that passes and <code>all</code> stops at the first item that
+fails. Neither one reads the rest of the input.</p>
+<p>Watch the empty case, because it catches people in both languages. <code>any</code> of nothing is
+<code>False</code> and <code>all</code> of nothing is <code>True</code>. A validator built on
+<code>all</code> therefore approves an empty batch, which is exactly what Java's
+<code>allMatch</code> does too.</p>
+<p>Writing <code>sum([...])</code> with the brackets left in still gives the right answer, so nothing
+tells you off. It builds the whole list first, hands it over, and throws it away. That is the million
+objects you meant to avoid, and one pair of characters is the only difference.</p>
+<p>Now the part that costs data. A Java <code>Stream</code> cannot be reused, and it says so loudly.</p>
+<pre>IntStream evens = readings.stream().filter(r -&gt; r % 2 == 0);
+evens.count();
+evens.count();
+// IllegalStateException: stream has already been operated upon or closed</pre>
+<p>A Python generator cannot be reused either. It is <b>one-shot</b>, and once something has walked it
+to the end it is <b>exhausted</b>. The difference is that Python raises nothing at all.</p>
+<pre>readings = (n * n for n in range(4))
+print(list(readings))        # [0, 1, 4, 9]
+print(list(readings))        # []</pre>
+<p>The second pass yields nothing. No exception, no warning, and a report that is silently blank. Java
+tells you on the second call, and Python leaves you to find out from the output. Reach for a list when
+you genuinely need two passes, and reach for a generator when one pass is all you want.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<ul>
+<li><code>squares(limit)</code> returns a generator expression yielding <code>n * n</code> for each
+<code>n</code> in <code>range(limit)</code>. Return the generator itself, still lazy.</li>
+<li><code>scaled_total(readings)</code> returns the sum of every reading multiplied by 10.</li>
+<li><code>any_fault(readings, limit)</code> is <code>True</code> when at least one reading is above
+<code>limit</code>.</li>
+<li><code>all_safe(readings, limit)</code> is <code>True</code> when every reading is at or below
+<code>limit</code>.</li>
+<li><code>drain_twice(values)</code> takes one generator and returns a tuple of two lists, built by
+calling <code>list(values)</code> twice in the same <code>return</code> line. Python evaluates left to
+right, so work out what the second list holds before you run it.</li>
+<li><code>lazy_is_smaller(limit)</code> returns <code>True</code> when
+<code>sys.getsizeof</code> of the generator expression is less than <code>sys.getsizeof</code> of the
+matching list comprehension. Import <code>sys</code> at the top of your answer.</li>
+</ul>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Never leave the brackets inside <code>sum</code>, <code>any</code> or <code>all</code>. A hidden test looks for <code>sum([</code>, <code>any([</code> and <code>all([</code>.</li><li>Do not call <code>list()</code> in <code>squares</code>. It hands back something lazy or it fails.</li><li>Do not rebuild the generator inside <code>drain_twice</code>. Let the second list come back empty and read what that costs you.</li><li>Do not write the word <code>for</code> as a statement. Every one of these is one <code>return</code> line with the <code>for</code> inside parentheses.</li><li>Annotate every signature. <code>squares</code> hands back <code>Iterator[int]</code>, imported from <code>collections.abc</code> and never from <code>typing</code>.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>26</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[import sys
+from collections.abc import Iterator
+
+
+def squares(limit: int) -> Iterator[int]:
+    # TODO: return a generator expression, parentheses not brackets
+
+
+def scaled_total(readings: list[int]) -> int:
+    # TODO: sum a bare generator expression
+
+
+def any_fault(readings: list[int], limit: int) -> bool:
+    # TODO: any over a bare generator expression
+
+
+def all_safe(readings: list[int], limit: int) -> bool:
+    # TODO: all over a bare generator expression
+
+
+def drain_twice(values: Iterator[int]) -> tuple[list[int], list[int]]:
+    # TODO: return list(values), list(values) and work out the second one first
+
+
+def lazy_is_smaller(limit: int) -> bool:
+    # TODO: compare sys.getsizeof of the generator against the list
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[import sys
+from collections.abc import Iterator
+
+
+def squares(limit: int) -> Iterator[int]:
+    return (n * n for n in range(limit))
+
+
+def scaled_total(readings: list[int]) -> int:
+    return sum(reading * 10 for reading in readings)
+
+
+def any_fault(readings: list[int], limit: int) -> bool:
+    return any(reading > limit for reading in readings)
+
+
+def all_safe(readings: list[int], limit: int) -> bool:
+    return all(reading <= limit for reading in readings)
+
+
+def drain_twice(values: Iterator[int]) -> tuple[list[int], list[int]]:
+    return list(values), list(values)
+
+
+def lazy_is_smaller(limit: int) -> bool:
+    return sys.getsizeof(n * n for n in range(limit)) < sys.getsizeof([n * n for n in range(limit)])
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>lazy = squares(5)
+print(type(lazy).__name__)
+print(list(lazy))
+print(scaled_total([1, 2, 3]))
+print(any_fault([40, 12, 160], 100))
+print(all_safe([40, 12, 160], 100))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>generator
+[0, 1, 4, 9, 16]
+60
+True
+False</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>readings = squares(4)
+print(list(readings))
+print(list(readings))
+print(drain_twice(squares(3)))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[0, 1, 4, 9]
+[]
+([0, 1, 4], [])</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (squares, scaled_total, any_fault, all_safe, drain_twice, lazy_is_smaller))
+squished = whole.replace(" ", "")
+assert "sum([" not in squished, "rule broken: sum takes a bare generator expression"
+assert "any([" not in squished, "rule broken: any takes a bare generator expression"
+assert "all([" not in squished, "rule broken: all takes a bare generator expression"
+assert "list(" not in inspect.getsource(squares), "rule broken: squares hands back something lazy"
+assert "typing" not in str(squares.__annotations__["return"]), "rule broken: import Iterator from collections.abc"
+print(lazy_is_smaller(100000))
+print(scaled_total([]))
+print(any_fault([], 100))
+print(all_safe([], 100))
+print(list(squares(0)))
+print(drain_twice(squares(0)))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>True
+0
+False
+True
+[]
+([], [])</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 14.3: The Stream That Ran Dry!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write seven functions that keep a batch of readings lazy from end to end.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Swap one character in a comprehension and the meaning changes completely.</p>
+<pre>[value for code, value in readings]        # a list, built now, all of it
+(value for code, value in readings)        # a generator, built never, one item at a time</pre>
+<p>Square brackets build a list. Parentheses build a <b>generator expression</b>. A generator computes
+nothing when you write it. It computes one item each time something asks for the next one, and it
+forgets that item straight afterwards. Work that happens only when somebody asks for it is called
+<b>lazy</b>. A list of a million readings holds a million objects at once. The generator holds one.</p>
+<p>You can write a generator as a function too. Put <code>yield</code> in the body instead of
+<code>return</code>.</p>
+<pre>def faults(readings: Readings) -&gt; Codes:
+    for code, value in readings:
+        print(f"checking {code}")
+        if value &gt; 100:
+            yield code</pre>
+<p><code>yield</code> hands one value to the caller and freezes the function where it stands. Local
+variables, the loop position, everything stays put. Ask for the next value and the function thaws and
+carries on from the line after the <code>yield</code>. Java has no equivalent. There you write a class
+that implements <code>Iterator</code>, keep the position in a field, and rebuild by hand what
+<code>yield</code> does for free.</p>
+<p>Calling <code>faults(readings)</code> runs none of the body. Not one line. You get a generator object
+back, and the first <code>print</code> happens only when something pulls the first value. The tests
+make you see that, because laziness is invisible until it surprises you.</p>
+<p>A generator that wants to hand on the output of another generator uses <code>yield from</code>.</p>
+<pre>def all_faults(batches: Batches) -&gt; Codes:
+    for batch in batches:
+        yield from faults(batch)</pre>
+<p><code>yield from faults(batch)</code> yields every value that <code>faults(batch)</code> produces,
+one at a time, and stays lazy the whole way. Writing the inner loop by hand does the same job with more
+lines.</p>
+<p>Several built-in functions accept a bare generator expression. You add no brackets of your own and
+no final call to collect the result.</p>
+<ul>
+<li><code>sum(value for code, value in readings)</code> adds them up.</li>
+<li><code>all(value &lt;= 100 for code, value in readings)</code> is <code>True</code> when every item
+passes, and it stops at the first failure.</li>
+<li><code>any(value &gt; 100 for code, value in readings)</code> is <code>True</code> when one item
+passes, and it stops there.</li>
+<li><code>next(faults(readings), None)</code> pulls one value and gives you <code>None</code> when there
+is none. This is how you find the first match without a loop and without a <code>break</code>.</li>
+</ul>
+<p>A generator can be endless, because nothing has to hold it all.</p>
+<pre>def stream(start: int) -&gt; Numbers:
+    value = start
+    while True:
+        yield value
+        value += 1</pre>
+<p>That <code>while True</code> never ends and the function never returns. Take a slice of it with
+<code>islice</code> from the <code>itertools</code> module.</p>
+<pre>from itertools import islice
+islice(stream(3), 5)          # the first five values, still lazy</pre>
+<p>Now the trap that gives this exercise its name. Reuse a Java <code>Stream</code> and it throws
+<code>IllegalStateException: stream has already been operated upon or closed</code>. You find out
+immediately. Reuse a Python generator and nothing is raised at all. The generator is exhausted, so it
+yields nothing. Your second pass produces an empty result and your report is silently blank. A hidden
+test drains one generator object twice and prints both results side by side.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Readings arrive as a list of <code>(code, value)</code> tuples, and a fault is a value above 100.</p>
+<ul>
+<li><code>faults(readings)</code> prints <code>f"checking {code}"</code> for each tuple it examines and
+yields the code of every fault. Copy the printed text exactly.</li>
+<li><code>all_faults(batches)</code> takes a list of readings lists and delegates to
+<code>faults</code> with <code>yield from</code>.</li>
+<li><code>verdict(readings)</code> returns a tuple of two booleans. The first is <code>True</code> when
+every reading is safe. The second is <code>True</code> when any reading is a fault. Build them with
+<code>all</code> and <code>any</code> over generator expressions.</li>
+<li><code>first_fault(readings)</code> returns the first fault code, or <code>None</code> when there is
+none.</li>
+<li><code>stream(start)</code> yields <code>start</code>, then <code>start + 1</code>, for ever.</li>
+<li><code>first_five(start)</code> returns the first five values of <code>stream(start)</code> as a lazy
+object, not as a list. The test prints it with <code>print(*first_five(3))</code>.</li>
+<li><code>total(readings)</code> returns the sum of the values.</li>
+</ul>
+<p>Import <code>islice</code> at the top of your answer. The type aliases above the functions are supplied rather than written by you. A return type such as <code>Iterator[str]</code> needs square brackets, and the first rule below bans those inside the functions.</p>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Do not type a single square bracket anywhere in your answer. Everything stays lazy, and a returned list is a failure.</li><li>Do not call <code>list()</code>.</li><li>Do not try to reach the end of <code>stream</code>. It has none, and the checker will hang until it is killed.</li><li>Find the first fault with <code>next(..., None)</code>. Do not write a loop with a <code>break</code>.</li><li>Use parentheses for the total, not brackets. One character is the difference between a million objects and none.</li><li>Annotate every signature out of the supplied aliases. A generator hands back an <code>Iterator</code> rather than a list, and the return type has to admit that.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>30</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from collections.abc import Iterator, Sequence
+from itertools import islice
+
+# Supplied type aliases. Use them in your signatures.
+Readings = Sequence[tuple[str, int]]
+Batches = Sequence[Readings]
+Codes = Iterator[str]
+Numbers = Iterator[int]
+Verdict = tuple[bool, bool]
+
+
+def faults(readings: Readings) -> Codes:
+    # TODO: print f"checking {code}" for each pair, then yield the code when value > 100
+
+
+def all_faults(batches: Batches) -> Codes:
+    # TODO: delegate to faults with yield from
+
+
+def verdict(readings: Readings) -> Verdict:
+    # TODO: return (all safe, any fault) using all(...) and any(...)
+
+
+def first_fault(readings: Readings) -> str | None:
+    # TODO: return next(..., None)
+
+
+def stream(start: int) -> Numbers:
+    # TODO: while True, yield the value, then add one
+
+
+def first_five(start: int) -> Numbers:
+    # TODO: return islice(...) and keep it lazy
+
+
+def total(readings: Readings) -> int:
+    # TODO: sum a generator expression in parentheses
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from collections.abc import Iterator, Sequence
+from itertools import islice
+
+# Supplied type aliases. Use them in your signatures.
+Readings = Sequence[tuple[str, int]]
+Batches = Sequence[Readings]
+Codes = Iterator[str]
+Numbers = Iterator[int]
+Verdict = tuple[bool, bool]
+
+
+def faults(readings: Readings) -> Codes:
+    for code, value in readings:
+        print(f"checking {code}")
+        if value > 100:
+            yield code
+
+
+def all_faults(batches: Batches) -> Codes:
+    for batch in batches:
+        yield from faults(batch)
+
+
+def verdict(readings: Readings) -> Verdict:
+    return all(value <= 100 for code, value in readings), any(value > 100 for code, value in readings)
+
+
+def first_fault(readings: Readings) -> str | None:
+    return next(faults(readings), None)
+
+
+def stream(start: int) -> Numbers:
+    value = start
+    while True:
+        yield value
+        value += 1
+
+
+def first_five(start: int) -> Numbers:
+    return islice(stream(start), 5)
+
+
+def total(readings: Readings) -> int:
+    return sum(value for code, value in readings)
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>batch = [("S1", 40), ("S2", 160), ("S3", 99), ("S4", 250)]
+running = faults(batch)
+print("generator made, nothing checked yet")
+print(next(running, None))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>generator made, nothing checked yet
+checking S1
+checking S2
+S2</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>batch = [("S1", 40), ("S2", 160), ("S3", 99)]
+print(verdict(batch))
+print(verdict([("S1", 40), ("S2", 12)]))
+print(total(batch))
+print(*first_five(3))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>(False, True)
+(True, False)
+299
+3 4 5 6 7</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(list(all_faults([[("S1", 200)], [("S2", 5), ("S3", 300)]])))
+print(first_fault([("S1", 1), ("S2", 2)]))
+print(verdict([]))
+print(total([]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>checking S1
+checking S2
+checking S3
+['S1', 'S3']
+checking S1
+checking S2
+None
+(True, False)
+0</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (faults, all_faults, verdict, first_fault, stream, first_five, total))
+assert "[" not in whole, "rule broken: not one square bracket anywhere"
+assert "list(" not in whole, "rule broken: a returned list is a failure"
+assert "break" not in whole, "rule broken: find the first fault with next(..., None)"
+assert "yield" in inspect.getsource(faults), "rule broken: faults must yield"
+assert "yield from" in inspect.getsource(all_faults), "rule broken: delegate with yield from"
+once = faults([("S1", 150), ("S2", 3)])
+print(list(once))
+print(list(once))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>checking S1
+checking S2
+['S1']
+[]</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+</quiz>

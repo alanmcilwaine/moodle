@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 04.1: Trim Before You Guess!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A signwriter changes text to match each customer's instructions. One shop wants the word go removed only from the start of its sign. Another wants every leading g and o removed.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/strings#TrimPrefix">strings.TrimPrefix</a>. Read both sentences. What does this function remove? What does it return when the string does not start with the prefix?</li><li><a href="https://pkg.go.dev/strings#TrimLeft">strings.TrimLeft</a>. Read the first sentence. What is a cutset? How many leading code points can the function remove?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java developer might use <code>startsWith</code> followed by <code>substring(2)</code> for both orders. Java's <code>strip</code> family removes only whitespace, so the second order needs a regular expression. Go has one function for each order. Their documentation explains the difference.</p><pre>if (sign.startsWith("go")) {
+    return sign.substring(2);
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>for</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Work out what each function returns for the word goose. Check your answers against the first sentence for TrimLeft.</li><li>Find the TrimPrefix sentence about a string without the prefix. What does <code>dropBrand</code> return for lane?</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "strings"
+
+func dropBrand(sign string) string {
+	// TODO
+}
+
+func dropLetters(sign string) string {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "strings"
+
+func dropBrand(sign string) string {
+	return strings.TrimPrefix(sign, "go")
+}
+
+func dropLetters(sign string) string {
+	return strings.TrimLeft(sign, "go")
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "for"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(dropBrand("gopher"), dropLetters("gopher"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>pher pher</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(dropBrand("lane"), dropLetters("lane"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>lane lane</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(dropBrand("google.com"), dropLetters("google.com"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>ogle.com le.com</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Printf("%q %q %q %q\n", dropBrand("gogo"), dropBrand("logo"), dropLetters("gogo"), dropLetters("ogopher"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>"go" "logo" "" "pher"</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 04.2: Scavenger Hunt at pkg.go.dev!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A scavenger hunt gives players clues that lead them to hidden targets. The Kea Rally has three descriptions of behaviour instead of a map. Find the item that matches each clue in the three packages below.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/strings">strings</a>. Check the Index near the top. Which entry matches the first clue? According to its documentation, where must the second string appear?</li><li><a href="https://pkg.go.dev/unicode/utf8">unicode/utf8</a>. Check the Index. Two entries count the same unit for different input types. Which entry accepts a string? What does its documentation say it counts?</li><li><a href="https://pkg.go.dev/math">math</a>. Find the Constants section. Which block lists the integer-type limits? Which name in that block applies to an <code>int8</code>?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, the IDE offers all three items after you type a dot. Go puts them in three packages, which you can search on pkg.go.dev. Take care not to count characters with a function that counts bytes.</p><pre>badge.startsWith(team);
+badge.length();
+Byte.MAX_VALUE;</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>for</code>, <code>len</code>, <code>127</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Search the strings page for begins. Read each documentation sentence that contains it.</li><li>Search the unicode/utf8 Index for Count. Choose the entry whose parameter is a string.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>22</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	"math"
+	"strings"
+	"unicode/utf8"
+)
+
+func onTeam(badge, team string) bool {
+	// TODO
+}
+
+func badgeLength(badge string) int {
+	// TODO
+}
+
+func clueLimit() int8 {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"math"
+	"strings"
+	"unicode/utf8"
+)
+
+func onTeam(badge, team string) bool {
+	return strings.HasPrefix(badge, team)
+}
+
+func badgeLength(badge string) int {
+	return utf8.RuneCountInString(badge)
+}
+
+func clueLimit() int8 {
+	return math.MaxInt8
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "for len 127"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(onTeam("kea-1", "kea"), onTeam("tui-4", "kea"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true false</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(badgeLength("kea-1"), badgeLength("weka-22"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>5 7</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(onTeam("weka-kea", "kea"), onTeam("ke", "kea"), badgeLength("kākā-7"))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>false false 6</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(onTeam("kea", "kea"), clueLimit())]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>true 127</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 04.3: Needle in a Package Stack!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A typesetting house prepares text for printing. Needle prints Go source, so each string must appear exactly as a Go string literal. Its bookkeeper also rounds each half-cent balance to the nearest even integer. Find the package for each job.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/std">Standard library index</a>. Use the one-line package descriptions to find the required behaviours. Which package converts values to and from their string forms? Which function's documentation explains how it rounds a tie?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java's <code>Math.round</code> sends every half upwards. Go lists two rounding functions together, but only one matches the bookkeeper's rule. Java has no method that formats a string as its own literal, so a Java developer might add the quote marks by hand.</p><pre>Math.round(0.5);        // 1
+"\"" + s + "\"";</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>for</code>, <code>if</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Search pkg.go.dev for rounding. Read the first sentence of each result before choosing a function.</li><li>Find the package description that mentions string representations of basic data types. Search that package page for literal.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>18</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	// TODO the packages you find
+)
+
+func quoted(s string) string {
+	// TODO
+}
+
+func nearest(x float64) float64 {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"math"
+	"strconv"
+)
+
+func quoted(s string) string {
+	return strconv.Quote(s)
+}
+
+func nearest(x float64) float64 {
+	return math.RoundToEven(x)
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"banned": "for if"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[// rules]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>rules ok</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(quoted("kea"), nearest(3.7))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>"kea" 4</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(quoted("two words"), nearest(2.2))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>"two words" 2</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(nearest(-10.5), nearest(2.5), nearest(12.5))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>-10 2 12</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(quoted("kākā\t\"kea\""))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>"kākā\t\"kea\""</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

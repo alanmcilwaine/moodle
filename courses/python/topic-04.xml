@@ -1,0 +1,627 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 04.1: No Such Thing as a Char!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write four functions that read characters out of a string, count them, and return a relabelled copy.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java reaches into a string with <code>charAt</code>, asks how long it is with the
+<code>length()</code> method, and hands you back a <code>char</code>, which is a primitive type all of
+its own.</p>
+<pre>String code = "north-pier";
+char first = code.charAt(0);
+char last  = code.charAt(code.length() - 1);
+int size   = code.length();</pre>
+<p>Python does all three differently, and the last of them is the one that saves you an off-by-one
+error for the rest of your career.</p>
+<h4>Indexing</h4>
+<p>Python uses square brackets, the same brackets Java uses on an array.
+<code>code[0]</code> is the first character and counting starts at zero, exactly as in Java.</p>
+<h4>There is no char</h4>
+<p><code>code[0]</code> gives you back a string one character long. Python
+has no separate character type, so a single letter and a whole paragraph are both the type
+<code>str</code>. Nothing needs converting between the two.</p>
+<h4>Negative indexing</h4>
+<p>A negative index counts from the right hand end.
+<code>code[-1]</code> is the last character and <code>code[-2]</code> is the one before it. Read
+<code>-1</code> as "one from the end". Writing <code>code[len(code) - 1]</code> works and marks you
+out as someone still thinking in Java.</p>
+<pre>code = "north-pier"
+print(code[0])    # n
+print(code[-1])   # r</pre>
+<h4>Length is a function, not a method</h4>
+<p>You ask with <code>len(code)</code>. There is no
+<code>.length()</code> and no <code>.length</code> attribute. The same <code>len</code> works on
+anything that has a size, which is why it sits outside the string rather than on it.</p>
+<h4>Methods come back new</h4>
+<p>Python strings are immutable, exactly as Java strings are, so an
+assignment such as <code>code[0] = "X"</code> raises
+<code>TypeError: 'str' object does not support item assignment</code>. Every string method leaves the
+original alone and returns a fresh string, so a method call whose result you throw away is a call you
+have wasted. Two of them do the work below.</p>
+<ul>
+<li><code>text.upper()</code> returns an upper-case copy. It is Java's <code>toUpperCase</code>.</li>
+<li><code>text.replace(old, new)</code> returns a copy with every occurrence of <code>old</code>
+swapped for <code>new</code>. Unlike Java's version it takes plain text, not a regular expression.</li>
+</ul>
+<p>Method calls chain left to right, so <code>code.replace("-", "/").upper()</code> replaces first and
+upper-cases the result.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write four functions. Each one returns a value. None of them prints.</p>
+<ul>
+<li><code>first_letter(text)</code> returns the first character of <code>text</code>.</li>
+<li><code>last_letter(text)</code> returns the last character of <code>text</code>, reached from the
+right hand end.</li>
+<li><code>letter_count(text)</code> returns how many characters <code>text</code> holds.</li>
+<li><code>relabel(code)</code> swaps every hyphen for a slash and returns the result in upper case, so
+<code>"north-pier"</code> becomes <code>"NORTH/PIER"</code>. The caller's string comes back untouched,
+because you cannot touch it.</li>
+</ul>
+<p>You pass when the printed output matches the expected text exactly.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Reach the last character with a negative index. <code>text[len(text) - 1]</code> is banned.</li><li>Ask for the length with <code>len(text)</code>. There is no <code>.length</code> and no <code>.length()</code>.</li><li>Do not write <code>charAt</code>. It does not exist here.</li><li>No loops. One chained method call relabels the whole string.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>12</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def first_letter(text):
+    # TODO: index the front
+
+
+def last_letter(text):
+    # TODO: index from the end, no arithmetic
+
+
+def letter_count(text):
+    # TODO: len is a function, not a method
+
+
+def relabel(code):
+    # TODO: replace the hyphens, then upper-case, in one chain
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def first_letter(text):
+    return text[0]
+
+
+def last_letter(text):
+    return text[-1]
+
+
+def letter_count(text):
+    return len(text)
+
+
+def relabel(code):
+    return code.replace("-", "/").upper()
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(first_letter("Kaitaia"))
+print(last_letter("Kaitaia"))
+print(letter_count("Kaitaia"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>K
+a
+7</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>code = "north-pier"
+print(relabel(code))
+print(code)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>NORTH/PIER
+north-pier</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (first_letter, last_letter, letter_count, relabel))
+assert ".length" not in whole, "rule broken: ask with len(text)"
+assert "charAt" not in whole, "rule broken: Python has no charAt"
+assert "[len(" not in whole, "rule broken: reach the last character with -1"
+assert "for " not in whole, "rule broken: no loops, one chained call does it"
+print(first_letter("x"))
+print(last_letter("x"))
+print(letter_count(""))
+print(relabel("a-b-c"))
+print(relabel("NORTH"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>x
+x
+0
+A/B/C
+NORTH</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 04.2: Plus Sign Purgatory!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write three functions that each build one line of text with a single f-string.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java builds a line of text by gluing pieces together with <code>+</code>, and reaches for
+<code>String.format</code> when the glue gets unreadable.</p>
+<pre>String line  = name + " logged " + count + " readings";
+String other = String.format("Station %s is online", name.toUpperCase());</pre>
+<p>The first line works because the Java compiler quietly converts <code>count</code> to text on your
+behalf. Python refuses to do that.</p>
+<pre>name = "Kaitaia"
+count = 42
+print(name + " logged " + count)
+# TypeError: can only concatenate str (not "int") to str</pre>
+<p>The Java reflex is to wrap the number in <code>str(count)</code>. That runs, and it is the wrong
+answer. Python has one piece of syntax that replaces both of the Java lines above.</p>
+<p>An <b>f-string</b> is an ordinary string literal with the letter <code>f</code> written in front of
+the opening quote. Inside an f-string, every pair of curly braces holds an expression. Python works out
+the expression, turns the result into text, and drops it into the line. Dropping a value into text this
+way is called <b>interpolation</b>. Java has nothing like it.</p>
+<pre>print(f"{name} logged {count} readings")   # Kaitaia logged 42 readings</pre>
+<p>Nothing is converted by hand, and the shape of the finished line is visible in the source instead of
+being hidden behind a row of plus signs.</p>
+<p>Anything you can write as an expression goes between the braces, a method call included.</p>
+<pre>print(f"Station {name.upper()} is online")   # Station KAITAIA is online</pre>
+<p>Two details catch people out.</p>
+<ul>
+<li>A single brace opens an interpolation, so a brace you want in the output has to be doubled.
+<code>{{</code> produces one <code>{</code> and <code>}}</code> produces one <code>}</code>. Text that
+carries braces of its own, such as JSON, needs the doubled form.</li>
+<li>The quotes around the f-string cannot be the same quotes you use inside it. When the text itself
+contains double quotes, wrap the whole f-string in single quotes.</li>
+</ul>
+<p>Both details land at once in <code>f'{{"{key}": {value}}}'</code>. Read it left to right.
+<code>f'</code> opens the f-string, <code>{{</code> is a literal opening brace, the double quote is
+literal text, <code>{key}</code> interpolates, the next double quote is literal, <code>{value}</code>
+interpolates, <code>}}</code> is a literal closing brace, and <code>'</code> closes the f-string.</p>
+<p>Field widths, decimal places and thousands separators also live inside the braces. They come later
+in this topic. Everything here is plain interpolation.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write three functions. Each one returns a string. None of them prints.</p>
+<ul>
+<li><code>receipt(name, count)</code> returns <code>Kaitaia logged 42 readings</code> for the arguments
+<code>("Kaitaia", 42)</code>. The count is a whole number and no conversion happens.</li>
+<li><code>shout_line(name)</code> returns <code>Station KAITAIA is online</code> for
+<code>"kaitaia"</code>. Upper-case it inside the braces.</li>
+<li><code>as_json(key, value)</code> returns <code>{"site": 42}</code> for
+<code>("site", 42)</code>. The key is wrapped in double quotes and the value, being a number, is not.
+The outer braces are part of the output.</li>
+</ul>
+<p>A count of zero and a negative value are both ordinary values, so the same f-string handles them.</p>
+<p>You pass when the printed output matches the expected text character for character, spaces
+included.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Build every returned line with one f-string. No <code>+</code>, no <code>str()</code>, no <code>%</code> formatting, no <code>.format()</code>.</li><li>One string literal per function. Do not call <code>join</code>.</li><li>Build no text with <code>+=</code>.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>10</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def receipt(name, count):
+    # TODO: one f-string, no str() anywhere
+
+
+def shout_line(name):
+    # TODO: call upper() inside the braces
+
+
+def as_json(key, value):
+    # TODO: doubled braces for the literal ones, single quotes outside
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def receipt(name, count):
+    return f"{name} logged {count} readings"
+
+
+def shout_line(name):
+    return f"Station {name.upper()} is online"
+
+
+def as_json(key, value):
+    return f'{{"{key}": {value}}}'
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(receipt("Kaitaia", 42))
+print(receipt("Otautahi", 0))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>Kaitaia logged 42 readings
+Otautahi logged 0 readings</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(shout_line("kaitaia"))
+print(as_json("site", 42))
+print(as_json("errors", 0))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>Station KAITAIA is online
+{"site": 42}
+{"errors": 0}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+sources = [inspect.getsource(f) for f in (receipt, shout_line, as_json)]
+whole = "".join(sources)
+assert "+" not in whole, "rule broken: no + concatenation"
+assert "str(" not in whole, "rule broken: no str()"
+assert ".format(" not in whole, "rule broken: no .format()"
+assert "%" not in whole, "rule broken: no % formatting"
+assert ".join(" not in whole, "rule broken: one f-string per function"
+assert "+=" not in whole, "rule broken: no += text building"
+for source in sources:
+    assert 'f"' in source or "f'" in source, "rule broken: every line comes from an f-string"
+print(receipt("A", 1))
+print(shout_line("te anau"))
+print(as_json("count", -7))
+print(as_json("ratio", 0.5))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>A logged 1 readings
+Station TE ANAU is online
+{"count": -7}
+{"ratio": 0.5}</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 04.3: F-String Theory!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write five functions that format numbers with f-string format specs and reshape text with string methods.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java builds text in four different ways. You join pieces with <code>+</code>. You call
+<code>String.format</code> when a field needs a fixed width. You reach for <code>DecimalFormat</code>
+when a number needs comma separators. You switch to <code>StringBuilder</code> when the joining
+happens inside a long loop.</p>
+<pre>String line = name + " (" + count + ")";
+String padded = String.format("%-12s %,d", name, count);</pre>
+<p>Python replaces all four with one piece of syntax. An <b>f-string</b> is a string literal with the
+letter <code>f</code> written in front of the opening quote. Inside an f-string, Python reads whatever
+sits between a pair of curly braces, works out its value, and puts that value into the text. Dropping
+a value into text this way is called <b>interpolation</b>. Java has nothing like it.</p>
+<pre>name = "Kaitaia"
+count = 42
+print(f"{name} ({count})")     # Kaitaia (42)</pre>
+<p>Add a colon inside the braces and everything after that colon is a <b>format spec</b>. The format
+spec is a small language of its own. It controls the width of the field, the alignment inside that
+field, the number of decimal places, and the way a number is written. It does the work that
+<code>String.format</code> and <code>DecimalFormat</code> do in Java. This exercise uses four format
+specs.</p>
+<p>Two more f-string features help you while you debug. Write an equals sign immediately before the
+closing brace, as in <code>{reading=}</code>, and Python prints the text <code>reading=</code> and then the
+value. Write <code>!r</code> immediately before the closing brace and Python prints the <b>repr</b> of
+the value. The repr of a value is the text you would type to recreate that value, so a string keeps its
+quotes. Under <code>!r</code> the number <code>4.5</code> prints as <code>4.5</code> and the string
+<code>"4.5"</code> prints as <code>'4.5'</code>. The two stop looking identical.</p>
+<p>Python strings are immutable, exactly as Java strings are. Every method returns a new string and
+leaves the original untouched. You call a string method with a dot, the same way you do in Java. Four
+of those methods do the work in part two.</p>
+<ul>
+<li><code>text.strip()</code> with no argument removes the whitespace from both ends. It is Java's
+<code>trim</code>.</li>
+<li><code>text.lower()</code> returns a lower-case copy.</li>
+<li><code>text.split()</code> with no argument breaks the text apart wherever whitespace appears and
+returns a list of the words.</li>
+<li><code>"-".join(words)</code> glues a list of strings into one string and puts a <code>-</code>
+between each neighbouring pair. The separator sits on the left of the dot and the list goes inside the
+brackets. Read that aloud as "the hyphen joins these words" and the order stops looking backwards.</li>
+</ul>
+<p>One method looks familiar and behaves differently. Java's <code>replace(".txt", "")</code> removes
+a whole piece of text, so Python's <code>strip(".txt")</code> looks like the same tool. It is not.
+Given an argument, <code>strip</code> reads that argument as a set of single characters and removes
+any of those characters from both ends. <code>"Annual Report.txt".strip(".txt")</code> returns
+<code>"Annual Repor"</code>, because the final <code>t</code> of <code>Report</code> is in the set and
+goes as well. Use <code>removesuffix(".txt")</code> instead. It removes the whole suffix, once, and
+only from the end.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b><p>Write five functions. Each one returns a string. None of them prints.</p>
+<ul>
+<li><code>calibration_line(site, count, ratio, code)</code> returns one line built from these four
+format specs, in that order, with a <code>|</code> between them. For the arguments
+<code>("Kaitaia", 1234567, 0.8642, 15)</code> it returns
+<code>Kaitaia&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|1,234,567|&nbsp;&nbsp;86.4%|0x0f</code>.
+<ul>
+<li><code>{site:&lt;12}</code> writes <code>site</code> in a field twelve characters wide and pushes it
+to the left. Spaces fill the rest of the field.</li>
+<li><code>{count:&gt;9,}</code> writes <code>count</code> in a field nine characters wide and pushes it
+to the right. The comma groups the thousands, so <code>1234567</code> comes out as
+<code>1,234,567</code>.</li>
+<li><code>{ratio:&gt;7.1%}</code> multiplies <code>ratio</code> by 100 and writes one digit after the
+decimal point. It adds a percent sign, then pushes the result to the right in a field seven characters
+wide.</li>
+<li><code>{code:#04x}</code> writes <code>code</code> as lower-case hexadecimal. The <code>#</code>
+adds the <code>0x</code> prefix. The <code>04</code> pads with leading zeros until the whole thing is
+four characters long, so <code>15</code> comes out as <code>0x0f</code>.</li>
+</ul></li>
+<li><code>debug_line(reading)</code> uses the <code>=</code> debug form. For the value <code>4.5</code>
+it returns <code>reading=4.5</code>.</li>
+<li><code>repr_line(reading)</code> uses <code>!r</code>. For the string <code>"4.5"</code> it returns
+<code>raw value '4.5'</code>.</li>
+<li><code>slugify(filename)</code> turns <code>"  Annual Report.txt  "</code> into
+<code>"annual-report"</code>. Strip both ends, remove the suffix, lower the case, split into words,
+then join the words with <code>-</code>.</li>
+<li><code>tag_line(tags)</code> joins a list of tags into one string and puts <code>", "</code>
+between each neighbouring pair.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character, spaces
+included.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Build every returned line with one f-string. No <code>+</code>, no <code>str()</code>, no <code>%</code> formatting, no <code>.format()</code>.</li><li>Pad and round inside the braces. <code>ljust()</code>, <code>rjust()</code> and <code>round()</code> are banned.</li><li>Do not use <code>strip(".txt")</code> to drop the extension. It strips characters, not a suffix, and a method named for exactly this job already exists.</li><li>Build no string with <code>+=</code> in a loop. One call to <code>join</code> per result.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>14</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[def calibration_line(site, count, ratio, code):
+    # TODO: one f-string, four format specs, "|" between the fields
+
+
+def debug_line(reading):
+    # TODO: one f-string using the {reading=} debug form
+
+
+def repr_line(reading):
+    # TODO: one f-string, "raw value " then the value under !r
+
+
+def slugify(filename):
+    # TODO: strip, removesuffix, lower, split, then join with "-"
+
+
+def tag_line(tags):
+    # TODO: one join with ", " as the separator
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[def calibration_line(site, count, ratio, code):
+    return f"{site:<12}|{count:>9,}|{ratio:>7.1%}|{code:#04x}"
+
+
+def debug_line(reading):
+    return f"{reading=}"
+
+
+def repr_line(reading):
+    return f"raw value {reading!r}"
+
+
+def slugify(filename):
+    return "-".join(filename.strip().removesuffix(".txt").lower().split())
+
+
+def tag_line(tags):
+    return ", ".join(tags)
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(calibration_line("Kaitaia", 1234567, 0.8642, 15))
+print(calibration_line("Otautahi", 42, 0.5, 255))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>Kaitaia     |1,234,567|  86.4%|0x0f
+Otautahi    |       42|  50.0%|0xff</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>reading = 4.5
+print(debug_line(reading))
+print(repr_line("4.5"))
+print(repr_line(4.5))
+print(slugify("  Annual Report.txt  "))
+print(slugify("QUARTERLY Sensor Log.txt"))
+print(tag_line(["radar", "north", "calibrated"]))
+print(tag_line(["solo"]))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>reading=4.5
+raw value '4.5'
+raw value 4.5
+annual-report
+quarterly-sensor-log
+radar, north, calibrated
+solo</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+whole = "".join(inspect.getsource(f) for f in (calibration_line, debug_line, repr_line, slugify, tag_line))
+assert "+" not in whole, "rule broken: no + concatenation"
+assert "str(" not in whole, "rule broken: no str()"
+assert ".format(" not in whole, "rule broken: no .format()"
+assert ".ljust(" not in whole and ".rjust(" not in whole, "rule broken: pad inside the braces"
+assert "round(" not in whole, "rule broken: round inside the braces"
+assert "removesuffix(" in inspect.getsource(slugify), "rule broken: use removesuffix"
+assert 'strip(".txt")' not in whole and "strip('.txt')" not in whole, "rule broken: strip eats characters"
+assert "+=" not in whole, "rule broken: no += string building"
+print(calibration_line("Te Anau", 0, 0.0, 0))
+print(slugify("report.txt.txt"))
+print(repr_line(tag_line([])))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>Te Anau     |        0|   0.0%|0x00
+report.txt
+raw value ''</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+</quiz>

@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 26.1: Builder Reborn!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A server builder collects settings and applies defaults before creating a server. Kea Web Company is replacing its ServerBuilder class with two construction methods. Both must apply the same defaults. The defaults take effect when <code>String</code> prints, so a server built by hand prints the same as one built with no options. <code>String</code> prints the address, one space, then the read timeout in seconds, as in <code>:8080 30s</code>. An empty address prints as <code>:http</code>, and a timeout of zero or less prints as the word <code>off</code>.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/net/http#Server">net/http.Server</a>. Read the field comments for <code>Addr</code> and <code>ReadTimeout</code>. Which address replaces an empty <code>Addr</code>? Which timeout values mean no limit? In the function index, which Java-style API is absent?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a builder class with one setter per field and a <code>build</code> method that fills in the defaults. Go has no overloading, so you cannot write the telescoping constructors that usually precede a builder either. Watch for the habit of resolving the defaults inside the constructor.</p><pre>Server s = new ServerBuilder()
+    .addr(":8080")
+    .readTimeout(30)
+    .build();</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>The second sentence of the field comment above <code>Addr</code> covers the empty case.</li><li>The <code>ReadTimeout</code> field comment covers more than one kind of value in a single sentence. Find that sentence before you write the condition.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>50</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "fmt"
+
+// Server holds the settings a caller may set directly or through options.
+type Server struct {
+	Addr        string
+	ReadTimeout int
+}
+
+// Option applies one setting to a Server.
+type Option func(*Server)
+
+func WithAddr(addr string) Option {
+	// TODO
+}
+
+func WithReadTimeout(seconds int) Option {
+	// TODO
+}
+
+func NewServer(opts ...Option) *Server {
+	// TODO
+}
+
+func (s *Server) String() string {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "fmt"
+
+// Server holds the settings a caller may set directly or through options.
+type Server struct {
+	Addr        string
+	ReadTimeout int
+}
+
+// Option applies one setting to a Server.
+type Option func(*Server)
+
+// WithAddr sets the address the server listens on.
+func WithAddr(addr string) Option {
+	return func(s *Server) {
+		s.Addr = addr
+	}
+}
+
+// WithReadTimeout sets the read timeout, counted in seconds.
+func WithReadTimeout(seconds int) Option {
+	return func(s *Server) {
+		s.ReadTimeout = seconds
+	}
+}
+
+// NewServer returns a Server with every option applied in order.
+func NewServer(opts ...Option) *Server {
+	s := &Server{}
+	for _, opt := range opts {
+		opt(s)
+	}
+	return s
+}
+
+// String reports the settings in force, resolving both defaults as it runs.
+func (s *Server) String() string {
+	addr := s.Addr
+	if addr == "" {
+		addr = ":http"
+	}
+	timeout := "off"
+	if s.ReadTimeout > 0 {
+		timeout = fmt.Sprintf("%ds", s.ReadTimeout)
+	}
+	return addr + " " + timeout
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(NewServer(WithAddr(":8080"), WithReadTimeout(30)))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>:8080 30s</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(&Server{Addr: ":9000", ReadTimeout: 5})]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>:9000 5s</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(NewServer())
+fmt.Println(&Server{})]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>:http off
+:http off</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(NewServer(WithReadTimeout(-3), WithAddr(":80")))
+fmt.Println(&Server{Addr: ":80", ReadTimeout: -3})]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>:80 off
+:80 off</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 26.2: The Miniature Core API!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A ferry manifest lists the bookings accepted for one sailing. Kea Ferry reads bookings one at a time from its ledger. It counts and skips any booking with too few seats, and stops when a booking has no reference. The minimum is 1 seat unless <code>WithMinSeats</code> sets another. <code>Next</code> checks the reference before the seat count, and its errors name the ledger and the entry. The second entry of ledger <code>tui</code> with no reference reads <code>ledger tui: entry 2: no reference</code>, and booking <code>tui-1</code> with too few seats reads <code>ledger tui: booking tui-1: too few seats</code>. <code>Manifest</code> returns the error that stopped it with <code>manifest: </code> in front.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/io#EOF">io.EOF</a>. Read the complete comment, including the bracketed text. What does it forbid? What reason does it give?</li><li><a href="https://pkg.go.dev/io#Reader">io.Reader</a>. Find its declaration under Types. How many methods does it contain? How many methods does the <code>Writer</code> declaration contain?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a <code>BookingRepository</code> interface declared beside its <code>BookingRepositoryImpl</code>, carrying every method the store can offer. The second reflex is one checked exception per failure, caught by exception type at the top of the chain.</p><pre>public interface BookingRepository { ... }
+public class BookingRepositoryImpl implements BookingRepository { ... }
+
+try {
+    manifest(repo);
+} catch (TooFewSeatsException e) {
+    rejected++;
+}</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>The Variables section of the io page declares six errors. Read every line of the comment above each one before you choose.</li><li>A hidden test prints the error <code>Next</code> returns at the end of a ledger, so its exact text decides the mark.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_program</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>110</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import (
+	"errors"
+	"fmt"
+	"io"
+	"strings"
+)
+
+// ErrTooFewSeats reports a booking below the ledger's minimum.
+var ErrTooFewSeats = errors.New("too few seats")
+
+// ErrNoRef reports a booking that carries no reference.
+var ErrNoRef = errors.New("no reference")
+
+// Booking is one seat reservation on a sailing.
+type Booking struct {
+	Ref   string
+	Seats int
+}
+
+// Ledger hands out the bookings held for one sailing.
+type Ledger struct {
+	// TODO
+}
+
+// Option applies one setting to a Ledger.
+type Option func(*Ledger)
+
+func WithMinSeats(n int) Option {
+	// TODO
+}
+
+func NewLedger(name string, bookings []Booking, opts ...Option) *Ledger {
+	// TODO
+}
+
+func (l *Ledger) Next() (Booking, error) {
+	// TODO
+}
+
+func Repeat(b Booking, n int) Source {
+	// TODO
+}
+
+// Source is what Manifest needs from a booking store.
+type Source interface {
+	// TODO
+}
+
+func Manifest(src Source) (string, error) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"errors"
+	"fmt"
+	"io"
+	"strings"
+)
+
+// ErrTooFewSeats reports a booking below the ledger's minimum.
+var ErrTooFewSeats = errors.New("too few seats")
+
+// ErrNoRef reports a booking that carries no reference.
+var ErrNoRef = errors.New("no reference")
+
+// Booking is one seat reservation on a sailing.
+type Booking struct {
+	Ref   string
+	Seats int
+}
+
+// Ledger hands out the bookings held for one sailing.
+type Ledger struct {
+	name     string
+	bookings []Booking
+	pos      int
+	minSeats int
+}
+
+// Option applies one setting to a Ledger.
+type Option func(*Ledger)
+
+// WithMinSeats sets the smallest booking the ledger will hand out.
+func WithMinSeats(n int) Option {
+	return func(l *Ledger) {
+		l.minSeats = n
+	}
+}
+
+// NewLedger returns a named Ledger over bookings, with every option applied.
+func NewLedger(name string, bookings []Booking, opts ...Option) *Ledger {
+	l := &Ledger{name: name, bookings: bookings, minSeats: 1}
+	for _, opt := range opts {
+		opt(l)
+	}
+	return l
+}
+
+// Next returns the next booking, or an error naming this ledger.
+func (l *Ledger) Next() (Booking, error) {
+	if l.pos >= len(l.bookings) {
+		return Booking{}, io.EOF
+	}
+	b := l.bookings[l.pos]
+	l.pos++
+	if b.Ref == "" {
+		return Booking{}, fmt.Errorf("ledger %s: entry %d: %w", l.name, l.pos, ErrNoRef)
+	}
+	if b.Seats < l.minSeats {
+		return Booking{}, fmt.Errorf("ledger %s: booking %s: %w", l.name, b.Ref, ErrTooFewSeats)
+	}
+	return b, nil
+}
+
+// repeatSource yields one booking a fixed number of times.
+type repeatSource struct {
+	booking Booking
+	left    int
+}
+
+// Next returns the held booking until the count runs out.
+func (r *repeatSource) Next() (Booking, error) {
+	if r.left <= 0 {
+		return Booking{}, io.EOF
+	}
+	r.left--
+	return r.booking, nil
+}
+
+// Repeat returns a Source yielding b exactly n times.
+func Repeat(b Booking, n int) Source {
+	return &repeatSource{booking: b, left: n}
+}
+
+// Source is what Manifest needs from a booking store.
+type Source interface {
+	Next() (Booking, error)
+}
+
+// Manifest lists every accepted booking and counts the rejected ones.
+func Manifest(src Source) (string, error) {
+	var parts []string
+	rejected := 0
+	for {
+		b, err := src.Next()
+		switch {
+		case errors.Is(err, io.EOF):
+			parts = append(parts, fmt.Sprintf("rejected %d", rejected))
+			return strings.Join(parts, "; "), nil
+		case errors.Is(err, ErrTooFewSeats):
+			rejected++
+		case err != nil:
+			return "", fmt.Errorf("manifest: %w", err)
+		default:
+			parts = append(parts, fmt.Sprintf("%s x%d", b.Ref, b.Seats))
+		}
+	}
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[l := NewLedger("kea", []Booking{{Ref: "kea-1", Seats: 2}, {Ref: "kea-3", Seats: 4}})
+m, err := Manifest(l)
+fmt.Println(m)
+fmt.Println(err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>kea-1 x2; kea-3 x4; rejected 0
+true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[l := NewLedger("kea", []Booking{{Ref: "kea-1", Seats: 2}, {Ref: "kea-2", Seats: 0}, {Ref: "kea-3", Seats: 4}})
+m, err := Manifest(l)
+fmt.Println(m)
+fmt.Println(err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>kea-1 x2; kea-3 x4; rejected 1
+true</text></expected>
+            <extra><text></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[l := NewLedger("kea", nil)
+_, err := l.Next()
+fmt.Println(err)
+rm, rErr := Manifest(Repeat(Booking{Ref: "kea-9", Seats: 2}, 3))
+fmt.Println(rm)
+fmt.Println(rErr == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>EOF
+kea-9 x2; kea-9 x2; kea-9 x2; rejected 0
+true</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[l := NewLedger("kea", []Booking{{Ref: "kea-1", Seats: 2}, {Ref: "kea-3", Seats: 4}}, WithMinSeats(3))
+m, err := Manifest(l)
+fmt.Println(m)
+fmt.Println(err == nil)
+bad := NewLedger("tui", []Booking{{Ref: "tui-1", Seats: 1}, {Seats: 2}})
+_, badErr := Manifest(bad)
+fmt.Println(badErr)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>kea-3 x4; rejected 1
+true
+manifest: ledger tui: entry 2: no reference</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>

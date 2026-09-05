@@ -1,0 +1,1039 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 20.1: Reflection Not Required!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write two decorators, then apply each one to a supplied function with an <code>@</code> line.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java gives you annotations. Put one above a method and the compiler writes it into the class file.
+No code runs because of it.</p>
+<pre>@Deprecated
+String greet(String name) {
+    return "hi " + name;
+}</pre>
+<p>That line is metadata and nothing else. Plain Java SE never acts on it. Some other program has to
+read the annotation back by reflection, or a framework has to do that reading for you. Without such a
+tool the annotation changes nothing about what happens when somebody calls <code>greet</code>.</p>
+<p>So when you want every reply shouted back at you, you write the wrapping by hand.</p>
+<pre>String shout(Supplier&lt;String&gt; body) {
+    return body.get().toUpperCase();
+}
+
+shout(() -&gt; greet("ada"));</pre>
+<p>Every caller has to remember that. Forget once and one code path answers quietly while the rest
+shout.</p>
+<p>Python attaches the wrapping to the definition instead, and does it once. A <b>decorator</b> is an
+ordinary function that takes a function and returns a function. There is nothing more exotic to
+it.</p>
+<pre>from collections.abc import Callable
+from typing import Any
+
+
+def shout(func: Callable[..., Any]) -&gt; Callable[..., Any]:
+    def wrapper(*args: Any, **kwargs: Any) -&gt; Any:
+        return func(*args, **kwargs).upper()
+    return wrapper</pre>
+<p>A function is a value, which is the closures topic, so <code>func</code> is an ordinary parameter
+holding one. Its annotation is <code>Callable[..., Any]</code>, where the dots stand for whatever
+parameters that function takes. <code>Callable</code> comes from <code>collections.abc</code> and
+<code>Any</code> comes from <code>typing</code>.</p>
+<p>Now apply it. A line starting with <code>@</code> above a <code>def</code> is what applies a
+decorator.</p>
+<pre>@shout
+def greet(name: str) -&gt; str:
+    return f"hi {name}"</pre>
+<p>Those four lines mean exactly this, and typing the second spelling yourself gives you the same
+result.</p>
+<pre>def greet(name: str) -&gt; str:
+    return f"hi {name}"
+
+
+greet = shout(greet)</pre>
+<p>Read the order carefully. Python runs the <code>def</code> statement first and builds the function
+object. Python then calls <code>shout</code> with that object and rebinds the name <code>greet</code>
+to whatever comes back. The <code>@</code> line is shorthand for that one assignment and for nothing
+else. No reflection reads it, no framework is involved, and nothing rewrites your call sites while the
+program runs.</p>
+<p>The inner <code>wrapper</code> reaches <code>func</code> because it is a <b>closure</b> over the
+enclosing call, which is the closures topic again. It takes <code>*args</code> and
+<code>**kwargs</code>, which is the signatures and defaults topic. <code>*args</code> collects any
+positional arguments into a tuple and <code>**kwargs</code> collects any keyword arguments into a dict.
+Passing both straight through means one wrapper fits any signature you put underneath it, whether that
+function takes nothing, takes three arguments, or takes keyword-only ones.</p>
+<p>The rebinding costs you something. The name <code>greet</code> points at <code>wrapper</code> now,
+so <code>greet.__name__</code> reads <code>wrapper</code>. The <b>docstring</b>, which is the string
+literal on the first line of a function body, has gone with it, so <code>greet.__doc__</code> is
+<code>None</code>. A stack trace names <code>wrapper</code> instead of the function that failed.
+<code>functools.wraps</code> repairs all of that damage, and repairing it is the next tier's lesson.
+Leave it alone here and meet the damage first.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Three things sit in the answer box already. <code>CALLS</code> is a module-level list the tests
+read, and it keeps everything appended to it for the whole run. <code>greet</code> and <code>add</code>
+are supplied. Write the two decorators, put one <code>@</code> line above each supplied function, and
+change nothing inside either body.</p>
+<ul>
+<li><code>shout(func)</code> returns a wrapper that calls <code>func</code> and hands back the result
+with <code>.upper()</code> applied to it.</li>
+<li><code>trace(func)</code> returns a wrapper that appends <code>func.__name__</code> to
+<code>CALLS</code>, then calls <code>func</code> and hands back its result unchanged.</li>
+<li><code>@shout</code> goes above <code>greet</code> and <code>@trace</code> goes above
+<code>add</code>.</li>
+</ul>
+<p>Name both inner functions <code>wrapper</code>, because the tests print that name back at you.</p>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Write each decorator as two <code>def</code> statements, an outer one and an inner one. No <code>class</code>, no <code>lambda</code>.</li><li>Give the inner wrapper <code>*args</code> and <code>**kwargs</code> and pass both straight through. A wrapper that spells out <code>name</code> fits one function and no other.</li><li>Apply both decorators with an <code>@</code> line. The assignment spelling does the same job, and the second test proves it, so read that test before you decide the <code>@</code> was magic.</li><li>Leave <code>functools.wraps</code> to the next tier. Meet the lost name and the lost docstring first.</li><li>Annotate every signature, the wrappers included. A parameter holding a function is <code>Callable[..., Any]</code>.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>No AI. Type every character yourself. This tier builds the muscle, and a tool that types it for you skips the exercise.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>26</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[from collections.abc import Callable
+from typing import Any
+
+CALLS: list[str] = []
+
+
+def shout(func: Callable[..., Any]) -> Callable[..., Any]:
+    # TODO: return a wrapper that upper-cases whatever func hands back
+
+
+def trace(func: Callable[..., Any]) -> Callable[..., Any]:
+    # TODO: return a wrapper that appends func.__name__ to CALLS, then calls func
+
+
+# Supplied. Put one decorator line above it. Do not change the body.
+def greet(name: str) -> str:
+    """Greet the named person."""
+    return f"hi {name}"
+
+
+# Supplied. Put one decorator line above it. Do not change the body.
+def add(left: int, right: int) -> int:
+    """Add two whole numbers."""
+    return left + right
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[from collections.abc import Callable
+from typing import Any
+
+CALLS: list[str] = []
+
+
+def shout(func: Callable[..., Any]) -> Callable[..., Any]:
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        return func(*args, **kwargs).upper()
+    return wrapper
+
+
+def trace(func: Callable[..., Any]) -> Callable[..., Any]:
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        CALLS.append(func.__name__)
+        return func(*args, **kwargs)
+    return wrapper
+
+
+# Supplied. Put one decorator line above it. Do not change the body.
+@shout
+def greet(name: str) -> str:
+    """Greet the named person."""
+    return f"hi {name}"
+
+
+# Supplied. Put one decorator line above it. Do not change the body.
+@trace
+def add(left: int, right: int) -> int:
+    """Add two whole numbers."""
+    return left + right
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(greet("ada"))
+print(add(2, 3))
+print(CALLS)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>HI ADA
+5
+['add']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>@shout
+def cheer(name: str) -&gt; str:
+    return f"go {name}"
+
+
+def chant(name: str) -&gt; str:
+    return f"go {name}"
+
+
+chant = shout(chant)
+print(cheer("ada"))
+print(chant("ada"))
+print(cheer("ada") == chant("ada"))
+print(cheer.__name__, chant.__name__)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>GO ADA
+GO ADA
+True
+wrapper wrapper</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>@trace
+def volume(length: int, width: int = 2, *, height: int = 3) -&gt; int:
+    """Multiply the three dimensions together."""
+    return length * width * height
+
+
+print(volume(4))
+print(volume(4, 5))
+print(volume(4, width=5, height=6))
+print(CALLS)
+print(greet.__name__)
+print(greet.__doc__)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>24
+60
+120
+['add', 'volume', 'volume', 'volume']
+wrapper
+None</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+
+for src in (inspect.getsource(shout), inspect.getsource(trace)):
+    assert "*args" in src, "rule broken: the wrapper takes *args"
+    assert "**kwargs" in src, "rule broken: the wrapper takes **kwargs"
+    assert "class " not in src, "rule broken: a decorator here is an ordinary function"
+    assert "wraps" not in src, "rule broken: that repair belongs to the next tier"
+assert greet.__name__ == "wrapper", "rule broken: name the inner function wrapper"
+assert greet.__doc__ is None, "rule broken: leave the lost docstring lost"
+assert add.__name__ == "wrapper", "rule broken: decorate add with an @ line"
+
+CALLS.clear()
+
+
+def sum_all(*numbers: int) -&gt; int:
+    """Add however many numbers you are given."""
+    return sum(numbers)
+
+
+counted = trace(sum_all)
+print(counted(1, 2, 3, 4))
+print(CALLS)
+print(counted.__name__, counted.__doc__)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>10
+['sum_all']
+wrapper None</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 20.2: At Sign Alchemy!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write two decorator factories, then stack both of them on the supplied <code>read_sensor</code>.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>Java gives you annotations. An annotation does nothing on its own. It records metadata against a
+declaration, and no code runs because of it.</p>
+<pre>@Retryable(attempts = 3)
+String readSensor(String name) { ... }</pre>
+<p>Plain Java SE never acts on that line. Some other program has to read the annotation by reflection
+and rebuild the call. Without such a tool you write the wrapper by hand.</p>
+<pre>String withRetry(int times, Supplier&lt;String&gt; body) {
+    RuntimeException last = null;
+    for (int i = 0; i &lt; times; i++) {
+        try { return body.get(); }
+        catch (RuntimeException e) { last = e; }
+    }
+    throw last;
+}</pre>
+<p>Every caller now has to remember to wrap. Forget once and the retry is gone from that path.</p>
+<p>Python attaches the wrapper to the definition instead, once. A
+<b>decorator</b> is a line starting with <code>@</code> above a <code>def</code>. The previous tier had you
+write one that took no arguments of its own. Here yours take arguments. A decorator is an
+ordinary function that takes a function and returns a function. The type of a function is
+<code>Callable[..., Any]</code>, where the dots stand for whatever parameters it takes, and
+<code>Callable</code> comes from <code>collections.abc</code> while <code>Any</code> comes from
+<code>typing</code>.</p>
+<pre>def shout(func: Callable[..., str]) -&gt; Callable[..., str]:
+    def wrapper(*args: Any, **kwargs: Any) -&gt; str:
+        return func(*args, **kwargs).upper()
+    return wrapper
+
+
+@shout
+def greet(name: str) -&gt; str:
+    return f"hi {name}"</pre>
+<p>The <code>@</code> line is shorthand and nothing more. Python runs the <code>def greet</code>
+statement first. Python then runs <code>greet = shout(greet)</code>. Type that assignment yourself and
+you get the same result. No reflection reads the line, and nothing rewrites your call sites while the
+program runs.</p>
+<p>Two features from earlier modules make the wrapper work. The inner <code>wrapper</code> reaches
+<code>func</code> because it is a <b>closure</b> over the enclosing call, which is the closures topic. It then
+accepts <code>*args</code> and <code>**kwargs</code>, which is the signatures and defaults topic. <code>*args</code> collects any
+positional arguments into a tuple, and <code>**kwargs</code> collects any keyword arguments into a
+dict. Passing both straight through means one wrapper fits any signature.</p>
+<p>That rebinding costs you something. The name <code>greet</code> now points at <code>wrapper</code>,
+so <code>greet.__name__</code> reads <code>wrapper</code>. The <b>docstring</b>, which is the string
+literal on the first line of a function body, is gone. A stack trace names <code>wrapper</code>
+instead of the function that failed.</p>
+<p><code>functools.wraps</code> repairs the damage. Put <code>@functools.wraps(func)</code> on the
+inner function. It copies <code>__name__</code>, <code>__doc__</code> and the other identifying
+attributes across from the original. It also sets <code>__wrapped__</code> on the wrapper, pointing
+back at the function underneath.</p>
+<p>A decorator that takes an argument needs one more level. <code>@retry(3)</code> calls
+<code>retry(3)</code> first, and whatever that call returns is used as the decorator. So
+<code>retry</code> is a function returning a function returning a function. Three <code>def</code>
+statements, each inside the last.</p>
+<pre>@audit("ops")
+@retry(3)
+def read_sensor(name: str) -&gt; str:
+    ...</pre>
+<p>Read a stack of decorators from the bottom up. <code>retry(3)</code> wraps <code>read_sensor</code>
+first. <code>audit("ops")</code> then wraps that wrapper. So <code>audit</code> sees one call while
+<code>retry</code> sees every call it makes.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>Five things already sit in the answer box. <code>LOG</code>, <code>ATTEMPTS</code> and
+<code>PENDING_FAILURES</code> are module-level names the tests read. <code>SensorError</code> is the
+exception class. <code>read_sensor</code> raises <code>SensorError</code> the first
+<code>PENDING_FAILURES</code> times you call it. Add two decorator lines above
+<code>def read_sensor</code> and change nothing inside any of the five.</p>
+<p>Write the two decorator factories, then stack them on <code>read_sensor</code> with
+<code>@audit("ops")</code> above <code>@retry(3)</code>. A decorator factory
+is the outer function, the one you call to get a decorator back. The <code>!r</code> conversion in the
+log line below is from the strings and f-strings topic. It prints the repr, so a returned string keeps its quotes.</p>
+<ul>
+<li><code>audit(channel)</code> appends <code>f"{channel}: calling {func.__name__}"</code> to
+<code>LOG</code> before the call. When the call returns, it appends
+<code>f"{channel}: {func.__name__} returned {result!r}"</code> and returns the result. When the call
+raises, it logs nothing more and lets the exception through.</li>
+<li><code>retry(times)</code> calls the function and returns its result. After a
+<code>SensorError</code> it calls again, up to <code>times</code> calls in total. When every call
+fails, it raises the last <code>SensorError</code>.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Put <code>@functools.wraps(func)</code> on every wrapper you write. An anonymous <code>wrapper</code> in a stack trace is a defect, and the hidden check fails if <code>__name__</code> or the docstring changes.</li><li>Write <code>retry</code> as three nested <code>def</code> statements. No class with <code>__call__</code>, no <code>functools.partial</code>, no shortcut.</li><li>Add two lines above <code>def read_sensor</code> and change nothing else. The body is not yours to touch.</li><li>Let the last <code>SensorError</code> out. A retry that swallows the final failure reports a healthy sensor that is not there.</li><li>Do not write <code>read_sensor = audit("ops")(read_sensor)</code> in your answer. Use the <code>@</code> lines and let the test prove the two spellings are the same.</li><li>Annotate every signature, the wrappers included. Three nested <code>def</code> statements with no types on them is a puzzle, not a decorator.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI for explanation only. Ask it what an error means or why one form is more idiomatic. Do not let it write your answer.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>40</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[import functools
+from collections.abc import Callable
+from typing import Any
+
+LOG: list[str] = []
+ATTEMPTS: list[str] = []
+PENDING_FAILURES = 2
+
+
+# Supplied. Do not change this exception.
+class SensorError(Exception):
+    pass
+
+
+def audit(channel: str) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    # TODO: return a decorator whose wrapper logs the call and the result to LOG
+
+
+def retry(times: int) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    # TODO: return a decorator whose wrapper calls func up to `times` times
+
+
+# Supplied. Put the two decorator lines above it. Do not change the body.
+def read_sensor(name: str) -> str:
+    """Read the named sensor and return its reading."""
+    global PENDING_FAILURES
+    ATTEMPTS.append(name)
+    if PENDING_FAILURES > 0:
+        PENDING_FAILURES -= 1
+        raise SensorError(f"{name} not ready")
+    return f"{name}=42"
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[import functools
+from collections.abc import Callable
+from typing import Any
+
+LOG: list[str] = []
+ATTEMPTS: list[str] = []
+PENDING_FAILURES = 2
+
+
+# Supplied. Do not change this exception.
+class SensorError(Exception):
+    pass
+
+
+def audit(channel: str) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    def decorate(func: Callable[..., Any]) -> Callable[..., Any]:
+        @functools.wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            LOG.append(f"{channel}: calling {func.__name__}")
+            result = func(*args, **kwargs)
+            LOG.append(f"{channel}: {func.__name__} returned {result!r}")
+            return result
+        return wrapper
+    return decorate
+
+
+def retry(times: int) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    def decorate(func: Callable[..., Any]) -> Callable[..., Any]:
+        @functools.wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            last = None
+            for _ in range(times):
+                try:
+                    return func(*args, **kwargs)
+                except SensorError as exc:
+                    last = exc
+            raise last
+        return wrapper
+    return decorate
+
+
+# Supplied. Put the two decorator lines above it. Do not change the body.
+@audit("ops")
+@retry(3)
+def read_sensor(name: str) -> str:
+    """Read the named sensor and return its reading."""
+    global PENDING_FAILURES
+    ATTEMPTS.append(name)
+    if PENDING_FAILURES > 0:
+        PENDING_FAILURES -= 1
+        raise SensorError(f"{name} not ready")
+    return f"{name}=42"
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>print(read_sensor("t1"))
+print(ATTEMPTS)
+for line in LOG:
+    print(line)
+print(read_sensor.__name__)
+print(read_sensor.__doc__)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>t1=42
+['t1', 't1', 't1']
+ops: calling read_sensor
+ops: read_sensor returned 't1=42'
+read_sensor
+Read the named sensor and return its reading.</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>ATTEMPTS.clear()
+LOG.clear()
+PENDING_FAILURES = 99
+try:
+    read_sensor("t2")
+except SensorError as exc:
+    print("escaped:", type(exc).__name__, exc)
+print(len(ATTEMPTS))
+for line in LOG:
+    print(line)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>escaped: SensorError t2 not ready
+3
+ops: calling read_sensor</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+
+
+def ping(n):
+    """Return n doubled."""
+    return n * 2
+
+
+ping = audit("bench")(ping)
+print(ping(21))
+print(ping.__name__, "|", ping.__doc__)
+print(LOG[-2])
+print(LOG[-1])
+print(inspect.unwrap(read_sensor) is read_sensor)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>42
+ping | Return n doubled.
+bench: calling ping
+bench: ping returned 42
+False</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+
+audit_src = inspect.getsource(audit)
+retry_src = inspect.getsource(retry)
+assert "wraps" in audit_src, "rule broken: audit must use functools.wraps"
+assert "wraps" in retry_src, "rule broken: retry must use functools.wraps"
+assert retry_src.count("def ") &gt;= 3, "rule broken: retry needs three levels"
+assert read_sensor.__name__ == "read_sensor", "rule broken: __name__ must survive"
+assert read_sensor.__doc__.startswith("Read the named sensor"), "rule broken: the docstring must survive"
+sensor_src = inspect.getsource(read_sensor)
+assert "@audit(" in sensor_src, "rule broken: stack audit on read_sensor"
+assert "@retry(" in sensor_src, "rule broken: stack retry on read_sensor"
+assert "ATTEMPTS.append(name)" in sensor_src, "rule broken: leave the body alone"
+
+PENDING_FAILURES = 99
+try:
+    read_sensor("t0")
+    raise AssertionError("rule broken: the last SensorError must reach the caller")
+except SensorError:
+    pass
+ATTEMPTS.clear()
+LOG.clear()
+
+PENDING_FAILURES = 1
+print(read_sensor("t9"))
+print(len(ATTEMPTS))
+print(read_sensor.__wrapped__.__name__)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>t9=42
+2
+read_sensor</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+
+  <question type="coderunner">
+    <name>
+      <text>WAT 20.3: Matryoshka!</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Write a forwarding wrapper class, a Protocol with two clock classes, and a log that takes its clock as an argument.</p></div>
+<details open><summary style="cursor:pointer; font-weight:bold; font-size:1.1em; padding:0.3em 0;">How this works in Python</summary>
+<p>The Gang of Four Decorator pattern in Java wraps an object instead of a function. You extend the
+base class so callers still accept you, hold the wrapped instance, and forward every method.</p>
+<pre>class CountingReader extends Reader {
+    private final Reader inner;
+    private int reads = 0;
+
+    CountingReader(Reader inner) { this.inner = inner; }
+
+    public int read(char[] buf, int off, int len) throws IOException {
+        reads++;
+        return inner.read(buf, off, len);
+    }
+
+    public void close() throws IOException { inner.close(); }
+}</pre>
+<p>That is one forwarding method per method on the base class. Miss one and the compiler stops you.</p>
+<p>Python forwards everything through a single hook. <code>__getattr__</code> is a dunder method, so
+Python calls it for you and you never call it by name. Python calls it only after normal attribute
+lookup has already failed. Write it once, and every name you did not define yourself lands there.</p>
+<pre>class Recorder:
+    def __init__(self, target: object) -&gt; None:
+        self.target = target
+        self.seen: list[str] = []
+
+    def __getattr__(self, name: str) -&gt; Any:
+        self.seen.append(name)
+        return getattr(self.target, name)</pre>
+<p>The built-in <code>getattr(obj, "size")</code> does the same job as <code>obj.size</code>. You supply
+the name at run time as a string. No base class, no method list, no compiler complaint.</p>
+<p>That covers ordinary names. It does not cover <code>len(w)</code>, <code>w[0]</code> or a
+<code>for</code> loop over the wrapper. Python looks those three up on the <b>type</b> and skips the
+instance entirely. So the lookup never reaches <code>__getattr__</code>. Meet that failure before you
+fix it. Wrap a list, call
+<code>len()</code> on the wrapper and read the <code>TypeError</code>. Then define
+<code>__len__</code>, <code>__getitem__</code> and <code>__iter__</code> and nothing else.
+<code>__iter__</code> hands back an iterator, so its return type is <code>Iterator[Any]</code> from
+<code>collections.abc</code>.</p>
+<p>Forwarding costs you the type check. <code>isinstance(w, list)</code> answers <code>False</code>,
+and no amount of forwarding changes that. Java's inheritance buys you the check for free. Python's
+forwarding does not.</p>
+<p>Give a class a <code>__call__</code> method and its instances become callable. Writing
+<code>w(4)</code> then runs <code>__call__</code>. That makes the same class usable as an
+<code>@</code> line. <code>@Recorder</code> above <code>def scale</code> runs
+<code>scale = Recorder(scale)</code>. The name <code>scale</code> now points at an instance, and
+calling it lands in <code>__call__</code>.</p>
+<p>Now the second half. A Java interface is <b>nominal</b>. A class satisfies <code>Clock</code> only
+when it writes <code>implements Clock</code>. A third-party class with a matching <code>now()</code>
+still needs an adapter.</p>
+<pre>interface Clock { String now(); }</pre>
+<p><code>typing.Protocol</code> is <b>structural</b>. A Protocol is a class you inherit from to
+declare a shape. Any class with a matching <code>now</code> satisfies that shape. The matching class
+never imports the Protocol and never names it.</p>
+<pre>from typing import Protocol
+
+
+class Clock(Protocol):
+    def now(self) -> str:
+        ...</pre>
+<p>The <code>...</code> is the Ellipsis literal from the inheritance and protocols topic, and it is the
+conventional empty body for
+a Protocol method. Add <code>@runtime_checkable</code> above the class and <code>isinstance</code>
+starts working against it. That check tests for the presence of the names and nothing else. A class
+whose <code>now</code> is a string passes the check and then fails when you call it.</p>
+<p>Nothing wires the clock in for you. The constructor parameter is the wiring, and
+<code>AuditLog(FrozenClock())</code> is the whole of it. Call <code>datetime.now()</code> inside
+<code>AuditLog</code> instead and you have a dependency no test can pin down.</p>
+</details>
+<div style="border-left:4px solid #5cb85c; padding:0.5em 1em; margin-top:1em; background:#f2f9f2;"><b>Your task</b>
+<p>The answer box already holds <code>LOG</code>, the <code>audit</code> decorator from the previous tier, the
+opening of <code>Recorder</code> down to its <code>__init__</code>, and a supplied <code>scale</code>
+function. Leave <code>audit</code> alone and leave the body of <code>scale</code> alone. Write the
+rest.</p>
+<ul>
+<li><code>Recorder</code> wraps any object. Every ordinary attribute reached through it appends that
+name to <code>self.seen</code> and then forwards. <code>__len__</code>, <code>__getitem__</code> and
+<code>__iter__</code> append their own dunder names before forwarding. <code>__call__</code> appends
+<code>"__call__"</code> and calls the target.</li>
+<li>Put <code>@Recorder</code> above <code>@audit("ops")</code> on <code>scale</code>.</li>
+<li><code>Clock</code> is a runtime-checkable Protocol with one method, <code>now</code>.</li>
+<li><code>SystemClock.now()</code> returns the real time as a string.
+<code>FrozenClock(stamp)</code> returns the stamp it was built with, and its default stamp is
+<code>"2026-01-01T09:00:00"</code>.</li>
+<li><code>AuditLog(clock)</code> stores the clock and an empty <code>entries</code> list.
+<code>record(message)</code> appends <code>f"{self.clock.now()} {message}"</code> to
+<code>entries</code> and returns it.</li>
+</ul>
+<p>You pass when the printed output matches the expected text character for character.</p></div>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Rules</b><ul><li>Forward with one <code>__getattr__</code>. Do not subclass the wrapped type, and do not write a method named after one of its methods.</li><li>Meet the failure before you fix it. Call <code>len()</code> on a wrapper first, read the <code>TypeError</code>, then define exactly the three dunders you need.</li><li>Leave <code>isinstance(w, list)</code> at <code>False</code>. Write one comment in <code>Recorder</code> saying what that costs you.</li><li>Neither clock may inherit from anything, and neither may name <code>Clock</code> anywhere in its body.</li><li>Take the clock through <code>AuditLog</code>'s constructor. A <code>datetime</code> call inside <code>AuditLog</code> is a dependency no test can pin down.</li><li>Annotate every signature you write. <code>self</code> is the one name that never gets one.</li></ul></div>
+<div style="border-left:4px solid #6c757d; padding:0.5em 1em; margin-top:1em; background:#f6f6f6;"><b>Before you click Check</b><p>Write down what you expect each test to print. Then run it. A surprise means your model of Python is wrong, and that is the part worth learning.</p></div>
+<div style="border-left:4px solid #0275d8; padding:0.5em 1em; margin-top:1em; background:#f0f7fd;"><b>AI protocol</b><p>AI allowed, on three conditions. Write your plan before you open it. Read every suggestion and reject the ones you did not plan. Type accepted code out yourself rather than pressing Tab.</p></div>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>python3</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>56</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[import functools
+from collections.abc import Callable, Iterator
+from typing import Any, Protocol, runtime_checkable
+
+LOG: list[str] = []
+
+
+# Supplied from the previous tier. Do not change it.
+def audit(channel: str) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    def decorate(func: Callable[..., Any]) -> Callable[..., Any]:
+        @functools.wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            LOG.append(f"{channel}: calling {func.__name__}")
+            return func(*args, **kwargs)
+        return wrapper
+    return decorate
+
+
+class Recorder:
+    """Wrap any object and record every name that passes through the wrapper."""
+
+    def __init__(self, target: object) -> None:
+        self.target = target
+        self.seen: list[str] = []
+
+    # TODO: one __getattr__ that records the name and forwards
+    # TODO: the three dunders __getattr__ never sees: __len__, __getitem__, __iter__
+    # TODO: __call__, so the same class works as an @
+
+
+# TODO: a runtime-checkable Clock Protocol with now()
+
+# TODO: SystemClock and FrozenClock. Neither inherits anything, and neither names Clock.
+
+# TODO: AuditLog, taking a clock through its constructor
+
+
+# Supplied. Put @Recorder above @audit("ops"). Do not change the body.
+def scale(reading: int) -> int:
+    """Multiply a reading by ten."""
+    return reading * 10
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[import functools
+from collections.abc import Callable, Iterator
+from typing import Any, Protocol, runtime_checkable
+
+LOG: list[str] = []
+
+
+# Supplied from the previous tier. Do not change it.
+def audit(channel: str) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    def decorate(func: Callable[..., Any]) -> Callable[..., Any]:
+        @functools.wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            LOG.append(f"{channel}: calling {func.__name__}")
+            return func(*args, **kwargs)
+        return wrapper
+    return decorate
+
+
+class Recorder:
+    """Wrap any object and record every name that passes through the wrapper."""
+
+    def __init__(self, target: object) -> None:
+        self.target = target
+        self.seen: list[str] = []
+
+    def __getattr__(self, name: str) -> Any:
+        self.seen.append(name)
+        return getattr(self.target, name)
+
+    # isinstance(Recorder([]), list) is False and stays False. Forwarding is not
+    # inheritance, so any caller that tests the concrete type rejects the wrapper.
+    def __len__(self) -> int:
+        self.seen.append("__len__")
+        return len(self.target)
+
+    def __getitem__(self, index: object) -> Any:
+        self.seen.append("__getitem__")
+        return self.target[index]
+
+    def __iter__(self) -> Iterator[Any]:
+        self.seen.append("__iter__")
+        return iter(self.target)
+
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        self.seen.append("__call__")
+        return self.target(*args, **kwargs)
+
+
+@runtime_checkable
+class Clock(Protocol):
+    def now(self) -> str:
+        ...
+
+
+class SystemClock:
+    def now(self) -> str:
+        import datetime
+        return datetime.datetime.now().isoformat(timespec="seconds")
+
+
+class FrozenClock:
+    def __init__(self, stamp: str = "2026-01-01T09:00:00") -> None:
+        self.stamp = stamp
+
+    def now(self) -> str:
+        return self.stamp
+
+
+class AuditLog:
+    def __init__(self, clock: Clock) -> None:
+        self.clock = clock
+        self.entries: list[str] = []
+
+    def record(self, message: str) -> str:
+        entry = f"{self.clock.now()} {message}"
+        self.entries.append(entry)
+        return entry
+
+
+# Supplied. Put @Recorder above @audit("ops"). Do not change the body.
+@Recorder
+@audit("ops")
+def scale(reading: int) -> int:
+    """Multiply a reading by ten."""
+    return reading * 10
+]]></answer>
+    <validateonsave>1</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>w = Recorder([3, 1, 2])
+w.append(9)
+print(w.target)
+print(len(w))
+print(w[0])
+print([n * 2 for n in w])
+print(w.seen)
+print(isinstance(w, list))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>[3, 1, 2, 9]
+4
+3
+[6, 2, 4, 18]
+['append', '__len__', '__getitem__', '__iter__']
+False</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>s = Recorder("interlock")
+print(s.upper())
+print(s[0], len(s))
+print(s.seen)
+print(type(scale).__name__)
+print(scale(4))
+print(scale.__name__)
+print(scale.seen)
+print(LOG)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>INTERLOCK
+i 9
+['upper', '__getitem__', '__len__']
+Recorder
+40
+scale
+['__call__', '__name__']
+['ops: calling scale']</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>class BrokenClock:
+    now = "half past three"
+
+
+log = AuditLog(FrozenClock("2026-01-01T09:00:00"))
+print(log.record("valve opened"))
+print(log.record("valve closed"))
+print(log.entries)
+print(Clock in FrozenClock.__mro__, isinstance(FrozenClock(), Clock))
+print(isinstance(SystemClock(), Clock), isinstance(BrokenClock(), Clock))
+try:
+    AuditLog(BrokenClock()).record("boom")
+except TypeError as exc:
+    print("TypeError:", exc)</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>2026-01-01T09:00:00 valve opened
+2026-01-01T09:00:00 valve closed
+['2026-01-01T09:00:00 valve opened', '2026-01-01T09:00:00 valve closed']
+False True
+True True
+TypeError: 'str' object is not callable</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>SHOW</text>
+        </display>
+      </testcase>
+      <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+        <testcode>
+          <text>import inspect
+
+assert Recorder.__bases__ == (object,), "rule broken: do not subclass the wrapped type"
+assert "__getattr__" in vars(Recorder), "rule broken: forward through one __getattr__"
+banned = {"append", "extend", "pop", "sort", "upper", "lower", "count", "index", "keys"}
+assert not (banned &amp; set(vars(Recorder))), "rule broken: do not name a wrapped method"
+assert isinstance(Recorder([]), list) is False, "rule broken: the wrapper is not a list"
+for cls in (SystemClock, FrozenClock):
+    assert cls.__bases__ == (object,), "rule broken: the clocks inherit nothing"
+    assert Clock not in cls.__mro__, "rule broken: the clocks inherit nothing"
+assert "datetime" not in inspect.getsource(AuditLog), "rule broken: inject the clock"
+assert "clock" in inspect.signature(AuditLog.__init__).parameters, "rule broken: inject through the constructor"
+
+w = Recorder({"pump": 1})
+print(w["pump"], len(w), sorted(w.keys()))
+print(w.seen)
+print(AuditLog(FrozenClock("2000-01-01T00:00:00")).record("start"))</text>
+        </testcode>
+        <stdin>
+          <text></text>
+        </stdin>
+        <expected>
+          <text>1 1 ['pump']
+['__getitem__', '__len__', 'keys']
+2000-01-01T00:00:00 start</text>
+        </expected>
+        <extra>
+          <text></text>
+        </extra>
+        <display>
+          <text>HIDE</text>
+        </display>
+      </testcase>
+    </testcases>
+  </question>
+</quiz>

@@ -1,0 +1,743 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<question type="coderunner">
+    <name><text>WAT 16.1: Table Stakes!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>At poker night, every table seats up to nine players, and a game needs at least two. Zero or one player opens no table, and two to nine players open one. Each started group of nine after that opens one more, so ten players need two tables. The <code>tables</code> function calculates how many tables to prepare. Three implementations of <code>tables</code> exist, one correct and two faulty. Write tests that identify the correct one.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/testing">package testing</a>. Read the first overview paragraph. What signature must a test function have? Which methods report failure?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is one <code>@Test</code> method per case with an <code>assertEquals</code> from JUnit. Go ships no assertion library, so you compare the values yourself.</p><pre>@Test
+void tenPlayersNeedTwoTables() {
+    assertEquals(2, tables(10));
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>range</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find the code block beginning with <code>package abs</code>. Which line reports the failure?</li><li>The second sentence of the Goal names a lone player and a tenth player, and each mutant gets one of those inputs wrong.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_testwriter</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>22</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "testing"
+
+// TODO: one test function, written in the form the testing overview documents.
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "testing"
+
+func TestTables(t *testing.T) {
+	cases := []struct {
+		players int
+		want    int
+	}{
+		{0, 0},
+		{1, 0},
+		{2, 1},
+		{9, 1},
+		{10, 2},
+		{19, 3},
+	}
+	for _, c := range cases {
+		if got := tables(c.players); got != c.want {
+			t.Errorf("tables(%d) = %d, want %d", c.players, got, c.want)
+		}
+	}
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "range"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text>correct</text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>PASS</text></expected>
+            <extra><text><![CDATA[package main
+
+func tables(players int) int {
+	if players < 2 {
+		return 0
+	}
+	return (players + 8) / 9
+}
+]]></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text>mutant1</text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>FAIL</text></expected>
+            <extra><text><![CDATA[package main
+
+func tables(players int) int {
+	return (players + 8) / 9
+}
+]]></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text>mutant2</text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>FAIL</text></expected>
+            <extra><text><![CDATA[package main
+
+func tables(players int) int {
+	if players < 2 {
+		return 0
+	}
+	return (players + 7) / 9
+}
+]]></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 16.2: Run, Subtest, Run!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A marathon start pen groups entrants by their predicted finish times. The <code>pen</code> function assigns each runner to a pen from the predicted finish time in minutes. A prediction of 180 minutes or less earns pen <code>A</code>, 181 to 240 earns pen <code>B</code>, and pen <code>C</code> takes anything slower. A prediction of zero or less means the entrant gave none, and <code>pen</code> returns the empty string. Four implementations exist, one correct and three faulty, so write tests that identify the correct one.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/subtests#table-driven-tests-using-subtests">Using Subtests and Sub-benchmarks, the section Table-driven tests using subtests</a>. Compare its TestTime with the version under Table-driven tests basics. What two arguments does <code>t.Run</code> receive? Where does the earlier loop body appear in the new version?</li><li><a href="https://go.dev/blog/subtests#table-driven-tests-using-subtests">The same section, the two output listings below the code</a>. In the second listing, what identifies the failed row?</li><li><a href="https://pkg.go.dev/testing#T.Run">T.Run</a>. Read the signature. What type is <code>f</code>? How does the blog express that type at the call?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a <code>@ParameterizedTest</code> with a <code>@CsvSource</code>, one row per case, and JUnit names each run. Go has no such annotation, so you name each run yourself.</p><pre>@ParameterizedTest
+@CsvSource({"150, A", "180, A", "200, B"})
+void pen(int minutes, String want) {
+    assertEquals(want, pen(minutes));
+}</pre></details>
+<div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>t.Run</code></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find <code>t.Run(fmt.Sprintf</code> in the blog post. Which following lines moved into the function passed to <code>t.Run</code>?</li><li>The Goal's rule of 180 or less names 180 as a row, so count how many such numbers the Goal names.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_testwriter</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>26</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "testing"
+
+func TestPen(t *testing.T) {
+	// TODO
+}
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import "testing"
+
+func TestPen(t *testing.T) {
+	cases := []struct {
+		name    string
+		minutes int
+		want    string
+	}{
+		{"no prediction", 0, ""},
+		{"negative prediction", -5, ""},
+		{"fast runner", 150, "A"},
+		{"exactly three hours", 180, "A"},
+		{"steady runner", 200, "B"},
+		{"exactly four hours", 240, "B"},
+		{"walker", 300, "C"},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := pen(c.minutes); got != c.want {
+				t.Errorf("pen(%d) = %q, want %q", c.minutes, got, c.want)
+			}
+		})
+	}
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams><![CDATA[{"required": "t.Run"}]]></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text>correct</text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>PASS</text></expected>
+            <extra><text><![CDATA[package main
+
+func pen(minutes int) string {
+	if minutes <= 0 {
+		return ""
+	}
+	if minutes <= 180 {
+		return "A"
+	}
+	if minutes <= 240 {
+		return "B"
+	}
+	return "C"
+}
+]]></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text>mutant1</text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>FAIL</text></expected>
+            <extra><text><![CDATA[package main
+
+func pen(minutes int) string {
+	if minutes <= 0 {
+		return ""
+	}
+	if minutes < 180 {
+		return "A"
+	}
+	if minutes <= 240 {
+		return "B"
+	}
+	return "C"
+}
+]]></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text>mutant2</text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>FAIL</text></expected>
+            <extra><text><![CDATA[package main
+
+func pen(minutes int) string {
+	if minutes <= 180 {
+		return "A"
+	}
+	if minutes <= 240 {
+		return "B"
+	}
+	return "C"
+}
+]]></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text>mutant3</text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>FAIL</text></expected>
+            <extra><text><![CDATA[package main
+
+func pen(minutes int) string {
+	if minutes <= 0 {
+		return ""
+	}
+	if minutes <= 180 {
+		return "A"
+	}
+	if minutes < 240 {
+		return "B"
+	}
+	return "C"
+}
+]]></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+<question type="coderunner">
+    <name><text>WAT 16.3: Kill All Mutants!</text></name>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Six implementations of <code>atoi</code> claim to match <code>strconv.Atoi</code>, which converts a string to an integer or returns an error. Only one follows the full contract. Write tests that expose each of the other five.</p></div>
+<div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/testing#T">testing.T</a>. Read the type documentation and the entries for Errorf and Fatalf. Which calls stop a test immediately? Which calls let it continue?</li><li><a href="https://pkg.go.dev/strconv#Atoi">strconv.Atoi</a>. Which function is <code>Atoi</code> equivalent to? What arguments does it use?</li><li><a href="https://pkg.go.dev/strconv#ParseInt">strconv.ParseInt</a>. Read the sentence about a leading sign and the final error paragraph. Which two sentinel errors are named? What value accompanies each error?</li></ul></div>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>assertThrows(NumberFormatException.class, ...)</code>, one exception class for every bad input. A Go function returns the error beside the value, and <code>errors.Is</code> from topic 14 tells one documented failure from another.</p><pre>assertThrows(NumberFormatException.class,
+    () -> Integer.parseInt("12a"));</pre></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Search the ParseInt page for the words maximum magnitude, then decide which row that sentence gives you, value included.</li><li>On the ParseInt page, read the bitSize paragraph, then work out the maximum magnitude for the bit size Atoi passes.</li></ul></details>
+]]></text></questiontext>
+    <generalfeedback format="html"><text></text></generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <coderunnertype>go_testwriter</coderunnertype>
+    <prototypetype>0</prototypetype>
+    <allornothing>1</allornothing>
+    <penaltyregime>0</penaltyregime>
+    <precheck>0</precheck>
+    <showsource>0</showsource>
+    <answerboxlines>59</answerboxlines>
+    <answerboxcolumns>100</answerboxcolumns>
+    <answerpreload><![CDATA[package main
+
+import "testing"
+
+// TODO: your test functions go here.
+]]></answerpreload>
+    <useace>1</useace>
+    <resultcolumns></resultcolumns>
+    <template></template>
+    <iscombinatortemplate></iscombinatortemplate>
+    <answer><![CDATA[package main
+
+import (
+	"errors"
+	"math"
+	"strconv"
+	"testing"
+)
+
+func TestAtoiValues(t *testing.T) {
+	cases := []struct {
+		in   string
+		want int
+	}{
+		{"42", 42},
+		{"+7", 7},
+		{"-7", -7},
+		{"0", 0},
+		{"007", 7},
+		{"9223372036854775807", math.MaxInt},
+		{"-9223372036854775808", math.MinInt},
+	}
+	for _, c := range cases {
+		got, err := atoi(c.in)
+		if err != nil {
+			t.Errorf("atoi(%q) returned error %v", c.in, err)
+			continue
+		}
+		if got != c.want {
+			t.Errorf("atoi(%q) = %d, want %d", c.in, got, c.want)
+		}
+	}
+}
+
+func TestAtoiErrors(t *testing.T) {
+	cases := []struct {
+		in      string
+		want    int
+		wantErr error
+	}{
+		{"", 0, strconv.ErrSyntax},
+		{"-", 0, strconv.ErrSyntax},
+		{"abc", 0, strconv.ErrSyntax},
+		{"12a", 0, strconv.ErrSyntax},
+		{" 12 ", 0, strconv.ErrSyntax},
+		{"9223372036854775808", math.MaxInt, strconv.ErrRange},
+		{"-9223372036854775809", math.MinInt, strconv.ErrRange},
+	}
+	for _, c := range cases {
+		got, err := atoi(c.in)
+		if !errors.Is(err, c.wantErr) {
+			t.Errorf("atoi(%q) error = %v, want %v", c.in, err, c.wantErr)
+			continue
+		}
+		if got != c.want {
+			t.Errorf("atoi(%q) = %d, want %d", c.in, got, c.want)
+		}
+	}
+}
+]]></answer>
+    <validateonsave>0</validateonsave>
+    <testsplitterre></testsplitterre>
+    <language></language>
+    <acelang></acelang>
+    <sandbox></sandbox>
+    <grader></grader>
+    <cputimelimitsecs></cputimelimitsecs>
+    <memlimitmb></memlimitmb>
+    <sandboxparams></sandboxparams>
+    <templateparams></templateparams>
+    <testcases>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text>correct</text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>PASS</text></expected>
+            <extra><text><![CDATA[package main
+
+import (
+	"math"
+	"strconv"
+)
+
+func atoi(s string) (int, error) {
+	syntax := &strconv.NumError{Func: "Atoi", Num: s, Err: strconv.ErrSyntax}
+	if s == "" {
+		return 0, syntax
+	}
+	neg := false
+	digits := s
+	if s[0] == '+' || s[0] == '-' {
+		neg = s[0] == '-'
+		digits = s[1:]
+	}
+	if digits == "" {
+		return 0, syntax
+	}
+	outOfRange := func() (int, error) {
+		err := &strconv.NumError{Func: "Atoi", Num: s, Err: strconv.ErrRange}
+		if neg {
+			return math.MinInt, err
+		}
+		return math.MaxInt, err
+	}
+	const maxU = math.MaxUint64
+	const cutoff = maxU/10 + 1
+	var n uint64
+	for i := 0; i < len(digits); i++ {
+		c := digits[i]
+		if c < '0' || c > '9' {
+			return 0, syntax
+		}
+		if n >= cutoff {
+			return outOfRange()
+		}
+		n *= 10
+		n1 := n + uint64(c-'0')
+		if n1 < n {
+			return outOfRange()
+		}
+		n = n1
+	}
+	const half = uint64(math.MaxInt) + 1
+	if !neg && n >= half {
+		return outOfRange()
+	}
+	if neg && n > half {
+		return outOfRange()
+	}
+	v := int(n)
+	if neg {
+		v = -v
+	}
+	return v, nil
+}
+]]></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+            <testcode><text>mutant1</text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>FAIL</text></expected>
+            <extra><text><![CDATA[package main
+
+import (
+	"math"
+	"strconv"
+)
+
+func atoi(s string) (int, error) {
+	syntax := &strconv.NumError{Func: "Atoi", Num: s, Err: strconv.ErrSyntax}
+	if s == "" {
+		return 0, syntax
+	}
+	neg := false
+	digits := s
+	if s[0] == '-' {
+		neg = true
+		digits = s[1:]
+	}
+	if digits == "" {
+		return 0, syntax
+	}
+	outOfRange := func() (int, error) {
+		err := &strconv.NumError{Func: "Atoi", Num: s, Err: strconv.ErrRange}
+		if neg {
+			return math.MinInt, err
+		}
+		return math.MaxInt, err
+	}
+	const maxU = math.MaxUint64
+	const cutoff = maxU/10 + 1
+	var n uint64
+	for i := 0; i < len(digits); i++ {
+		c := digits[i]
+		if c < '0' || c > '9' {
+			return 0, syntax
+		}
+		if n >= cutoff {
+			return outOfRange()
+		}
+		n *= 10
+		n1 := n + uint64(c-'0')
+		if n1 < n {
+			return outOfRange()
+		}
+		n = n1
+	}
+	const half = uint64(math.MaxInt) + 1
+	if !neg && n >= half {
+		return outOfRange()
+	}
+	if neg && n > half {
+		return outOfRange()
+	}
+	v := int(n)
+	if neg {
+		v = -v
+	}
+	return v, nil
+}
+]]></text></extra>
+            <display><text>SHOW</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text>mutant2</text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>FAIL</text></expected>
+            <extra><text><![CDATA[package main
+
+import (
+	"math"
+	"strconv"
+)
+
+func atoi(s string) (int, error) {
+	syntax := &strconv.NumError{Func: "Atoi", Num: s, Err: strconv.ErrSyntax}
+	if s == "" {
+		return 0, nil
+	}
+	neg := false
+	digits := s
+	if s[0] == '+' || s[0] == '-' {
+		neg = s[0] == '-'
+		digits = s[1:]
+	}
+	if digits == "" {
+		return 0, syntax
+	}
+	outOfRange := func() (int, error) {
+		err := &strconv.NumError{Func: "Atoi", Num: s, Err: strconv.ErrRange}
+		if neg {
+			return math.MinInt, err
+		}
+		return math.MaxInt, err
+	}
+	const maxU = math.MaxUint64
+	const cutoff = maxU/10 + 1
+	var n uint64
+	for i := 0; i < len(digits); i++ {
+		c := digits[i]
+		if c < '0' || c > '9' {
+			return 0, syntax
+		}
+		if n >= cutoff {
+			return outOfRange()
+		}
+		n *= 10
+		n1 := n + uint64(c-'0')
+		if n1 < n {
+			return outOfRange()
+		}
+		n = n1
+	}
+	const half = uint64(math.MaxInt) + 1
+	if !neg && n >= half {
+		return outOfRange()
+	}
+	if neg && n > half {
+		return outOfRange()
+	}
+	v := int(n)
+	if neg {
+		v = -v
+	}
+	return v, nil
+}
+]]></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text>mutant3</text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>FAIL</text></expected>
+            <extra><text><![CDATA[package main
+
+import (
+	"math"
+	"strconv"
+)
+
+func atoi(s string) (int, error) {
+	syntax := &strconv.NumError{Func: "Atoi", Num: s, Err: strconv.ErrSyntax}
+	if s == "" {
+		return 0, syntax
+	}
+	neg := false
+	digits := s
+	if s[0] == '+' || s[0] == '-' {
+		neg = s[0] == '-'
+		digits = s[1:]
+	}
+	if digits == "" {
+		return 0, syntax
+	}
+	outOfRange := func() (int, error) {
+		err := &strconv.NumError{Func: "Atoi", Num: s, Err: strconv.ErrRange}
+		if neg {
+			return math.MinInt, err
+		}
+		return math.MaxInt, err
+	}
+	const maxU = math.MaxUint64
+	const cutoff = maxU/10 + 1
+	var n uint64
+	consumed := 0
+	for i := 0; i < len(digits); i++ {
+		c := digits[i]
+		if c < '0' || c > '9' {
+			break
+		}
+		consumed++
+		if n >= cutoff {
+			return outOfRange()
+		}
+		n *= 10
+		n1 := n + uint64(c-'0')
+		if n1 < n {
+			return outOfRange()
+		}
+		n = n1
+	}
+	if consumed == 0 {
+		return 0, syntax
+	}
+	const half = uint64(math.MaxInt) + 1
+	if !neg && n >= half {
+		return outOfRange()
+	}
+	if neg && n > half {
+		return outOfRange()
+	}
+	v := int(n)
+	if neg {
+		v = -v
+	}
+	return v, nil
+}
+]]></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text>mutant4</text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>FAIL</text></expected>
+            <extra><text><![CDATA[package main
+
+import "strconv"
+
+func atoi(s string) (int, error) {
+	syntax := &strconv.NumError{Func: "Atoi", Num: s, Err: strconv.ErrSyntax}
+	if s == "" {
+		return 0, syntax
+	}
+	neg := false
+	digits := s
+	if s[0] == '+' || s[0] == '-' {
+		neg = s[0] == '-'
+		digits = s[1:]
+	}
+	if digits == "" {
+		return 0, syntax
+	}
+	n := 0
+	for i := 0; i < len(digits); i++ {
+		c := digits[i]
+		if c < '0' || c > '9' {
+			return 0, syntax
+		}
+		n = n*10 + int(c-'0')
+	}
+	if neg {
+		n = -n
+	}
+	return n, nil
+}
+]]></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text>mutant5</text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>FAIL</text></expected>
+            <extra><text><![CDATA[package main
+
+import (
+	"math"
+	"strconv"
+)
+
+func atoi(s string) (int, error) {
+	syntax := &strconv.NumError{Func: "Atoi", Num: s, Err: strconv.ErrSyntax}
+	if s == "" {
+		return 0, syntax
+	}
+	neg := false
+	digits := s
+	if s[0] == '+' || s[0] == '-' {
+		neg = s[0] == '-'
+		digits = s[1:]
+	}
+	if digits == "" {
+		return 0, syntax
+	}
+	outOfRange := func() (int, error) {
+		return 0, &strconv.NumError{Func: "Atoi", Num: s, Err: strconv.ErrRange}
+	}
+	const maxU = math.MaxUint64
+	const cutoff = maxU/10 + 1
+	var n uint64
+	for i := 0; i < len(digits); i++ {
+		c := digits[i]
+		if c < '0' || c > '9' {
+			return 0, syntax
+		}
+		if n >= cutoff {
+			return outOfRange()
+		}
+		n *= 10
+		n1 := n + uint64(c-'0')
+		if n1 < n {
+			return outOfRange()
+		}
+		n = n1
+	}
+	const half = uint64(math.MaxInt) + 1
+	if !neg && n >= half {
+		return outOfRange()
+	}
+	if neg && n > half {
+		return outOfRange()
+	}
+	v := int(n)
+	if neg {
+		v = -v
+	}
+	return v, nil
+}
+]]></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+    </testcases>
+</question>
+</quiz>
