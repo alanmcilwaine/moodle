@@ -8,3 +8,10 @@ services:
       SITE_URL: http://127.0.0.1:8081
       REVERSEPROXY: "true"
       SSLPROXY: "false"
+
+networks:
+  jobe:
+    ipam:
+      # Replace the live subnet so both projects can run at the same time.
+      config: !override
+        - subnet: 100.64.101.0/24
