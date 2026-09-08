@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 01.1: Braces Are Back!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>At an event entrance, a gate printer prints a ticket for each visitor. The spacing and line breaks on the tickets are wrong. Write <code>welcome</code> so that every ticket prints correctly on its own line.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>An event gate needs a ticket for each visitor. Complete the printer so every ticket occupies its own line.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/fmt#Println">fmt.Println</a>. Find the import line for this package. Read the first two sentences under <code>Println</code>. What separates the operands? What comes after the last one?</li><li><a href="https://pkg.go.dev/fmt#Print">fmt.Print</a>. Read the second sentence. When does this function add a space? Do the operands in this task meet that condition?</li><li><a href="https://pkg.go.dev/fmt#Printf">fmt.Printf</a>. Read the first sentence. What argument does this function require that the other two do not?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, you might build one string with <code>+</code> before printing it. In Go, <code>+</code> can join two strings but cannot join a string and an int. That expression does not compile.</p><pre>System.out.println("Ticket " + ticket + " for " + name);</pre></details>
 <div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>Printf</code></div>
@@ -27,6 +27,7 @@ import (
 )
 
 func welcome(name string, ticket int) {
+	// Print "Ticket N for NAME" on one line.
 	// TODO
 }
 ]]></answerpreload>
@@ -87,7 +88,7 @@ Ticket 8 for Linus</text></expected>
 </question>
 <question type="coderunner">
     <name><text>WAT 01.2: The Unused Variable Police!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>An evidence room records each item as staff book it into storage. Its program should print one line per item, but it does not compile. Make it compile without changing that line.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>An evidence-room booking program does not compile. Repair it while preserving the booking line.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Import_declarations">Import declarations</a>. Find the paragraph after the table. Which clause applies to the starter file?</li><li><a href="https://go.dev/ref/spec#Variable_declarations">Variable declarations</a>. Read the last sentence. Which variables does it restrict? Where does the restriction apply?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, an unused import and an unused local variable produce IDE warnings. The program still compiles, so a Java developer might leave them for later.</p><pre>import java.util.List;   // unused, still builds
 
@@ -115,6 +116,7 @@ import (
 )
 
 func book(item string, count int, shelf, officer string) {
+	// Keep the printed booking line unchanged.
 	var note string
 	fmt.Println("Booked", count, "of", item, "on shelf", shelf)
 }
@@ -174,7 +176,7 @@ func book(item string, count int, shelf, officer string) {
 </question>
 <question type="coderunner">
     <name><text>WAT 01.3: Miles to Go!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A roadside signpost tells drivers how far remains and gives advice for the journey. Write <code>signpost</code> to print the distance and the advice on separate lines. Say <code>Keep driving</code> for 10 miles or more, <code>Nearly there</code> below that, and <code>You have arrived</code> at 0 miles.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A roadside sign gives drivers the remaining distance and advice for their journey. Complete its second line.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#If_statements">If statements</a>. Find the <code>IfStmt</code> line. Which parts are optional? What must follow the condition? In the second example, what can follow <code>else</code>? Where does <code>else</code> appear relative to the closing brace?</li><li><a href="https://go.dev/ref/spec#Comparison_operators">Comparison operators</a>. Read the first sentence and the table. Which operators return a value that an <code>if</code> statement can use as its condition?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, you can put parentheses around the condition and omit braces for a one-line body. Go's grammar does not require those parentheses, and gofmt removes them. Go always requires the braces.</p><pre>if (miles == 0) System.out.println("You have arrived");</pre></details>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Start with the structure of the first example under the <code>IfStmt</code> line.</li><li>Three cases require two decisions. Check the <code>IfStmt</code> line. What can follow <code>else</code>?</li></ul></details>
@@ -196,6 +198,8 @@ func book(item string, count int, shelf, officer string) {
 import "fmt"
 
 func signpost(miles int) {
+	// Advice: 0 miles: "You have arrived"; below 10: "Nearly there".
+	// Otherwise: "Keep driving".
 	fmt.Println(miles, "miles to go")
 	// TODO the second line
 }

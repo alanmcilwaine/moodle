@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 26.1: Builder Reborn!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A server builder collects settings and applies defaults before creating a server. Kea Web Company is replacing its ServerBuilder class with two construction methods. Both must apply the same defaults. The defaults take effect when <code>String</code> prints, so a server built by hand prints the same as one built with no options. <code>String</code> prints the address, one space, then the read timeout in seconds, as in <code>:8080 30s</code>. An empty address prints as <code>:http</code>, and a timeout of zero or less prints as the word <code>off</code>.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A web company replaces its builder class with functional options and direct construction. Make both ways of creating a server display the same settings.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/net/http#Server">net/http.Server</a>. Read the field comments for <code>Addr</code> and <code>ReadTimeout</code>. Which address replaces an empty <code>Addr</code>? Which timeout values mean no limit? In the function index, which Java-style API is absent?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a builder class with one setter per field and a <code>build</code> method that fills in the defaults. Go has no overloading, so you cannot write the telescoping constructors that usually precede a builder either. Watch for the habit of resolving the defaults inside the constructor.</p><pre>Server s = new ServerBuilder()
     .addr(":8080")
@@ -36,18 +36,23 @@ type Server struct {
 type Option func(*Server)
 
 func WithAddr(addr string) Option {
+	// Set the server's address.
 	// TODO
 }
 
 func WithReadTimeout(seconds int) Option {
+	// Set the read timeout in seconds.
 	// TODO
 }
 
 func NewServer(opts ...Option) *Server {
+	// Create a fresh server and apply options in order.
 	// TODO
 }
 
 func (s *Server) String() string {
+	// Display "ADDR Ns"; an empty address displays as ":http".
+	// A nonpositive timeout displays as "off" instead of "Ns".
 	// TODO
 }
 ]]></answerpreload>
@@ -129,7 +134,7 @@ func (s *Server) String() string {
             <extra><text></text></extra>
             <display><text>SHOW</text></display>
         </testcase>
-        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
             <testcode><text><![CDATA[fmt.Println(NewServer())
 fmt.Println(&Server{})]]></text></testcode>
             <stdin><text></text></stdin>
@@ -151,7 +156,7 @@ fmt.Println(&Server{Addr: ":80", ReadTimeout: -3})]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 26.2: The Miniature Core API!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A ferry manifest lists the bookings accepted for one sailing. Kea Ferry reads bookings one at a time from its ledger. It counts and skips any booking with too few seats, and stops when a booking has no reference. The minimum is 1 seat unless <code>WithMinSeats</code> sets another. <code>Next</code> checks the reference before the seat count, and its errors name the ledger and the entry. The second entry of ledger <code>tui</code> with no reference reads <code>ledger tui: entry 2: no reference</code>, and booking <code>tui-1</code> with too few seats reads <code>ledger tui: booking tui-1: too few seats</code>. <code>Manifest</code> returns the error that stopped it with <code>manifest: </code> in front.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A ferry manifest lists accepted bookings and counts those rejected for too few seats. Read through interchangeable sources, stopping when a booking cannot be identified.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/io#EOF">io.EOF</a>. Read the complete comment, including the bracketed text. What does it forbid? What reason does it give?</li><li><a href="https://pkg.go.dev/io#Reader">io.Reader</a>. Find its declaration under Types. How many methods does it contain? How many methods does the <code>Writer</code> declaration contain?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a <code>BookingRepository</code> interface declared beside its <code>BookingRepositoryImpl</code>, carrying every method the store can offer. The second reflex is one checked exception per failure, caught by exception type at the top of the chain.</p><pre>public interface BookingRepository { ... }
 public class BookingRepositoryImpl implements BookingRepository { ... }
@@ -161,7 +166,7 @@ try {
 } catch (TooFewSeatsException e) {
     rejected++;
 }</pre></details>
-<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>The Variables section of the io page declares six errors. Read every line of the comment above each one before you choose.</li><li>A hidden test prints the error <code>Next</code> returns at the end of a ledger, so its exact text decides the mark.</li></ul></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>The Variables section of the io page declares six errors. Read every line of the comment above each one before you choose.</li><li>Read how <code>errors.Is</code> recognises a cause after another caller adds context.</li></ul></details>
 ]]></text></questiontext>
     <generalfeedback format="html"><text></text></generalfeedback>
     <defaultgrade>1.0000000</defaultgrade>
@@ -205,27 +210,38 @@ type Ledger struct {
 type Option func(*Ledger)
 
 func WithMinSeats(n int) Option {
+	// Set the smallest acceptable booking size.
 	// TODO
 }
 
 func NewLedger(name string, bookings []Booking, opts ...Option) *Ledger {
+	// Open this named ledger at its first entry, with a minimum of 1 seat.
+	// Apply options in order.
 	// TODO
 }
 
 func (l *Ledger) Next() (Booking, error) {
+	// Consume the next entry; check its reference before its seat count.
+	// Return an empty booking on failure, or io.EOF when exhausted.
+	// Wrap ErrNoRef as "ledger NAME: entry N: CAUSE" (entries start at 1).
+	// Wrap ErrTooFewSeats as "ledger NAME: booking REF: CAUSE".
 	// TODO
 }
 
 func Repeat(b Booking, n int) Source {
+	// Supply b for n calls, then return an empty booking and io.EOF.
 	// TODO
 }
 
 // Source is what Manifest needs from a booking store.
 type Source interface {
-	// TODO
+	// TODO: Next() (Booking, error).
 }
 
 func Manifest(src Source) (string, error) {
+	// Read until EOF, skipping and counting ErrTooFewSeats even beneath notes.
+	// Join accepted "REF xSEATS" entries and a final "rejected N" with "; ".
+	// Other errors return an empty manifest with "manifest: " wrapped around the cause.
 	// TODO
 }
 ]]></answerpreload>
@@ -389,7 +405,7 @@ true</text></expected>
             <extra><text></text></extra>
             <display><text>HIDE</text></display>
         </testcase>
-        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
             <testcode><text><![CDATA[l := NewLedger("kea", []Booking{{Ref: "kea-1", Seats: 2}, {Ref: "kea-3", Seats: 4}}, WithMinSeats(3))
 m, err := Manifest(l)
 fmt.Println(m)
@@ -401,6 +417,24 @@ fmt.Println(badErr)]]></text></testcode>
             <expected><text>kea-3 x4; rejected 1
 true
 manifest: ledger tui: entry 2: no reference</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[l := NewLedger("tui", []Booking{{Seats: 0}, {Ref: "tui-1", Seats: 0}, {Ref: "tui-2", Seats: 1}})
+_, err := l.Next()
+fmt.Println(err)
+_, err = l.Next()
+fmt.Println(err)
+b, err := l.Next()
+fmt.Println(b, err == nil)
+m, err := Manifest(Repeat(Booking{Ref: "unused", Seats: 1}, 0))
+fmt.Println(m, err == nil)]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>ledger tui: entry 1: no reference
+ledger tui: booking tui-1: too few seats
+{tui-2 1} true
+rejected 0 true</text></expected>
             <extra><text></text></extra>
             <display><text>HIDE</text></display>
         </testcase>

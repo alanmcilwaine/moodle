@@ -182,13 +182,13 @@ python3 -c "import xml.etree.ElementTree as ET; ET.parse('courses/go/topic-NN.xm
 
 ### Layout
 
-The seven zones and the two folds are fixed, and the block HTML for each one sits in the "Question layout" section of `courses/go/TOPICS.md`. Copy the markup from there.
+Use the Goal, Read panel, Banned line, and optional folds from the "Question layout" section of `courses/go/TOPICS.md`. Keep the Goal to one or two sentences. Put brief behavioural contracts beside the relevant starter code, including arbitrary thresholds and any required output formats. Hidden cases must follow from those contracts and the linked documentation, rather than introduce new requirements. The full contract and edge-case review guidance lives in that section.
 
 ### Pitfalls found while authoring
 
 Four problems recurred across the 26 topic files.
 
-**A visible test can act as an oracle.** A learner reads the expected value of a `SHOW` case and works backwards to the answer. Every visible case must print the same text under the careless implementation and under the correct one. The discriminating inputs belong in hidden cases. Run both implementations side by side and compare, rather than reasoning about which cases diverge. At WAT 09.2 that comparison found a second visible case the review had missed, and both cases moved to `newWarehouse(0)`. WAT 05.1 and WAT 22.1 moved their discriminating inputs the same way. A visible case must also avoid calling a banned token. WAT 11.2 rewrote its second example for that reason.
+**Examples clarify the contract.** Visible cases may distinguish a correct interpretation from a mistaken one; they need not conceal every informative input. Keep hidden cases that exercise the taught mechanism and meaningful boundaries. Do not make the Goal longer merely to account for each test: express the underlying rule beside the function, or revise a test whose demands do not serve the lesson. Only actual visible examples should have `useasexample="1"`; hidden cases use `useasexample="0"` and `HIDE`.
 
 **A clean simulator run does not prove a rule is enforced.** Swap each cheat into `answer` and run the simulator against the real test cases. A live ban reports `banned token present: for`, and a live requirement reports `required token missing: range`. At WAT 06.3 the `Required: strings.Builder` clause alone let a mixed answer through. Running that answer added `Sprintf` to the ban. At WAT 17.3 the filed fix did not close its own cheat, because an empty `settle` still simulated clean. WAT 20.1 ran seven wrong solutions and recorded what the simulator printed.
 

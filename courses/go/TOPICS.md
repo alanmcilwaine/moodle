@@ -20,12 +20,12 @@ The Python course carried a large teaching fold in every question. This course d
 
 Four authoring rules hold this together.
 
-1. Deleting the Read panel must make the question unanswerable. Repeating any sentence from a linked page in the question text is a defect.
-2. Reading prompts pose the question the page answers, for example "Read the signature. What happens when count is 0?". A prompt never states what the page says.
-3. The hidden tests are the doc sentence made executable. Each hidden test sits on an input where the documented behaviour diverges from the plausible guess.
-4. Passing produces a sentence. At the moment of passing, the learner should be able to restate the doc sentence being taught in his own words.
+1. The Read panel teaches the Go mechanism. The Goal supplies the context, and short comments beside the relevant code define the exercise's behaviour.
+2. Reading prompts pose the question the page answers, for example "Read the signature. What happens when count is 0?". Do not put the implementation or a paraphrased tutorial in the prompt.
+3. Hidden tests check consequences of the supplied contract and linked documentation. A diligent learner must be able to justify every expected result without guessing an unstated choice.
+4. Passing should leave the learner able to explain the Go behaviour used to solve the problem.
 
-The authoring test for every question is that a diligent reader of the linked docs passes and a guesser fails a hidden test.
+Do not make examples deliberately uninformative just to defeat guessing. A useful example can clarify a contract without supplying its implementation. Finding the right Go mechanism and interpreting a complete rule are both legitimate problem solving.
 
 ## Conventional Go from the first WAT
 
@@ -129,7 +129,15 @@ Stuck fold          optional fold, collapsed, two nudges
 
 Revised 2026-09-03. The layout carried three more zones. A Your task panel spelt out every function and behaviour to write. A Before you click Check panel and an AI protocol panel followed it. Alan cut all three. His stated reasoning: Your task turned into a recipe, telling the learner exactly how to solve a problem that could reasonably be solved several ways. The other two panels were policy text a competent adult does not need repeated 82 times.
 
-Before cutting Your task, every question was checked mechanically. The check compared, for each of the 82 shipped questions, the identifiers the grader calls against starter code and the visible tests. Zero questions relied on Your task for information invisible anywhere else. CodeRunner shows a visible test's actual Go statement, not just its output. A call such as `chorus([]Quacker{Duck{}, Toy{}})` already reveals the interface name. The learner reads that name before touching the panel. The deliverable now lives in the starter code's signatures and the two visible test cases, not in prose. An author naming something not already shown adds it to the starter code, as a stub or a `TODO` comment. It never goes in a task list.
+Revised 2026-09-08 after learner review of WAT 05.2, 05.1, and 04.1. Merely exposing an identifier in starter code or a visible test does not define its behaviour. Keep the deliverables in starter code, with concise local contracts instead of expanding the Goal into a task list. The comments must be available in the editor while the learner works.
+
+**Starter-code contracts.** Prefer one natural sentence beside each function. State the rule, leaving the learner to derive its consequences: "A boat may sail when its wind force is at most its licence" already covers equality. Do not add a checklist spelling out every boundary result.
+
+Arbitrary facts cannot be inferred from Go documentation. Supply wind bands, thresholds, field names, units, return conventions, and any exact output formats that grading requires. Use a compact mapping for invented scales. Keep required formats beside their function; if formatting does not serve the lesson, consider returning a value for the grader to print instead.
+
+Negative, zero, empty, missing, repeated, and boundary inputs are useful when their meaning follows from the contract. State valid-input assumptions when behaviour would otherwise be undefined. Do not contort a story or turn a comment into an algorithm merely to preserve an old hidden test: revise the scenario, contract, or test together. A hint may help interpret a requirement but must never reveal a previously unstated one.
+
+Review tests for incidental demands. For example, accept any empty slice unless nil identity is part of the lesson. Keep discriminating cases for the language feature, such as shared slice storage, grouped switch cases, or wrapped error identity. Update the sample answer and regenerate expected output by running it whenever behaviour changes.
 
 **Goal panel.** One or two sentences, no teaching. All theme flavour lives here, under the theming guide's two-sentence scene cap.
 
@@ -137,7 +145,7 @@ Before cutting Your task, every question was checked mechanically. The check com
 <div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>ONE OR TWO SENTENCES HERE.</p></div>
 ```
 
-**Read panel.** New, and it replaces the teaching fold as the primary source. One to three links to official material only, meaning pkg.go.dev, go.dev/tour, go.dev/ref/spec, or go.dev/blog. Each list item is a link plus a pointer to where on the page to look, phrased as the question the page answers. It never paraphrases what the page says. A paraphrase rebuilds the in-question teaching this format exists to remove. Doc links live here and nowhere else in the question.
+**Read panel.** One to three links to official material only, meaning pkg.go.dev, go.dev/tour, go.dev/ref/spec, or go.dev/blog. Each list item is a link plus a pointer to where on the page to look, phrased as the question the page answers. Keep tutorials in the documentation; concise exercise contracts belong beside the code. Doc links live here and nowhere else in the question.
 
 ```html
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/strings#TrimLeft">strings.TrimLeft</a>. The sentence about cutset.</li><li><a href="https://pkg.go.dev/strings#TrimPrefix">strings.TrimPrefix</a>. Compare its first sentence with TrimLeft's.</li></ul></div>
@@ -155,13 +163,13 @@ Before cutting Your task, every question was checked mechanically. The check com
 <div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>for</code>, <code>append</code></div>
 ```
 
-**Stuck fold.** Optional, and it ships closed. At most two nudges, each one sentence, each pointing deeper into a linked page with a section name or a phrase to search for. A nudge never names the answer when finding it is the exercise. The minimal-teaching regime plus no-oracle hidden tests needs exactly this recourse, and it teaches lookup rather than undermining it. Exception, topics 23 to 25 assume no concurrency knowledge, so their nudges may run to five sentences. No stdlib doc page teaches what concurrency is.
+**Stuck fold.** Optional, and it ships closed. At most two nudges, each one sentence, each pointing deeper into a linked page with a section name or a phrase to search for. A nudge never names the answer when finding it is the exercise, or introduces a missing contract. Exception, topics 23 to 25 assume no concurrency knowledge, so their nudges may run to five sentences. No stdlib doc page teaches what concurrency is.
 
 ```html
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>NUDGE SENTENCE.</li></ul></details>
 ```
 
-**The folded state.** Both folds ship collapsed, so the default render is the folded state. With both folds closed, the learner sees the Goal sentence, the Read links, and the red Banned line. That view must fully specify the question, and every question is tested against that bar before import. The Python course's bar was that a folded question must still be answerable. This course's bar is stricter. The folded question plus the linked pages must be answerable, and the question alone must not be. A question answerable without opening any link has smuggled teaching back in, and fails review.
+**The folded state.** Both folds ship collapsed. The Goal, Read links, Banned line, starter code, and visible examples must make the task answerable with the linked documentation. No required behaviour belongs only in a fold. A learner who already knows the relevant Go feature need not open a link to prove that they read it.
 
 ## The Banned line
 
@@ -229,7 +237,7 @@ For each themed row of the build plan.
 2. Name the reflex spelling. What would this Java developer, or a careless Go developer, type first? The build plan's "against" clauses list most of them.
 3. Ban until one exit remains. Then attack your own question. Write the sample answer plus at least two cheats. Every cheat must either trip a source check or fail a hidden test. If a cheat survives, add a hidden test, not another ban.
 4. Name the theme after the mechanism, not the story. Good sources are the person behind the idea, the failure mode dramatised, and the pattern being buried. Apply the George Bool standard before keeping a name.
-5. Pick the doc link that contains the exit. Then confirm the question is solvable from that one page plus the folded question text. If it is not, the question still teaches from its own prose, and that fails the docs-first bar.
+5. Pick the doc link that explains the mechanism. Confirm the folded question and starter-code contracts supply the exercise's rules, and that the documentation supplies the Go knowledge needed to implement them.
 
 ### What makes a theme work
 

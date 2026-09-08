@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 11.1: HashMap Goes on a Diet!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A canteen calorie board stores one number for each dish. Staff add, correct, and remove dishes during the week. Water remains a valid entry with a calorie count of zero.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Canteen staff add, correct, and remove dishes from a calorie board. Complete the board operations.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/maps">Go maps in action</a>. Under "Declaration and initialization", what value does an uninitialised map variable have? What happens if you write to it? Which two forms create a writable map?</li><li>In the same section, find what kind of type a map is. If a caller passes a map to <code>post</code>, what can the function change?</li><li>Under "Working with maps", how do you read a value? What do you get for a missing key? Which built-in removes an entry? What happens if that key is absent?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java uses <code>new HashMap&lt;&gt;()</code>, followed by methods such as <code>put</code>, <code>getOrDefault</code>, and <code>remove</code>. The separate <code>get</code> method returns null for a missing key.</p><pre>Map&lt;String, Integer&gt; board = new HashMap&lt;&gt;();
 board.put("soup", 120);
@@ -25,18 +25,22 @@ board.remove("water");</pre></details>
     <answerpreload><![CDATA[package main
 
 func newBoard() map[string]int {
+	// Open a board with water already listed at 0 calories.
 	// TODO
 }
 
 func post(board map[string]int, dish string, kcal int) {
+	// Record this dish's calorie count, replacing any previous count.
 	// TODO
 }
 
 func lookup(board map[string]int, dish string) int {
+	// Return the recorded calories, or 0 when the dish is absent.
 	// TODO
 }
 
 func strike(board map[string]int, dish string) {
+	// Remove the dish if it is listed.
 	// TODO
 }
 ]]></answerpreload>
@@ -106,7 +110,7 @@ fmt.Println(lookup(b, "cake"), lookup(b, "water"), len(b))]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 11.2: The Comma-OK Corral!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A cattle brand is a registered mark that identifies a herd. The district brand book stores the number of cattle for each brand. A sold-out herd has a count of zero, while an unregistered brand has no entry. Registering a brand that is already in the book leaves its count alone. A new brand starts at zero head.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A district brand book distinguishes sold-out herds from unregistered brands. Complete its registration and status functions.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Index_expressions">Index expressions</a>. Find "For a of map type M". What is <code>a[x]</code> when the map has no entry for <code>x</code>? What is <code>a[x]</code> when the map is nil?</li><li>Below the type parameter rules, find the special assignment form for a map index. What extra value does it produce? When is that value true?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java code might use <code>book.get(brand) == null</code> or <code>containsKey</code>. The <code>get</code> method distinguishes a missing key from a stored zero by returning null. Go has neither method.</p><pre>Integer head = book.get(brand);
 if (head == null) return "unregistered";</pre></details>
@@ -130,10 +134,13 @@ if (head == null) return "unregistered";</pre></details>
 import "fmt"
 
 func status(book map[string]int, brand string) string {
+	// Report "unregistered", "registered, no stock", or "registered, N head".
+	// A listed brand with zero cattle has no stock.
 	// TODO
 }
 
 func register(book map[string]int, brand string) {
+	// Register a new brand with zero cattle, leaving an existing herd alone.
 	// TODO
 }
 ]]></answerpreload>
@@ -223,7 +230,7 @@ fmt.Println(status(book, "lazy-k"), status(book, "bar-x"))]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 11.3: Sorted, Because Random!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A raffle gives each buyer one or more numbered tickets. The village records each buyer's name and ticket count. On Friday, the notice board must list them in the same order on every run.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A village raffle needs a repeatable notice of ticket holders. Count purchases and prepare the names and notice lines in sorted order.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/slices#Sort">slices.Sort</a>. Read the signature and first sentence. What does the call return? In which order does it leave <code>x</code>?</li><li><a href="https://go.dev/blog/maps">Go maps in action</a>, section "Iteration order". In what order does a range loop visit map keys? Can the next loop use a different order?</li><li><a href="https://go.dev/ref/spec#Comparison_operators">Comparison operators</a>. Find how Go compares two strings. Based on that rule, does capital B come before or after lowercase a?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java offers <code>new TreeMap&lt;&gt;(tickets)</code> for a sorted view. Another option is <code>keySet().stream().sorted()</code> when the map must remain a <code>HashMap</code>. Go's standard library has no sorted map type.</p><pre>for (String name : new TreeMap&lt;&gt;(tickets).keySet())
     System.out.println(name + " x" + tickets.get(name));</pre></details>
@@ -250,14 +257,17 @@ import (
 )
 
 func tally(buyers []string) map[string]int {
+	// Each name in buyers represents one purchased ticket; count tickets per name.
 	// TODO
 }
 
 func holders(tickets map[string]int) []string {
+	// Return the buyer names in ascending Go string order.
 	// TODO
 }
 
 func notice(tickets map[string]int) []string {
+	// Return one "NAME xCOUNT" line per buyer, in the same order as holders.
 	// TODO
 }
 ]]></answerpreload>

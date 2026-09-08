@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 19.1: Extends Is Dead!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A haulage yard uses engines supplied by another company and cannot change the supplier's Engine type. Build a truck that uses the engine's existing behaviour and adds its own load.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A haulage yard cannot edit its supplier&#x27;s engine type. Build a truck that exposes the engine&#x27;s behaviour and adds a load.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Struct_types">Struct types</a>. Find the paragraph that defines EmbeddedField after the grammar box. What can you write as an embedded field? What name does that field receive?</li><li><a href="https://go.dev/ref/spec#Struct_types">Struct types, the example that follows that paragraph</a>. Compare the first four declarations with the next two. Which form creates an Engine field?</li><li><a href="https://go.dev/ref/spec#Struct_types">Struct types, the two bullets on promoted methods</a>. Which methods does S gain from an embedded T? Which more methods does *S gain?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>class Truck extends Engine</code>. When Go refuses that, the next reflex is a named field <code>engine Engine</code> and <code>t.engine.Start()</code> at every call site. Go has a third form, and the linked paragraph names the field for you.</p><pre>class Truck extends Engine {
     int load;
@@ -36,10 +36,11 @@ func (e Engine) Start() string {
 }
 
 type Truck struct {
-	// TODO
+	// TODO: retain Engine access and add Load int, measured in tonnes.
 }
 
 func describe(t Truck) string {
+	// Return "POWER hp, LOAD t".
 	// TODO
 }
 ]]></answerpreload>
@@ -131,7 +132,7 @@ fmt.Println(sp.Start(), describe(t))]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 19.2: The Override That Never Fires!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A station announcement has a fixed format with a greeting at the start. The morning announcer's script is locked. Give the night shift the same format with an evening greeting.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A station&#x27;s morning announcement script is locked. Give the night shift the same message format with an evening greeting.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Selectors">Selectors</a>. Find the paragraph beginning "A selector f may denote". What is the depth of f? What depth has a method on the outer type? What depth has a method on an embedded field?</li><li><a href="https://go.dev/ref/spec#Selectors">Selectors, the first of the numbered rules</a>. If both the outer and embedded types declare f, which method does x.f select?</li><li><a href="https://go.dev/ref/spec#Selectors">Selectors, the annotated calls at the end</a>. Which value receives M1 when p.M1() runs? Can that value access anything declared on T2?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is to override Greeting on the subclass and trust the inherited Announce to dispatch back to that override. Read the linked rules to see which value the receiver inside Announce holds. Embedding leaves you restating the body, and sharing it needs the greeting passed in as a field or an interface.</p><pre>class NightAnnouncer extends Announcer {
     @Override String greeting() { return "Good evening"; }
@@ -171,7 +172,8 @@ func (a Announcer) Station() string {
 }
 
 type NightAnnouncer struct {
-	// TODO
+	// TODO: keep access to Announcer and its station.
+	// Greeting and Announce must use "Good evening" for the night shift.
 }
 ]]></answerpreload>
     <useace>1</useace>
@@ -265,7 +267,7 @@ Wellington Central Wellington Central</text></expected>
 </question>
 <question type="coderunner">
     <name><text>WAT 19.3: The Bufio Overcoat!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A dispatch ledger arrives as one block of text. The counting house needs to read it one line at a time and report the exact number of bytes read. Write a reader that counts the bytes, then wrap bufio around it.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A counting house reads dispatch ledgers one line at a time. Wrap a reader to track bytes and use bufio to read its lines.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/bufio#NewReader">bufio.NewReader</a>. Read the signature and documentation sentence. Which type does NewReader accept? What does it return? What must your constructor provide?</li><li><a href="https://pkg.go.dev/io#Reader">io.Reader</a>. Read the Read contract. Which two values does Read return? Which method must your type have before NewReader accepts it?</li><li><a href="https://pkg.go.dev/bufio#Reader.ReadString">bufio.Reader.ReadString</a>. Read the complete entry. If input ends without a newline, what value accompanies the error? What does the <code>err != nil</code> sentence promise about the delimiter?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The decorator reflex is a subclass of FilterReader that overrides read. The loop reflex is the one below, calling readLine until it returns null. Go's ReadString has a different contract, so read its entry before you copy that loop.</p><pre>BufferedReader br = new BufferedReader(reader);
 String line;
@@ -305,16 +307,21 @@ type CountingReader struct {
 }
 
 func NewCountingReader(r io.Reader) *CountingReader {
+	// Wrap r with a fresh byte counter.
 	// TODO
 }
 
-// TODO: Read, with the signature io.Reader asks for.
+// TODO: Read with the io.Reader signature, forwarding its result unchanged.
+// Count the bytes it returns, including those returned alongside an error.
 
 func (c *CountingReader) Count() int {
+	// Return the total bytes actually read so far.
 	// TODO
 }
 
 func lines(text string) ([]string, int, error) {
+	// Return lines without their newline separators, the byte count, and any read error.
+	// Keep blank lines and any final text; reaching EOF is successful completion.
 	// TODO
 }
 ]]></answerpreload>

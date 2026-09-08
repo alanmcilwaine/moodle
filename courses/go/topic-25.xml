@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 25.1: Mutex When It Counts!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A packhouse prepares harvested fruit for shipping. Its weighbridge weighs each bin and adds its mass to one running total. At Riwaka, several pickers can place bins on the scale at the same time. No bin may disappear from the total.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Several fruit pickers use one packhouse scale concurrently. Keep every bin in the total and return the reading only after weighing finishes.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/sync#Mutex">sync.Mutex</a>. Read the complete type documentation. What state does a zero-value <code>Mutex</code> have? What must never happen to a <code>Mutex</code> after first use?</li><li><a href="https://pkg.go.dev/sync#Mutex.Lock">Mutex.Lock</a>. What happens if a goroutine calls <code>Lock</code> while another goroutine holds the lock?</li><li><a href="https://pkg.go.dev/sync#Mutex.Unlock">Mutex.Unlock</a>. Read all four sentences. Which <code>Unlock</code> call causes a run-time error? Must the unlocking goroutine also have locked it?</li></ul></div>
 <div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>sync.Mutex</code></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Adding to a total is three steps, read the old number, add the bin, then write the new number. When two goroutines run those steps at once, both read the same old number and one bin goes missing.</li><li>A lock lets one goroutine at a time into the lines that touch the total and makes the others wait. Both <code>Add</code> and <code>Total</code> need the lock. The <code>Mutex</code> page names the two methods that take the lock and give it back.</li></ul></details>
@@ -28,14 +28,17 @@ type Scale struct {
 }
 
 func (s *Scale) Add(kilos int) {
+	// Add this bin's kilos safely while other pickers may use the scale.
 	// TODO
 }
 
 func (s *Scale) Total() int {
+	// Read the total safely; a new scale starts at 0.
 	// TODO
 }
 
 func weigh(bins []int) int {
+	// Weigh bins concurrently on one scale and return their combined mass.
 	// TODO
 }
 ]]></answerpreload>
@@ -139,7 +142,7 @@ fmt.Println(total, weigh(nil), weigh([]int{}))]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 25.2: Carry the Context!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A sailing clearance tells a skipper whether a boat may still leave port. The Port Taranaki harbourmaster can recall it at any time, and it expires automatically when its curfew passes.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A harbourmaster can recall a sailing clearance, and a curfew can expire it. Build both clearances and report their current status.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/context">context</a>. Read the <code>Context</code> interface and its <code>Err</code> documentation. When does <code>Err</code> return nil? Which two named errors can it return? Can a later call to <code>Err</code> return a different error?</li><li><a href="https://pkg.go.dev/context#WithDeadline">context.WithDeadline</a>. Read the complete documentation. What does each return value do? What should you do with the second return value? What is the type of the second parameter? Which function on that type gives the current time?</li><li><a href="https://pkg.go.dev/context#CancelFunc">context.CancelFunc</a>. Read all four lines. What does calling a <code>CancelFunc</code> do? What happens on the second call?</li></ul></div>
 <div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>context.WithDeadline</code></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>A context tree starts at a root that nothing cancels. Find the function that returns such a root. Where does its documentation say the root belongs?</li><li>Two of the constructors on that page return a pair, the new context and a function that ends it. One of the two takes a moment in time, and nothing in the doc says that moment must be in the future. To tell the two endings apart, use <code>errors.Is</code> against the package's two named error values.</li></ul></details>
@@ -164,14 +167,17 @@ import (
 )
 
 func harbour() (context.Context, context.CancelFunc) {
+	// Issue an independent clearance that can be recalled.
 	// TODO
 }
 
 func curfew() (context.Context, context.CancelFunc) {
+	// Issue a clearance whose deadline has already passed.
 	// TODO
 }
 
 func clearance(ctx context.Context) string {
+	// Report "sail" while valid, "recalled" when cancelled, or "expired" after its deadline.
 	// TODO
 }
 ]]></answerpreload>
@@ -271,7 +277,7 @@ fmt.Println(clearance(one), clearance(two))]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 25.3: Cancel Culture!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A depot dispatches one driver and sends each new stop over the radio. When the shift ends, the driver must return and no depot worker may remain waiting to send another stop. When the radio closes, <code>rounds</code> returns the stops reached in radio order and a nil error. When the shift ends first, <code>rounds</code> returns the stops reached so far and the context's own error, unchanged. <code>dispatch</code> passes back whatever <code>rounds</code> returned. If the shift is already over when the driver sets off, <code>rounds</code> returns at once and takes nothing off the radio.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A depot radios stops to a driver until the shift ends. Finish without leaving a worker waiting to send or receive.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/context">Go Concurrency Patterns: Context</a>. Read Context and Derived contexts. Which method returns a channel? What happens to that channel? Which function returns a pair whose second value stops the work?</li><li><a href="https://pkg.go.dev/context#Context">context.Context</a>. Read the full <code>Err</code> documentation. What does <code>Err</code> return before the channel closes? Can <code>Err</code> return a different value after closure?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>A <code>select</code> with two receive cases waits until one of them can go ahead, then takes that one. Put the radio on one case and the context's channel on the other, so the driver stops waiting when the shift ends. Ask the context outright before the loop as well, because a shift can be over before the driver sets off.</li><li>A send on a channel with no capacity waits for a receiver, so the goroutine calling the stops has to watch the context too. A goroutine that ignores the context waits for ever when the round is cut short, and <code>dispatch</code> can never wait for it.</li></ul></details>
 ]]></text></questiontext>
@@ -295,14 +301,19 @@ import (
 )
 
 func shift() (context.Context, context.CancelFunc) {
+	// Start an independent shift that can be cancelled.
 	// TODO
 }
 
 func rounds(ctx context.Context, radio <-chan string) ([]string, error) {
+	// Return stops reached in radio order, with nil at radio closure or ctx.Err() at shift end.
+	// A driver whose shift has already ended takes no new stop.
 	// TODO
 }
 
 func dispatch(ctx context.Context, stops []string) ([]string, error) {
+	// Send stops to rounds, returning its results unchanged.
+	// Wait for the sender to finish, including when the shift is cancelled.
 	// TODO
 }
 ]]></answerpreload>

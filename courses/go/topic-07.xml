@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 07.1: Records Without the Ceremony!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>An inn records a guest's name and stay length when it accepts a booking. The Lighthouse Inn assigns the room only when the guest arrives. Record a booking before it has a room number.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>The Lighthouse Inn accepts bookings before assigning rooms. Record a guest&#x27;s stay while leaving the room unassigned.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Struct_types">Struct types</a>. Read the first paragraph. What does a struct contain? Skip the grammar box and inspect the Go example. How does it declare one field?</li><li><a href="https://go.dev/ref/spec#Composite_literals">Composite literals</a>. Read the first paragraph and find Struct literals. What does a key identify inside a struct literal?</li><li><a href="https://go.dev/ref/spec#Composite_literals">Composite literals</a>, the same heading. Find the rule for an element list with keys. What value does an omitted field receive?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java record's canonical constructor requires every component. An unknown room therefore needs a value such as -1 or null. Go has no null value for an int.</p><pre>record Booking(String guest, int nights, int room) {}
 Booking b = new Booking("Ada", 3, -1);</pre></details>
@@ -22,9 +22,10 @@ Booking b = new Booking("Ada", 3, -1);</pre></details>
     <answerboxcolumns>100</answerboxcolumns>
     <answerpreload><![CDATA[package main
 
-// TODO: declare Booking here
+// TODO: Booking, with Guest string, Nights int, and Room int in that order.
 
 func book(guest string, nights int) Booking {
+	// Record the guest and nights; room 0 means not yet assigned.
 	// TODO
 }
 ]]></answerpreload>
@@ -89,7 +90,7 @@ fmt.Println(b.Room, b)]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 07.2: Equal by Value!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A theatre ticket identifies the performance and seat that a visitor bought. The Playhouse usher compares two tickets at the door and rejects duplicates. The box office also keeps unused blank tickets. Write checks for both cases.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>The Playhouse usher checks tickets for duplicates, while the box office keeps unused blanks. Complete both checks.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Comparison_operators">Comparison operators</a>. Find the bullet about struct types. Which struct types are comparable? When are two struct values equal? Which fields does Go compare?</li><li><a href="https://go.dev/ref/spec#Composite_literals">Composite literals</a>. Read the rules above Struct literals. What value does a literal with no elements produce?</li><li><a href="https://go.dev/ref/spec#Composite_literals">Composite literals</a>, the paragraph about a parsing ambiguity. What must you add when a composite literal appears between <code>if</code> and the opening brace?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java developer might use a record's <code>equals</code> and <code>hashCode</code>, or compare two <code>toString</code> results. A Go struct has no <code>equals</code> method to override.</p><pre>record Ticket(String holder, String seat, boolean paid) {}
 boolean same = a.toString().equals(b.toString());</pre></details>
@@ -110,13 +111,15 @@ boolean same = a.toString().equals(b.toString());</pre></details>
     <answerboxcolumns>100</answerboxcolumns>
     <answerpreload><![CDATA[package main
 
-// TODO: declare Ticket here
+// TODO: Ticket, with Holder string, Seat string, and Paid bool in that order.
 
 func sameTicket(a, b Ticket) bool {
+	// Tickets match only when all their recorded details agree.
 	// TODO
 }
 
 func blank(t Ticket) bool {
+	// An unused ticket has none of its fields filled in.
 	// TODO
 }
 ]]></answerpreload>
@@ -198,13 +201,13 @@ fmt.Println(sameTicket(a, b), blank(Ticket{Paid: true}), blank(b), blank(Ticket{
 </question>
 <question type="coderunner">
     <name><text>WAT 07.3: The NewFoo Convention!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A shelf tag shows the stored details for one product. Nuts and Bolts Ltd prints one for every product, but names entered by hand often produce incorrect tags. Create one function that prepares every product before printing. It strips the spaces around the name and records an empty unit as <code>each</code>. It also spells out <code>mm</code>, <code>m</code>, <code>kg</code>, and <code>g</code> as <code>millimetre</code>, <code>metre</code>, <code>kilogram</code>, and <code>gram</code>, with a space before the word. On the tag, an <code>each</code> product reads <code>sold singly</code> and aisle 0 reads <code>not yet shelved</code>.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A hardware shop receives inconsistent product names and units. Prepare each product when it is created, then print its shelf tag.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/strings#NewReplacer">strings.NewReplacer</a>. Read the signature and first sentence. What prefix starts the function name? What type does the call return? How do you supply an old string and its replacement?</li><li><a href="https://pkg.go.dev/strings#NewReplacer">strings.NewReplacer</a>, the same doc comment. If two old strings match at the same position, which one does the Replacer use?</li><li><a href="https://pkg.go.dev/strings#TrimSpace">strings.TrimSpace</a>. Which characters does it remove? From which ends of the string?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java constructor might assign <code>this.name = name.trim()</code> and store replacements in a <code>Map</code> with no meaningful entry order. Go has no constructors and no <code>this</code>.</p><pre>public Product(String name, String unit, int aisle) {
     this.name = expand(name.trim());
     this.unit = unit.isEmpty() ? "each" : unit;
 }</pre></details>
-<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find argument order in the NewReplacer documentation. Which of the abbreviations in the Goal start with the same letter?</li><li>Find where TrimSpace looks for white space. Which space in the finished tag must the Replacer add?</li></ul></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find argument order in the NewReplacer documentation. Which of the abbreviations beside <code>newProduct</code> start with the same letter?</li><li>Find where TrimSpace looks for white space. Which space in the finished tag must the Replacer add?</li></ul></details>
 ]]></text></questiontext>
     <generalfeedback format="html"><text></text></generalfeedback>
     <defaultgrade>1.0000000</defaultgrade>
@@ -222,13 +225,18 @@ fmt.Println(sameTicket(a, b), blank(Ticket{Paid: true}), blank(b), blank(Ticket{
 
 import "strings"
 
-// TODO: declare Product here
+// TODO: Product, with Name string, Unit string, and Aisle int in that order.
 
 func newProduct(name, unit string, aisle int) Product {
+	// Trim surrounding whitespace; a missing unit means "each".
+	// Expand name abbreviations: mm → millimetre, m → metre, kg → kilogram, g → gram.
+	// Insert a space before each expanded unit.
 	// TODO
 }
 
 func describe(p Product) string {
+	// Tag: NAME, sold by the UNIT, aisle N.
+	// For unit "each", use "sold singly"; for aisle 0, use "not yet shelved".
 	// TODO
 }
 ]]></answerpreload>
@@ -304,14 +312,14 @@ fmt.Println(describe(newProduct("500g nails", "box", 0)))]]></text></testcode>
             <extra><text></text></extra>
             <display><text>SHOW</text></display>
         </testcase>
-        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
             <testcode><text><![CDATA[fmt.Println(newProduct("  5mm bolt ", "", 3).Name)]]></text></testcode>
             <stdin><text></text></stdin>
             <expected><text>5 millimetre bolt</text></expected>
             <extra><text></text></extra>
             <display><text>HIDE</text></display>
         </testcase>
-        <testcase testtype="0" useasexample="1" hiderestiffail="0" mark="1.0000000">
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
             <testcode><text><![CDATA[fmt.Println(newProduct(" 5mm bolt", "each", 3) == newProduct("5mm bolt ", "", 3))
 fmt.Println(describe(newProduct("3m hose", "", 0)))]]></text></testcode>
             <stdin><text></text></stdin>

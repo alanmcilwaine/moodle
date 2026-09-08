@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 03.1: Change and Verdict Together!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A ticket clerk gives each traveller both a ticket and any money owed as change. When the payment covers the fare, the traveller gets the change and a ticket, reported as <code>true</code>. When the payment falls short, the clerk refuses, so the change is <code>0</code> and the ticket verdict is <code>false</code>. A concession traveller pays half the fare, rounded down to a whole penny, under the same rule. Write the two functions used at the window. Each function returns both results.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A ticket clerk returns both change and a ticket decision to each traveller. Complete the ordinary and concession sales.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Return_statements">Return statements</a>. Find the first of the three ways to return values and its two examples. How does a function list two results? What must be true of each expression? Find the second way. What single item can replace the complete expression list?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java method returns one value. Returning two results requires a record, and refusing a sale requires an exception. Go requires neither.</p><pre>record Sale(int change, boolean issued) {}
 
@@ -25,10 +25,13 @@ return new Sale(paid - fare, true);</pre></details>
     <answerpreload><![CDATA[package main
 
 func issue(paid, fare int) (int, bool) {
+	// Return the change and whether payment covers the fare.
+	// A refused sale returns no change: 0, false.
 	// TODO
 }
 
 func concession(paid, fare int) (int, bool) {
+	// Apply the same sale rule at half fare, rounded down to a whole penny.
 	// TODO
 }
 ]]></answerpreload>
@@ -99,7 +102,7 @@ func concession(paid, fare int) (int, bool) {
 </question>
 <question type="coderunner">
     <name><text>WAT 03.2: The Naked Return Ban!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A lido is a public outdoor swimming pool. Its bylaw admits swimmers from age 8, so the attendant refuses anyone younger, and the result shows lane <code>0</code> and <code>false</code>. An admitted swimmer with a pace above 40 goes to lane 1, and every other admitted swimmer goes to lane 2. Make every return in the lane allocator carry its values.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A swimming-pool attendant assigns lanes under the pool&#x27;s admission rules. Make every return carry its values.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Return_statements">Return statements</a>. Find the third way to return values. What can the function do with named results before returning them? Find the sentence beginning "Regardless of how they are declared". What value does each result hold when the function starts?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java rejects a read of a local variable before assignment, and a method returns one unnamed value. A Java solution therefore declares one temporary for each result, assigns every branch, and returns both values at the end.</p><pre>int lane = 0;
 boolean admitted = false;
@@ -126,6 +129,8 @@ return new Allocation(lane, admitted);</pre></details>
     <answerpreload><![CDATA[package main
 
 func allocate(age, pace int) (lane int, admitted bool) {
+	// Swimmers must be at least 8; refusal returns lane 0 and false.
+	// Admitted swimmers use lane 1 for pace above 40, otherwise lane 2.
 	// TODO
 }
 ]]></answerpreload>
@@ -197,7 +202,7 @@ func allocate(age, pace int) (lane int, admitted bool) {
 </question>
 <question type="coderunner">
     <name><text>WAT 03.3: Swap Meet!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A swap meet is a market where traders exchange goods. Here, traders exchange numbered stalls without an empty stall to use during the move. Write three functions that record their final positions. <code>order</code> returns two stall numbers with the lower number first. <code>bounds</code> returns the lowest and the highest of three stall numbers, and <code>span</code> returns the distance between those two.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Traders at a swap meet exchange numbered stalls without a spare stall. Complete the functions that report their positions.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Assignment_statements">Assignment statements</a>. Find the paragraph on tuple assignment and its two forms. What can appear on the right-hand side of the first form? Find the two lines under "blank identifier". What can replace a name whose value you do not need? Find the example with the comment "exchange". According to the preceding paragraph, what happens first?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, exchanging two values requires a third variable. Java also has no method that returns two values. The missing spare stall represents that third variable.</p><pre>int spare = a;
 a = b;
@@ -220,14 +225,17 @@ b = spare;</pre></details>
     <answerpreload><![CDATA[package main
 
 func order(first, second int) (int, int) {
+	// Return the two stall numbers with the lower first.
 	// TODO
 }
 
 func bounds(a, b, c int) (int, int) {
+	// Return the lowest and highest of these three stall numbers.
 	// TODO
 }
 
 func span(a, b, c int) int {
+	// Return the distance between the lowest and highest stall numbers.
 	// TODO
 }
 ]]></answerpreload>

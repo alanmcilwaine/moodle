@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 23.1: Go Means Go!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A regatta is a series of boat races. At the Ōtaki regatta, the starter says go once and both crews begin at that signal. The timekeeper records the result only after both crews finish.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>At a regatta, both crews row concurrently and the timekeeper waits for both to finish. Complete the stroke counter and race runner.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Go_statements">Go statements</a>. Read the section and its examples. What expression can follow <code>go</code>? What happens to the called function's return value?</li><li><a href="https://pkg.go.dev/sync#WaitGroup">sync.WaitGroup</a>. Read the type documentation, both examples, and <code>Add</code>, <code>Done</code>, and <code>Wait</code>. Which counter does <code>Wait</code> observe? Where must each <code>Add</code> call occur?</li></ul></div>
 <div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>go</code></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>The Go statements section opens by naming what a <code>go</code> statement starts and closes by saying what becomes of anything the called function returns. Read both ends before you decide where each crew's number is stored.</li><li>The WaitGroup page carries two code blocks that solve the same problem. Only the second one starts its goroutines with the word <code>go</code>.</li></ul></details>
@@ -24,10 +24,12 @@
 import "sync"
 
 func row(rate, minutes int) int {
+	// Count strokes at this per-minute rate over the given minutes.
 	// TODO
 }
 
 func regatta(rateOne, rateTwo, minutes int) (int, int) {
+	// Run both crews concurrently; return their stroke counts in crew order.
 	// TODO
 }
 ]]></answerpreload>
@@ -118,7 +120,7 @@ fmt.Println(a, b, c, d)]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 23.2: Wait for the Group!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A tramping party splits into smaller groups at a mountain saddle. One member walks to each hut, and the leader waits at the road end until everyone returns.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A tramping leader sends one walker to each hut and waits for everyone to return. Assemble their reports in the original hut order.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/sync#WaitGroup">sync.WaitGroup</a>. Read the type documentation and both examples. Which method starts each task in the first example? How does the second example start it?</li><li><a href="https://pkg.go.dev/sync#WaitGroup.Go">WaitGroup.Go</a>. Read every paragraph. What does each <code>Go</code> call add to the counter? When does the counter decrease? Where does the supplied function run?</li><li><a href="https://go.dev/ref/spec#For_range">For statements with range clause</a>. Find the sentence about short declarations for iteration variables. For a list of six huts, how many index variables does the loop declare?</li></ul></div>
 <div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>Add</code>, <code>Done</code>. <b>Required:</b> <code>sync.WaitGroup</code></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Two goroutines writing the same slot of one slice is a fault these tests can miss. Give each walker its own index, and build the slice at full length before the walk starts.</li><li>If the sheet comes back blank, check whether <code>Wait</code> runs before or after the loop that sends the walkers off.</li></ul></details>
@@ -148,10 +150,12 @@ type Hut struct {
 }
 
 func entry(h Hut) string {
+	// Return "NAME: BUNKS" for this hut.
 	// TODO
 }
 
 func sheet(huts []Hut) []string {
+	// Prepare one report per hut concurrently, preserving the supplied order.
 	// TODO
 }
 ]]></answerpreload>
@@ -237,7 +241,7 @@ func sheet(huts []Hut) []string {
 </question>
 <question type="coderunner">
     <name><text>WAT 23.3: Fan Out, Fall In!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A search team assigns one member to each area of a valley. The team's base camp waits until every member reports back. It sorts the radio log alphabetically before filing it.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A search team covers valley sectors concurrently and waits for every report. Prepare its sorted radio log and find the longest search.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/sync#WaitGroup">sync.WaitGroup</a>. Read the type documentation and all four methods. Which method both starts a goroutine and changes the counter?</li><li><a href="https://pkg.go.dev/sync#WaitGroup.Wait">WaitGroup.Wait</a>. Read its documentation and the memory-model paragraph for the method above. What work has finished when <code>Wait</code> returns? Why is it then safe for the caller to read every slot?</li></ul></div>
 <div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>Add</code>, <code>Done</code>. <b>Required:</b> <code>sync.WaitGroup</code></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Work out how long a sweep takes when four searchers set off together and finish at four different times. Adding the four times gives the wrong answer.</li><li>The searchers come back in no fixed order, so sort the slice after the wait.</li></ul></details>
@@ -267,13 +271,15 @@ type Sector struct {
 	Rate     int
 }
 
-// TODO: give Sector its Minutes method.
+// TODO: Sector.Minutes() int uses Rate minutes per hectare.
 
 func sweep(sectors []Sector) []string {
+	// Search sectors concurrently; return "NAME MINUTES" lines in ascending string order.
 	// TODO
 }
 
 func longest(sectors []Sector) int {
+	// Return the longest sector time, or 0 for no sectors.
 	// TODO
 }
 ]]></answerpreload>

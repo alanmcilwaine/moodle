@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 02.1: George Boole Rides Again!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A returning officer runs an election and checks whether each proposal has passed. The parish is voting on a statue of George Boole. Write the officer's three checks without using either word on the red line below.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>The parish is voting on a statue of George Boole. Complete the returning officer&#x27;s checks without the words banned below.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Boolean_types">Boolean types</a>. Read both sentences. What kind of values are <code>true</code> and <code>false</code>? What is their type called?</li><li><a href="https://go.dev/ref/spec#Comparison_operators">Comparison operators</a>. Read the first sentence. What type of value do the six listed operators produce?</li><li><a href="https://go.dev/ref/spec#The_zero_value">The zero value</a>. Find the sentence that lists a default value for each kind of type. What value does a <code>string</code> declared with <code>var</code> contain before any assignment?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java developer might use an <code>if</code> that returns one banned word on each branch. They might also check for a null name. The red line bans both words, so you cannot write that <code>if</code>.</p><pre>if (age >= 18) {
     return true;
@@ -26,14 +26,17 @@ return false;</pre></details>
     <answerpreload><![CDATA[package main
 
 func eligible(age int) bool {
+	// Voting is open to anyone aged at least 18.
 	// TODO
 }
 
 func registered(name string) bool {
+	// A voter is registered when their name is not empty.
 	// TODO
 }
 
 func carried(ayes, votes int) bool {
+	// A proposal passes with more than half the votes in favour.
 	// TODO
 }
 ]]></answerpreload>
@@ -106,7 +109,7 @@ func carried(ayes, votes int) bool {
 </question>
 <question type="coderunner">
     <name><text>WAT 02.2: Short Declaration Showdown!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A bottle store keeps one count of the bottles in its cellar, five to a crate. On a delivery day the storeman first sends five bottles to the tasting bench. The supplier then matches whatever is left on the shelf, so the count doubles. He reports the new total at the counter. Both steps happen inside one <code>if</code>, in that order, on the total the starter code declares.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A bottle-store delivery changes the stock already counted by the storeman. Update that count inside one if block.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Short_variable_declarations">Short variable declarations</a>. What declaration is <code>:=</code> shorthand for? Where can it appear? Find the paragraph beginning "Unlike regular variable declarations". When can <code>:=</code> reuse a name? Does reuse declare a new variable or assign to the existing one?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java developer might replace <code>var</code> with <code>:=</code> on every declaration. That substitution is not correct on every line.</p><pre>var total = crates * 5;
 var taken = total - 5;</pre></details>
@@ -127,6 +130,8 @@ var taken = total - 5;</pre></details>
     <answerpreload><![CDATA[package main
 
 func stocktake(crates int, delivery bool) int {
+	// On delivery days, send five bottles to tasting, then double what remains.
+	// Return the cellar total; there are five bottles per crate.
 	total := crates * 5
 	// TODO
 }
@@ -189,7 +194,7 @@ func stocktake(crates int, delivery bool) int {
 </question>
 <question type="coderunner">
     <name><text>WAT 02.3: Constants of the Universe!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>An observatory tracks the planets in order from the Sun. Number all eight, starting with Mercury, by declaring constants with the counter from the specification. Mercury is position 1, Neptune is position 8, and position 0 names no planet. <code>inner</code> reports whether a position is one of the four planets nearest the Sun, and <code>isPlanet</code> reports whether a position names any of the eight. <code>between</code> counts the planets strictly between two positions, given in either order.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>An observatory numbers the planets in order from the Sun. Declare their constants using the specification&#x27;s counter, then complete the position checks.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Iota">Iota</a>. Read the first two sentences. Where does the count start? What does "in that constant declaration" limit? In the last example block, what value does a named line without an expression receive?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java developer might use <code>enum Planet { MERCURY, VENUS }</code> with <code>ordinal()</code>. Another option is a row of manually numbered <code>static final int</code> fields. Go has neither an <code>enum</code> keyword nor <code>final</code>.</p><pre>static final int MERCURY = 1;
 static final int VENUS = 2;</pre></details>
@@ -210,17 +215,21 @@ static final int VENUS = 2;</pre></details>
     <answerboxcolumns>100</answerboxcolumns>
     <answerpreload><![CDATA[package main
 
-// TODO declare the eight planets here
+// TODO: mercury, venus, earth, mars, jupiter, saturn, uranus, neptune.
+// Number them from 1; position 0 names no planet.
 
 func inner(p int) bool {
+	// Is this one of the four planets nearest the Sun?
 	// TODO
 }
 
 func between(a, b int) int {
+	// Count the planets strictly between these two positions, in either order.
 	// TODO
 }
 
 func isPlanet(p int) bool {
+	// Does this position name one of the eight planets?
 	// TODO
 }
 ]]></answerpreload>
@@ -249,6 +258,9 @@ func between(a, b int) int {
 	gap := b - a
 	if a > b {
 		gap = a - b
+	}
+	if gap == 0 {
+		return 0
 	}
 	return gap - 1
 }
@@ -303,6 +315,13 @@ func isPlanet(p int) bool {
             <testcode><text><![CDATA[fmt.Println(inner(0), isPlanet(0), isPlanet(neptune), isPlanet(9), between(neptune, mercury))]]></text></testcode>
             <stdin><text></text></stdin>
             <expected><text>false false true false 6</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[fmt.Println(between(earth, earth), between(earth, mars), inner(-1), isPlanet(-1))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>0 0 false false</text></expected>
             <extra><text></text></extra>
             <display><text>HIDE</text></display>
         </testcase>

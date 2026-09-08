@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 04.1: Trim Before You Guess!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A signwriter changes text to match each customer's instructions. One shop wants the word go removed only from the start of its sign. Another wants every leading g and o removed.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Two shops have asked a signwriter to shorten their signs. Complete each function to match that shop&#x27;s request, using the linked string functions.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/strings#TrimPrefix">strings.TrimPrefix</a>. Read both sentences. What does this function remove? What does it return when the string does not start with the prefix?</li><li><a href="https://pkg.go.dev/strings#TrimLeft">strings.TrimLeft</a>. Read the first sentence. What is a cutset? How many leading code points can the function remove?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java developer might use <code>startsWith</code> followed by <code>substring(2)</code> for both orders. Java's <code>strip</code> family removes only whitespace, so the second order needs a regular expression. Go has one function for each order. Their documentation explains the difference.</p><pre>if (sign.startsWith("go")) {
     return sign.substring(2);
@@ -27,10 +27,12 @@
 import "strings"
 
 func dropBrand(sign string) string {
+	// Remove the shop's old brand, "go", if it starts the sign.
 	// TODO
 }
 
 func dropLetters(sign string) string {
+	// Remove all the g's and o's from the beginning of the sign.
 	// TODO
 }
 ]]></answerpreload>
@@ -100,7 +102,7 @@ func dropLetters(sign string) string {
 </question>
 <question type="coderunner">
     <name><text>WAT 04.2: Scavenger Hunt at pkg.go.dev!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A scavenger hunt gives players clues that lead them to hidden targets. The Kea Rally has three descriptions of behaviour instead of a map. Find the item that matches each clue in the three packages below.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>The Kea Rally gives players three clues to items in Go&#x27;s standard library. Find the item in each linked package that fits its clue.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/strings">strings</a>. Check the Index near the top. Which entry matches the first clue? According to its documentation, where must the second string appear?</li><li><a href="https://pkg.go.dev/unicode/utf8">unicode/utf8</a>. Check the Index. Two entries count the same unit for different input types. Which entry accepts a string? What does its documentation say it counts?</li><li><a href="https://pkg.go.dev/math">math</a>. Find the Constants section. Which block lists the integer-type limits? Which name in that block applies to an <code>int8</code>?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, the IDE offers all three items after you type a dot. Go puts them in three packages, which you can search on pkg.go.dev. Take care not to count characters with a function that counts bytes.</p><pre>badge.startsWith(team);
 badge.length();
@@ -129,14 +131,17 @@ import (
 )
 
 func onTeam(badge, team string) bool {
+	// A badge belongs to a team when it begins with the team's name.
 	// TODO
 }
 
 func badgeLength(badge string) int {
+	// Count the Unicode code points in the badge.
 	// TODO
 }
 
 func clueLimit() int8 {
+	// Return the largest value an int8 can hold.
 	// TODO
 }
 ]]></answerpreload>
@@ -214,7 +219,7 @@ func clueLimit() int8 {
 </question>
 <question type="coderunner">
     <name><text>WAT 04.3: Needle in a Package Stack!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A typesetting house prepares text for printing. Needle prints Go source, so each string must appear exactly as a Go string literal. Its bookkeeper also rounds each half-cent balance to the nearest even integer. Find the package for each job.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A typesetting house prepares Go source for printing and rounds its accounts. Find the standard-library tool for each job.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/std">Standard library index</a>. Use the one-line package descriptions to find the required behaviours. Which package converts values to and from their string forms? Which function's documentation explains how it rounds a tie?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java's <code>Math.round</code> sends every half upwards. Go lists two rounding functions together, but only one matches the bookkeeper's rule. Java has no method that formats a string as its own literal, so a Java developer might add the quote marks by hand.</p><pre>Math.round(0.5);        // 1
 "\"" + s + "\"";</pre></details>
@@ -240,10 +245,12 @@ import (
 )
 
 func quoted(s string) string {
+	// Return the text as a double-quoted Go string literal.
 	// TODO
 }
 
 func nearest(x float64) float64 {
+	// Round to the nearest integer; halfway amounts go to the even neighbour.
 	// TODO
 }
 ]]></answerpreload>

@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 08.1: The Copy Machine!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A clerk uses a copy machine to duplicate a form while keeping the original. The registry's machine stamps only the copy. Find the stamp count on both forms afterwards. <code>stamp</code> returns the stamped copy, and <code>stampAndCount</code> returns that copy together with the count still on the original form.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A registry stamps copies of forms while keeping the originals. Complete the copy-stamping functions.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Calls">Calls</a>. Find the paragraph beginning "In a function call". What does the call allocate after evaluating its arguments? According to the next sentence, what happens to the argument values?</li><li><a href="https://go.dev/ref/spec#Representation_of_values">Representation of values</a>. Read the first sentence. Which values are self-contained? What does a variable of one of those types store?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java developer might read the new count from the form passed by the caller. The stamping method returns void.</p><pre>void stamp(Form f) { f.stamps++; }
 
@@ -31,10 +31,12 @@ type Form struct {
 }
 
 func stamp(f Form) Form {
+	// Return a copy with one more stamp, leaving the original alone.
 	// TODO
 }
 
 func stampAndCount(f Form) (Form, int) {
+	// Return the stamped copy and the stamp count still on the original.
 	// TODO
 }
 ]]></answerpreload>
@@ -114,7 +116,7 @@ fmt.Println(f == Form{"Edsger Dijkstra", 0}, c.Stamps, before)]]></text></testco
 </question>
 <question type="coderunner">
     <name><text>WAT 08.2: Ampersand of Time!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A signal box controls railway lines and keeps a clock for each timetable. At shift change, two lines exchange timetables, but the clocks stay in place. Swap only the times shown on the clocks. Each clock shows 24-hour time, and <code>tick</code> moves it forward one minute, so 10:59 becomes 11:00 and 23:59 becomes 00:00.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>At railway shift change, two lines exchange timetables while their clocks stay in place. Build and update the signal box&#x27;s clocks.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Address_operators">Address operators</a>. Read the first paragraph and the paragraph beginning "For an operand x of pointer type". What does <code>&amp;x</code> produce? Which requirement does not apply to a composite literal? What does <code>*x</code> denote?</li><li><a href="https://go.dev/ref/spec#Selectors">Selectors</a>. Find the first rule after "The following rules apply to selectors". What two types can <code>x</code> have? In each case, what does <code>x.f</code> denote? The depth clause concerns embedding, which appears in topic 19.</li><li><a href="https://go.dev/ref/spec#Assignment_statements">Assignment statements</a>. Find the sentence beginning "Each left-hand side operand must be". Follow addressable to Address operators. Which operands can appear on the left of an assignment?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java method receives a copy of a reference. Reassigning two parameters therefore changes nothing held by the caller. The method can change only the fields of the referenced objects.</p><pre>static void swap(Clock a, Clock b) {
     Clock t = a;
@@ -143,14 +145,17 @@ type Clock struct {
 }
 
 func newClock(hour, minute int) *Clock {
+	// Create a separate clock showing the supplied valid 24-hour time.
 	// TODO
 }
 
 func tick(c *Clock) {
+	// Move this clock forward one minute on its 24-hour dial.
 	// TODO
 }
 
 func swap(a, b *Clock) {
+	// Exchange the times shown on these clocks.
 	// TODO
 }
 ]]></answerpreload>
@@ -245,7 +250,7 @@ fmt.Println(*a, *b, a == b, *a == *b)]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 08.3: Mutate or Copy, Choose!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A delivery robot stores its current position and the location of its charging dock. Each robot has its own position, but several robots can share one movable dock. Implement both kinds of update.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Delivery robots keep their own positions but can share a movable charging dock. Complete their movement and dock updates.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Pointer_types">Pointer types</a>. Read both sentences. What does a pointer reference? What value does a pointer hold before assignment?</li><li><a href="https://go.dev/ref/spec#Selectors">Selectors</a>. Find the sentence beginning "If x is of pointer type and has the value nil". What happens if the program reads a struct field through that pointer?</li><li><a href="https://go.dev/ref/spec#Representation_of_values">Representation of values</a>. Find the list beginning "Non-nil pointer, function, slice". What does a pointer value reference? According to the last paragraph, what can happen when two values share data?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java accesses every object through a reference, so a field that holds an object shares that object. An immutable record prevents changes to shared state. Go makes the choice explicit in the function signature and field type.</p><pre>record Position(int row, int col) {}
 class Robot { Position at; Dock home; }</pre></details>
@@ -281,18 +286,22 @@ type Robot struct {
 }
 
 func moved(p Position, rows, cols int) Position {
+	// Return the position after travelling rows and cols, leaving p unchanged.
 	// TODO
 }
 
 func drive(r *Robot, rows, cols int) {
+	// Move this robot by rows and cols, recording one more trip.
 	// TODO
 }
 
 func swapHomes(a, b *Robot) {
+	// Exchange the robots' assigned docks, leaving the docks themselves in place.
 	// TODO
 }
 
 func atHome(r *Robot) bool {
+	// Is the robot at its assigned dock? A robot without a dock is not home.
 	// TODO
 }
 ]]></answerpreload>

@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 14.1: Errors Are Values!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A rain gauge measures how much rain falls each day. The miller receives each reading as text and wants the total for the week. In a wet week, some entries contain smudges instead of numbers, and the first smudge stops the count. A stopped count returns <code>0</code> as the total and passes the conversion error back unchanged. A week with no readings totals <code>0</code> with no error.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A miller receives water-level changes as text, including rises and falls. Total the changes, stopping if a reading cannot be converted.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/errors-are-values">Errors are values</a>. Find the block with three calls to <code>fd.Write</code>. What does the code do immediately after each call that can fail?</li><li><a href="https://go.dev/ref/spec#Errors">Errors</a> in the spec. Read the sentence after the interface. Which <code>error</code> value means that no error occurred?</li><li><a href="https://pkg.go.dev/strconv#Atoi">strconv.Atoi</a>. Its documentation names the function that it uses. In that function's error paragraph, what number accompanies an out-of-range error?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>Integer.parseInt</code> inside a <code>try</code>, with a <code>NumberFormatException</code> caught somewhere above. The Go conversion throws nothing, so there is nothing to catch.</p><pre>try {
     total += Integer.parseInt(reading);
@@ -10,7 +10,7 @@
     throw new IllegalArgumentException("smudged reading", e);
 }</pre></details>
 <div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>panic</code></div>
-<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find the GoCon story in the blog. Use the check after each <code>fd.Write</code> once inside your loop.</li><li>For a week without smudges, check the value returned beside the sum. Compare it with the specification sentence.</li></ul></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find the GoCon story in the blog. Use the check after each <code>fd.Write</code> once inside your loop.</li><li>For readings that all convert, check the value returned beside the sum. Compare it with the specification sentence.</li></ul></details>
 ]]></text></questiontext>
     <generalfeedback format="html"><text></text></generalfeedback>
     <defaultgrade>1.0000000</defaultgrade>
@@ -29,6 +29,7 @@
 import "strconv"
 
 func total(readings []string) (int, error) {
+	// Return the sum, or 0 and the first conversion error unchanged.
 	// TODO
 }
 ]]></answerpreload>
@@ -116,7 +117,7 @@ strconv.Atoi: parsing "": invalid syntax</text></expected>
 </question>
 <question type="coderunner">
     <name><text>WAT 14.2: The Happy Error Path!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A parcel counter checks each parcel against a list of rejection reasons, in this order. A weight under 1 g is <code>empty parcel</code>, a weight over 20000 g is <code>too heavy</code>, and a blank destination is <code>no destination</code>. The counter stops at the first reason that applies and labels an acceptable parcel with its destination and weight, as in <code>Leeds 1200g</code>. The old clerk nested every check inside the previous one. Rewrite the checks without nesting.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A parcel counter rejects unsuitable parcels before printing their labels. Complete its checks without nesting them.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/errors">errors</a>. Read the second overview sentence and open the named function in the index. Where does the returned error get its text?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is an <code>if</code>, <code>else if</code>, <code>else</code> sequence ending in a <code>throw</code>, or nested <code>if</code> blocks with the success branch innermost. Neither shape passes the rules below.</p><pre>if (p.weight() &lt; 1) {
     throw new IllegalArgumentException("empty parcel");
@@ -126,7 +127,7 @@ strconv.Atoi: parsing "": invalid syntax</text></expected>
     return p.dest() + " " + p.weight() + "g";
 }</pre></details>
 <div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>else</code></div>
-<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If a parcel that breaks two rules reports the wrong error, compare the order of your checks with the order in the Goal.</li><li>If a parcel that passes every check reports an error, look at what you return beside the label.</li></ul></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>If a parcel that breaks two rules reports the wrong error, compare the order of your checks with the order beside <code>label</code>.</li><li>If a parcel that passes every check reports an error, look at what you return beside the label.</li></ul></details>
 ]]></text></questiontext>
     <generalfeedback format="html"><text></text></generalfeedback>
     <defaultgrade>1.0000000</defaultgrade>
@@ -153,6 +154,9 @@ type Parcel struct {
 }
 
 func label(p Parcel) (string, error) {
+	// Reject in order: weight below 1: "empty parcel"; above 20000: "too heavy";
+	// empty destination: "no destination". Refusal returns no label.
+	// Accepted label: "DEST WEIGHTg".
 	// TODO
 }
 ]]></answerpreload>
@@ -253,7 +257,7 @@ too heavy</text></expected>
 </question>
 <question type="coderunner">
     <name><text>WAT 14.3: The Sentinel's Watch!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A sentinel guards a keep and records why each guest was refused entry. He checks the guest list first, then the curfew, then whether the hall is full, and a refused guest never counts as inside. By morning, several clerks have copied the log and added their own notes. The captain must still identify the original reason. A refusal the captain cannot match to a known reason reads as plain <code>turned away</code>.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A keep&#x27;s sentinel records refusals, and clerks add notes as the log travels. Help the captain recognise the original reason through those notes.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/errors#Is">errors.Is</a>. Read the first sentence and the paragraph that defines the error tree. Besides err itself, what can err's tree contain?</li><li><a href="https://pkg.go.dev/errors#New">errors.New</a>. Read the second sentence. If two calls use identical text, how many distinct error values do they create?</li><li><a href="https://pkg.go.dev/io#pkg-variables">io, the Variables section</a>. Inspect <code>EOF</code> and the nearby variables. Are these values created once or once per call? Ignore the note about the equality operator because the red line bans that operator.</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is one exception class per refusal with a <code>catch</code> block for each, or a comparison on <code>getMessage()</code>. A hidden test punishes both.</p><pre>try {
     gate.admit(name, hour);
@@ -291,14 +295,20 @@ type Gate struct {
 }
 
 func NewGate(invited []string, curfew, capacity int) *Gate {
+	// Open an empty hall with this guest list, curfew hour, and capacity.
 	// TODO
 }
 
 func (g *Gate) Admit(name string, hour int) error {
+	// Check the guest list, arrival before curfew, then space in the hall.
+	// Count only admitted guests; return the matching sentinel on refusal.
 	// TODO
 }
 
 func verdict(err error) string {
+	// Recognise refusals even through added notes.
+	// Not invited: "turned away, fetch the steward"; curfew: "turned away, come back at dawn".
+	// Full: "turned away, wait by the fire"; other error: "turned away"; nil: "admitted".
 	// TODO
 }
 ]]></answerpreload>

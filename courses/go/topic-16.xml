@@ -2,14 +2,14 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 16.1: Table Stakes!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>At poker night, every table seats up to nine players, and a game needs at least two. Zero or one player opens no table, and two to nine players open one. Each started group of nine after that opens one more, so ten players need two tables. The <code>tables</code> function calculates how many tables to prepare. Three implementations of <code>tables</code> exist, one correct and two faulty. Write tests that identify the correct one.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Poker night needs enough tables for its players. Write tests that distinguish the correct table planner from two faulty versions.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/testing">package testing</a>. Read the first overview paragraph. What signature must a test function have? Which methods report failure?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is one <code>@Test</code> method per case with an <code>assertEquals</code> from JUnit. Go ships no assertion library, so you compare the values yourself.</p><pre>@Test
 void tenPlayersNeedTwoTables() {
     assertEquals(2, tables(10));
 }</pre></details>
 <div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>range</code></div>
-<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find the code block beginning with <code>package abs</code>. Which line reports the failure?</li><li>The second sentence of the Goal names a lone player and a tenth player, and each mutant gets one of those inputs wrong.</li></ul></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find the code block beginning with <code>package abs</code>. Which line reports the failure?</li><li>Consider where a game becomes possible and where another table becomes necessary.</li></ul></details>
 ]]></text></questiontext>
     <generalfeedback format="html"><text></text></generalfeedback>
     <defaultgrade>1.0000000</defaultgrade>
@@ -27,7 +27,9 @@ void tenPlayersNeedTwoTables() {
 
 import "testing"
 
-// TODO: one test function, written in the form the testing overview documents.
+// tables(players int) int plans tables seating up to nine players each.
+// Fewer than two players cannot start a game; otherwise seat everyone.
+// TODO: write one test function using the form in the testing overview.
 ]]></answerpreload>
     <useace>1</useace>
     <resultcolumns></resultcolumns>
@@ -113,7 +115,7 @@ func tables(players int) int {
 </question>
 <question type="coderunner">
     <name><text>WAT 16.2: Run, Subtest, Run!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A marathon start pen groups entrants by their predicted finish times. The <code>pen</code> function assigns each runner to a pen from the predicted finish time in minutes. A prediction of 180 minutes or less earns pen <code>A</code>, 181 to 240 earns pen <code>B</code>, and pen <code>C</code> takes anything slower. A prediction of zero or less means the entrant gave none, and <code>pen</code> returns the empty string. Four implementations exist, one correct and three faulty, so write tests that identify the correct one.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Marathon runners enter start pens according to their predicted finish times. Write subtests that distinguish the correct allocator from three faulty versions.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/subtests#table-driven-tests-using-subtests">Using Subtests and Sub-benchmarks, the section Table-driven tests using subtests</a>. Compare its TestTime with the version under Table-driven tests basics. What two arguments does <code>t.Run</code> receive? Where does the earlier loop body appear in the new version?</li><li><a href="https://go.dev/blog/subtests#table-driven-tests-using-subtests">The same section, the two output listings below the code</a>. In the second listing, what identifies the failed row?</li><li><a href="https://pkg.go.dev/testing#T.Run">T.Run</a>. Read the signature. What type is <code>f</code>? How does the blog express that type at the call?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a <code>@ParameterizedTest</code> with a <code>@CsvSource</code>, one row per case, and JUnit names each run. Go has no such annotation, so you name each run yourself.</p><pre>@ParameterizedTest
 @CsvSource({"150, A", "180, A", "200, B"})
@@ -121,7 +123,7 @@ void pen(int minutes, String want) {
     assertEquals(want, pen(minutes));
 }</pre></details>
 <div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>t.Run</code></div>
-<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find <code>t.Run(fmt.Sprintf</code> in the blog post. Which following lines moved into the function passed to <code>t.Run</code>?</li><li>The Goal's rule of 180 or less names 180 as a row, so count how many such numbers the Goal names.</li></ul></details>
+<details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Find <code>t.Run(fmt.Sprintf</code> in the blog post. Which following lines moved into the function passed to <code>t.Run</code>?</li><li>Consider the boundaries between the pens and what counts as a supplied prediction.</li></ul></details>
 ]]></text></questiontext>
     <generalfeedback format="html"><text></text></generalfeedback>
     <defaultgrade>1.0000000</defaultgrade>
@@ -140,6 +142,8 @@ void pen(int minutes, String want) {
 import "testing"
 
 func TestPen(t *testing.T) {
+	// pen(minutes int) string assigns A up to 180 minutes, B up to 240, then C.
+	// A nonpositive prediction means no time was supplied; return "".
 	// TODO
 }
 ]]></answerpreload>
@@ -270,7 +274,7 @@ func pen(minutes int) string {
 </question>
 <question type="coderunner">
     <name><text>WAT 16.3: Kill All Mutants!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Six implementations of <code>atoi</code> claim to match <code>strconv.Atoi</code>, which converts a string to an integer or returns an error. Only one follows the full contract. Write tests that expose each of the other five.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>Only one of six integer parsers follows the documented contract. Write tests that expose the other five.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/testing#T">testing.T</a>. Read the type documentation and the entries for Errorf and Fatalf. Which calls stop a test immediately? Which calls let it continue?</li><li><a href="https://pkg.go.dev/strconv#Atoi">strconv.Atoi</a>. Which function is <code>Atoi</code> equivalent to? What arguments does it use?</li><li><a href="https://pkg.go.dev/strconv#ParseInt">strconv.ParseInt</a>. Read the sentence about a leading sign and the final error paragraph. Which two sentinel errors are named? What value accompanies each error?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>assertThrows(NumberFormatException.class, ...)</code>, one exception class for every bad input. A Go function returns the error beside the value, and <code>errors.Is</code> from topic 14 tells one documented failure from another.</p><pre>assertThrows(NumberFormatException.class,
     () -> Integer.parseInt("12a"));</pre></details>
@@ -292,6 +296,7 @@ func pen(minutes int) string {
 
 import "testing"
 
+// atoi(s string) (int, error) must match strconv.Atoi, including its errors.
 // TODO: your test functions go here.
 ]]></answerpreload>
     <useace>1</useace>

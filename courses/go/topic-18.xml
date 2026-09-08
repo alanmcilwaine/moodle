@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 18.1: Functions Are Values Here Too!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A bottling line sends every bottle through a sequence of processing stations. One station can replace another when both accept and return the same kind of bottle. A station switched off for the shift remains in the sequence.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A bottling line sends bottles through interchangeable processing stations. Complete the runner, allowing stations to be switched off.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Function_types">Function types</a>. Read the first sentence, the rule about parameter names, and the final examples. How do you write a function type that accepts an <code>int</code> and returns an <code>int</code>?</li><li>Read the second sentence of the same section. What does an unassigned <code>Step</code> variable hold?</li><li><a href="https://go.dev/ref/spec#Function_literals">Function literals</a>. Read the first sentence and its example. How do you write an unnamed function where a value is expected? What type does it have?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a functional interface plus a lambda or method reference that the compiler converts at the call site.</p><pre>@FunctionalInterface
 interface Step { int apply(int n); }
@@ -32,6 +32,7 @@ func double(n int) int {
 }
 
 func applyAll(x int, steps ...Step) int {
+	// Pass x through the stations in order, skipping nil stations.
 	// TODO
 }
 ]]></answerpreload>
@@ -114,7 +115,7 @@ fmt.Println(applyAll(0, line[1:]...))]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 18.2: Strategy Dissolved!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A chess leaderboard lists the highest score first and sorts tied players by name. Post the board after both the four-player semi-final and the thirteen-player final.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A chess club needs its leaderboard ordered after every tournament. Sort the players in place using a comparison function.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/sort#Slice">sort.Slice</a>. Read the signature and the sentence that links to the Interface type's Less method. What do <code>i</code> and <code>j</code> index? Which values does <code>less</code> not receive directly?</li><li>Find the sentence about stability. What can happen to two players with the same score?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a Comparator, or a sort by name followed by a sort by score. The second route trusts the name order to survive the score sort.</p><pre>players.sort(comparing(Player::name));
 players.sort(comparing(Player::score).reversed());</pre></details>
@@ -144,6 +145,7 @@ type Player struct {
 }
 
 func rank(players []Player) {
+	// Highest score first; tied players go in ascending name order.
 	// TODO
 }
 ]]></answerpreload>
@@ -269,7 +271,7 @@ Lee 20
 </question>
 <question type="coderunner">
     <name><text>WAT 18.3: The Ticket Machine That Remembers!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A fairground ticket machine issues tickets in number order. It has no storage drawer for the current number. The fair uses several machines, and each gate admits a fixed number of visitors before locking.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A fairground runs independent ticket machines and gates. Give each one its own memory without a storage struct.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/tour/moretypes/25">Function closures</a>. Read both paragraphs. What can the returned function do to a variable declared outside its body? What does each closure bind to?</li><li>Run the example. Why do <code>pos</code> and <code>neg</code> print different values on the same line?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a class with a private <code>int</code> field and a <code>next()</code> method. Java keeps the count in the field because a lambda may only read what it captured.</p><pre>class TicketMachine {
     private int count;
@@ -293,10 +295,12 @@ Lee 20
     <answerpreload><![CDATA[package main
 
 func newMachine() func() int {
+	// Return a ticket dispenser that starts at 1 and advances on each call.
 	// TODO
 }
 
 func newGate(capacity int) func() bool {
+	// Return a gate that admits up to capacity visitors, then stays locked.
 	// TODO
 }
 ]]></answerpreload>

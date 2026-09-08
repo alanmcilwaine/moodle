@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 12.1: Methods Without Classes!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A bell tower rota records when each bell ringer starts, using minutes after midnight. Every displayed time needs four digits and a colon. Add methods without creating classes.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A bell-tower rota records times as minutes after midnight. Add methods for displaying a start time and finding when a ringing ends.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Method_declarations">Method declarations</a>. Read the first sentence and the paragraph beginning "The receiver is specified". Where does the receiver appear in a declaration? Which types can it have?</li><li><a href="https://go.dev/tour/methods/3">Methods continued</a> in the Tour. Which types can have methods? Where must the type be declared? Can you add a method to <code>int</code>?</li><li><a href="https://go.dev/ref/spec#Method_expressions">Method expressions</a>. Read the first sentence and five equivalent calls. What is <code>T.Mv</code>? What does its first argument contain?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java would use a record for the struct and a static helper for the number. Java declares methods inside classes and records, so an <code>int</code> cannot have its own method.</p><pre>record Ring(String bell, int start, int length) {
     int end() { return start + length; }
@@ -34,7 +34,8 @@ type Ring struct {
 	Length Minutes
 }
 
-// TODO: declare Clock on Minutes and End on Ring
+// TODO: Minutes.Clock() string displays HH:MM, with two digits per part.
+// TODO: Ring.End() Minutes returns the start plus the ringing length.
 ]]></answerpreload>
     <useace>1</useace>
     <resultcolumns></resultcolumns>
@@ -107,7 +108,7 @@ fmt.Println(m.Clock(), p.End(), p.End().Clock())]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 12.2: The Receiver Will See You Now!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A clinic visit card stores how many times a patient has attended. The desk adds one visit and returns the updated card. The card the patient handed over keeps its old count. The desk also decides whether the patient is a regular. A patient with three or more stamped visits counts as a regular.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A clinic gives patients updated visit cards while preserving the cards they handed over. Add methods for stamping a visit and recognising regulars.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Method_declarations">Method declarations</a>. Find the paragraph beginning "The receiver is specified". How is the receiver declared?</li><li><a href="https://go.dev/ref/spec#Calls">Calls</a>. Find the paragraph beginning "In a function call, the function value and arguments are evaluated". What happens to each argument before the function body starts?</li><li><a href="https://go.dev/tour/methods/4">Pointer receivers</a> in the Tour. Read the last paragraph. If the receiver is a value, what does <code>Scale</code> operate on?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>Java instance methods use <code>this</code>. Because <code>this</code> refers to the caller's object, the method can change that object. Java has no value receiver.</p><pre>void stamp() { visits++; }</pre></details>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>The Pointer receivers page has a paragraph beginning "Try removing the *". Make that change to <code>Scale</code> in your head and work out what each receiver kind does to the caller's variable.</li><li>A receiver is passed the same way as any other argument. Read the Calls paragraph beginning "In a function call" and say what the body of <code>Stamped</code> is adding to.</li></ul></details>
@@ -131,7 +132,8 @@ type Card struct {
 	Visits  int
 }
 
-// TODO: declare Stamped and Regular on Card
+// TODO: Card.Stamped() Card returns a copy with one more visit.
+// TODO: Card.Regular() bool recognises patients with at least three visits.
 ]]></answerpreload>
     <useace>1</useace>
     <resultcolumns></resultcolumns>
@@ -208,7 +210,7 @@ false true 2</text></expected>
 </question>
 <question type="coderunner">
     <name><text>WAT 12.3: Pointer or Value, Pick One!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A water meter stores the amount of water used at one property. The board reads every meter on Tui Street each quarter. Update the physical meter as well as the clerk's total. Last year's program changed only a copy. A search for an ID that no meter on the street carries returns <code>nil</code>.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A water board updates physical meters and totals a street&#x27;s readings. Make sure its methods reach the meters themselves.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Method_sets">Method sets</a>. Read the first two list items. Which methods can a <code>Meter</code> value call? Which can a <code>*Meter</code> call?</li><li><a href="https://go.dev/ref/spec#Calls">Calls</a>. Find the sentence beginning "If x is addressable". What does <code>x.m()</code> mean when <code>m</code> needs a pointer? Whose address does the shorthand use?</li><li><a href="https://go.dev/ref/spec#For_range">For statements with range clause</a>. Find "For each entry it assigns" and the following table. What two values does a slice iteration produce? What does the range clause do with them for each entry?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>A Java enhanced for loop gives the body a reference to each element. A change through that reference appears in the list.</p><pre>for (Meter m : meters) m.advance(units);</pre></details>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>In <code>AdvanceAll</code>, ask what <code>&amp;m</code> points at when <code>m</code> came out of a range clause. The For range table lists both iteration values for a slice, and the section shows the form that leaves the second one out.</li><li><code>Find</code> must return a pointer to a meter the street holds. Address operators, from WAT 08.2, lists which operands <code>&amp;</code> accepts.</li></ul></details>
@@ -239,8 +241,11 @@ type Street struct {
 	Meters []Meter
 }
 
-// TODO: declare Advance and Reading on Meter
-// TODO: declare AdvanceAll, Total, and Find on Street
+// TODO: Meter.Advance(n int) adds n units to this meter.
+// TODO: Meter.Reading() string reports "ID reads UNITS".
+// TODO: Street.AdvanceAll(n int) advances every meter by n units.
+// TODO: Street.Total() int totals the readings.
+// TODO: Street.Find(id string) *Meter finds the actual meter, or nil if absent.
 ]]></answerpreload>
     <useace>1</useace>
     <resultcolumns></resultcolumns>

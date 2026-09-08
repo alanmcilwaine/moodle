@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 24.1: Don't Share, Communicate!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A crayfish boat and the wharf communicate by radio, one catch at a time. Neither end can store a message until the other is ready to receive it.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A crayfish boat radios catches to the wharf one at a time. Send and receive the messages in order without buffering them.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Channel_types">Channel types</a>. Read the paragraph about <code>make</code> and the following paragraph. For a channel without capacity, what must both sides do before a send succeeds? In what order do values arrive?</li><li><a href="https://go.dev/ref/spec#Receive_operator">Receive operator</a>. Read the first paragraph and four examples. How does code receive a channel value? What happens if no value is available?</li></ul></div>
 <div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>chan</code>, <code>&lt;-</code></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>A goroutine is a function that runs alongside its caller rather than after it. The grader starts <code>send</code> in a goroutine, so <code>send</code> and <code>take</code> run at the same time.</li><li>In the Channel types section, find the three example declarations under ChannelType, then compare them with the four examples under Receive operator. Which side of the operator does the channel name sit on in each?</li></ul></details>
@@ -22,10 +22,12 @@
     <answerpreload><![CDATA[package main
 
 func send(words []string, out chan string) {
+	// Send every word in order; leave the radio channel open.
 	// TODO
 }
 
 func take(n int, in chan string) []string {
+	// Receive n messages in order; a nonpositive request takes none.
 	// TODO
 }
 ]]></answerpreload>
@@ -42,7 +44,7 @@ func send(words []string, out chan string) {
 }
 
 func take(n int, in chan string) []string {
-	got := make([]string, 0, n)
+	var got []string
 	for range n {
 		got = append(got, <-in)
 	}
@@ -96,10 +98,9 @@ fmt.Println(take(6, ch))]]></text></testcode>
         </testcase>
         <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
             <testcode><text><![CDATA[ch := make(chan string)
-go send([]string{"pipi", "tuatua", "cockle"}, ch)
-fmt.Println(take(0, ch))]]></text></testcode>
+fmt.Println(take(0, ch), take(-2, ch))]]></text></testcode>
             <stdin><text></text></stdin>
-            <expected><text>[]</text></expected>
+            <expected><text>[] []</text></expected>
             <extra><text></text></extra>
             <display><text>HIDE</text></display>
         </testcase>
@@ -107,7 +108,7 @@ fmt.Println(take(0, ch))]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 24.2: Range and Close!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A bakery passes each loaf through a hatch to a waiting queue. After the final loaf, the baker closes the hatch. The queue must still collect every loaf that already passed through.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A baker sends loaves through a hatch and closes it after the last loaf. Collect every loaf before finishing.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/builtin#close">close</a>. Read all four sentences. Who should call it? Who should not? What does a two-value receive report after closure?</li><li><a href="https://go.dev/ref/spec#For_range">For statements with range clause</a>. Find the channel row and the following channel paragraph. What stops a range loop over a channel?</li><li><a href="https://go.dev/ref/spec#Channel_types">Channel types</a>. Read the ChannelType production and three examples. What differs between the declarations? Which channel can only receive?</li></ul></div>
 <div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>close</code></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>A range over a channel keeps going until one call records that no more values will be sent. The builtin page names that call and says which side should make it.</li><li>Check the capacity paragraph in Channel types. What must both sides do before an unbuffered send completes? What else must be running when <code>bake</code> sends?</li></ul></details>
@@ -127,10 +128,12 @@ fmt.Println(take(0, ch))]]></text></testcode>
     <answerpreload><![CDATA[package main
 
 func bake(loaves []string) <-chan string {
+	// Return a channel delivering the loaves in order, then closing.
 	// TODO
 }
 
 func collect(in <-chan string) []string {
+	// Collect deliveries in order until the channel closes.
 	// TODO
 }
 ]]></answerpreload>
@@ -213,7 +216,7 @@ fmt.Printf("%q %v %q %v %q %v\n", first, ok1, second, ok2, third, ok3)]]></text>
 </question>
 <question type="coderunner">
     <name><text>WAT 24.3: Select Committee!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A committee receives motions until the chair rings a bell to end the meeting. The clerk also needs to report whether a motion is available now without waiting for another one.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A committee receives motions until the chair ends the meeting. Let the clerk check the tray without waiting, or stay to record the meeting.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Select_statements">Select statements</a>. Read the numbered steps. If several communications can proceed, which case runs? If none can proceed, which case runs?</li><li><a href="https://go.dev/ref/spec#Receive_operator">Receive operator</a>. Read about closed channels and the two-result assignment form. Does receiving from a closed channel wait? What does the second result mean?</li></ul></div>
 <div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Required:</b> <code>select</code></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Stuck? Two nudges inside</summary><ul><li>Read step two under Select statements. Which case in <code>poll</code> is the fallback?</li><li>Find the two-result assignment form under Receive operator. What does its boolean report? For <code>sit</code>, what should a select without a default do after recording each motion?</li></ul></details>
@@ -233,10 +236,12 @@ fmt.Printf("%q %v %q %v %q %v\n", first, ok1, second, ok2, third, ok3)]]></text>
     <answerpreload><![CDATA[package main
 
 func poll(in <-chan string) (string, bool) {
+	// Take an available motion now; return "", false if none can be received.
 	// TODO
 }
 
 func sit(motions <-chan string, done <-chan struct{}) []string {
+	// Collect motions in arrival order until done signals or the motions channel closes.
 	// TODO
 }
 ]]></answerpreload>
@@ -259,7 +264,10 @@ func sit(motions <-chan string, done <-chan struct{}) []string {
 	var heard []string
 	for {
 		select {
-		case motion := <-motions:
+		case motion, ok := <-motions:
+			if !ok {
+				return heard
+			}
 			heard = append(heard, motion)
 		case <-done:
 			return heard
@@ -327,6 +335,17 @@ close(done)
 fmt.Println(sit(motions, done))]]></text></testcode>
             <stdin><text></text></stdin>
             <expected><text>[]</text></expected>
+            <extra><text></text></extra>
+            <display><text>HIDE</text></display>
+        </testcase>
+        <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
+            <testcode><text><![CDATA[motions := make(chan string, 2)
+motions <- "levy"
+motions <- "bylaw"
+close(motions)
+fmt.Println(sit(motions, make(chan struct{})))]]></text></testcode>
+            <stdin><text></text></stdin>
+            <expected><text>[levy bylaw]</text></expected>
             <extra><text></text></extra>
             <display><text>HIDE</text></display>
         </testcase>

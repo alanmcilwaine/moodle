@@ -12,7 +12,9 @@ per the course spec's production-idiom gate.
 
 import argparse
 import json
+import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -118,22 +120,23 @@ def grade_program(q, go: str) -> list[str]:
 
     with tempfile.TemporaryDirectory() as d:
         d = Path(d)
-        (d / "student.go").write_text(answer)
-        (d / "tests.go").write_text(build_harness(testcodes))
+        (d / "student.go").write_text(answer, encoding="utf-8", newline="\n")
+        (d / "tests.go").write_text(build_harness(testcodes), encoding="utf-8", newline="\n")
         env = {
+            **os.environ,
             "GOCACHE": str(GOCACHE),
             "GOMAXPROCS": "1",
-            "PATH": "/usr/bin:/bin",
             "HOME": str(d),
         }
+        program = d / ("prog.exe" if os.name == "nt" else "prog")
         cp = subprocess.run(
-            [go, "build", "-p=1", "-o", "prog", "student.go", "tests.go"],
+            [go, "build", "-p=1", "-o", str(program), "student.go", "tests.go"],
             cwd=d, env=env, capture_output=True, text=True,
         )
         if cp.returncode != 0:
             return problems + [f"{name}: sample answer does not compile:\n{cp.stderr}"]
 
-        gofmt = str(Path(go).parent / "gofmt") if "/" in go else "gofmt"
+        gofmt = str(Path(shutil.which(go) or go).parent / ("gofmt.exe" if os.name == "nt" else "gofmt"))
         fmt_out = subprocess.run([gofmt, "-l", "student.go"],
                                  cwd=d, env=env, capture_output=True, text=True)
         if fmt_out.stdout.strip():
@@ -147,8 +150,8 @@ def grade_program(q, go: str) -> list[str]:
             if code.strip() == "// rules":
                 got = "rules ok"
             else:
-                r = subprocess.run(["./prog", str(i)], cwd=d, input=stdin_text,
-                                   env=env, capture_output=True, text=True)
+                r = subprocess.run([str(program), str(i)], cwd=d, input=stdin_text,
+                                   env=env, capture_output=True, text=True, encoding="utf-8")
                 got = r.stdout + (r.stderr if r.returncode != 0 else "")
             if got.rstrip("\n") != expected.rstrip("\n"):
                 problems.append(
@@ -173,24 +176,24 @@ def grade_testwriter(q, go: str) -> list[str]:
     with tempfile.TemporaryDirectory() as d:
         d = Path(d)
         env = {
+            **os.environ,
             "GOCACHE": str(GOCACHE),
             "GOMAXPROCS": "1",
-            "PATH": "/usr/bin:/bin",
             "HOME": str(d),
         }
         for i, impl in enumerate(variants):
             v = d / f"v{i}"
             v.mkdir()
             (v / "go.mod").write_text("module wat\n\ngo 1.27\n")
-            (v / "impl.go").write_text(impl)
-            (v / "impl_test.go").write_text(answer)
+            (v / "impl.go").write_text(impl, encoding="utf-8", newline="\n")
+            (v / "impl_test.go").write_text(answer, encoding="utf-8", newline="\n")
 
         cp = subprocess.run([go, "test", "-p=1", "-vet=off", "-run", "^$", "."],
                             cwd=d / "v0", env=env, capture_output=True, text=True)
         if cp.returncode != 0:
             return problems + [f"{name}: sample answer does not compile:\n{cp.stderr}"]
 
-        gofmt = str(Path(go).parent / "gofmt") if "/" in go else "gofmt"
+        gofmt = str(Path(shutil.which(go) or go).parent / ("gofmt.exe" if os.name == "nt" else "gofmt"))
         fmt_out = subprocess.run([gofmt, "-l", "impl_test.go"],
                                  cwd=d / "v0", env=env, capture_output=True, text=True)
         if fmt_out.stdout.strip():

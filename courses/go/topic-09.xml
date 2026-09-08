@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 09.1: ArrayList No More!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A goal log stores the score from every football match in a season. Add a new five-a-side result to the club's log and calculate the season total.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A football club keeps a log of goals scored in each match. Add results and calculate the season total.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/blog/slices-intro">Go Slices: usage and internals</a>. In "Growing slices (the copy and append functions)", find the <code>append</code> signature. What type does it return? Check the two following examples and the final <code>Filter</code> example. Where does each example store the returned value? What does <code>Filter</code> declare before its loop?</li><li>On the same page, find "Slices" and the sentence about a slice's zero value. What do <code>len</code> and <code>cap</code> return for that value?</li><li><a href="https://go.dev/ref/spec#For_range">For statements with range clause</a>. Find the table row for a slice. What is the first iteration value? What is the second?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, <code>goals.add(3)</code> returns nothing and changes the list in place. An enhanced for loop provides each element but not its position.</p><pre>List&lt;Integer&gt; goals = new ArrayList&lt;&gt;();
 goals.add(3);
@@ -25,10 +25,12 @@ for (int g : goals) total += g;</pre></details>
     <answerpreload><![CDATA[package main
 
 func record(goals []int, scored int) []int {
+	// Add this match's score to the end of the log and return the updated log.
 	// TODO
 }
 
 func season(goals []int) int {
+	// Return the total goals scored across the log.
 	// TODO
 }
 ]]></answerpreload>
@@ -104,7 +106,7 @@ fmt.Println(season(log), season(nil), len(record(nil, 1)))]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 09.2: The Warehouse Doubles Overnight!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A warehouse has a fixed number of shelves, but a delivery can contain any number of boxes. When a delivery does not fit, the night crew builds a larger warehouse and moves the existing stock into it. Make room for every delivery without losing stock.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A warehouse accepts deliveries of any size. Reuse its shelves when there is room and expand when necessary, keeping the stock in order.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/builtin#make">make</a>. Read the Slice line. What does the second integer argument set? What does <code>make([]int, 0, 10)</code> return?</li><li><a href="https://pkg.go.dev/builtin#append">append</a>. Read the first three sentences. What happens when the destination has enough capacity? What happens when its capacity is too small?</li><li><a href="https://go.dev/ref/spec#Passing_arguments_to_..._parameters">Passing arguments to ... parameters</a>. Read the opening paragraph. Inside the function, what type does a final <code>...T</code> parameter have? What does it hold if the call supplies no arguments? In the final example, what does the call with <code>s...</code> pass?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, <code>new ArrayList&lt;&gt;(shelves)</code> sets a capacity that the list does not report. The <code>size()</code> method reports the element count. Go reports both numbers.</p><pre>List&lt;String&gt; stock = new ArrayList&lt;&gt;(shelves);
 stock.addAll(List.of(boxes));</pre></details>
@@ -126,14 +128,17 @@ stock.addAll(List.of(boxes));</pre></details>
     <answerpreload><![CDATA[package main
 
 func newWarehouse(shelves int) []string {
+	// Open an empty warehouse with room for shelves boxes.
 	// TODO
 }
 
 func store(stock []string, boxes ...string) []string {
+	// Add the delivery after existing stock and return the updated warehouse.
 	// TODO
 }
 
 func spare(stock []string) int {
+	// Count the unused spaces in the warehouse.
 	// TODO
 }
 ]]></answerpreload>
@@ -221,7 +226,7 @@ fmt.Println(cap(same) == cap(w), cap(grown) == cap(w), len(grown), spare(same))]
 </question>
 <question type="coderunner">
     <name><text>WAT 09.3: Slice and Dice!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A row of cards stays in place while the dealer selects different sections of it. A cut, a hand, and a reveal each refer to part of the same row. <code>reveal</code> shows the first <code>n</code> cards from where a hand starts in the row. Do not stop at the hand's own length, because the row behind it may hold more cards.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A dealer selects parts of a row of cards without moving the cards themselves. Complete the cut, deal, and reveal operations.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Slice_expressions">Slice expressions</a>. Under "Simple slice expressions", find the example with <code>a := [5]int{1, 2, 3, 4, 5}</code>. What are the length and capacity of <code>s</code>? What is the default low index? What is the default high index?</li><li>In the same section, find the sentence beginning "For slices, the upper index bound". What is the bound? Find the paragraph beginning "If the sliced operand". What does a non-nil result share with its operand?</li><li><a href="https://go.dev/ref/spec#Slice_types">Slice types</a>. Find the sentence about integer indexes for slice elements. Which indexes are valid? In the last paragraph, what can differ between inner slices? What must you initialise separately?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>In Java, <code>deck.subList(from, to)</code> throws when <code>to</code> exceeds the list size. A Java developer might also make a defensive copy of the result. Go gives <code>to</code> a different bound, and this task forbids a copy.</p><pre>List&lt;String&gt; top = new ArrayList&lt;&gt;(deck.subList(0, at));</pre></details>
 <div style="border-left:4px solid #d9534f; padding:0.5em 1em; margin-top:1em; background:#fdf3f2;"><b>Banned:</b> <code>append</code></div>
@@ -242,14 +247,18 @@ fmt.Println(cap(same) == cap(w), cap(grown) == cap(w), len(grown), spare(same))]
     <answerpreload><![CDATA[package main
 
 func cut(deck []string, at int) ([]string, []string) {
+	// Split before card at, returning the front and the rest as views of the deck.
 	// TODO
 }
 
 func deal(deck []string, hands, size int) [][]string {
+	// Return hands consecutive views of size cards each, starting at the front.
 	// TODO
 }
 
 func reveal(hand []string, n int) []string {
+	// Show n cards from this hand's start, including cards beyond its current end.
+	// All requested cuts and hands fit the backing row.
 	// TODO
 }
 ]]></answerpreload>

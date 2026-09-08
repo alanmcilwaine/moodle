@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 22.1: The Stream Detox!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A juice bar recipe lists each blend and its sugar count. During detox week, the printer needs only the low-sugar blends, and the board displays every sugar count at half its original value.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A juice bar needs labels for low-sugar blends and a board with reduced sugar counts. Complete the two operations with ordinary Go loops.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#For_range">For statements with range clause</a>. Find the table row for an array or slice. What does each iteration-value column contain? What is the type of each value?</li><li>Compare the opening sentence with the table's second value column. How does an iteration value reach its variable? What does that assignment do to a struct value?</li><li>Find the paragraph beginning "For an array, pointer to array, or slice value a". According to its last sentence, how many times does a nil slice iterate?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a stream chain, one stage per verb, with a null guard in front because a for-each over null throws. The second reflex is writing through the loop variable.</p><pre>return board.stream()
         .filter(b -&gt; b.sugar() &lt; limit)
@@ -34,10 +34,13 @@ type blend struct {
 }
 
 func clean(board []blend, limit int) []string {
+	// List blends strictly below limit, preserving board order and leaving it unchanged.
+	// Labels use lowercase names with each space replaced by a hyphen.
 	// TODO
 }
 
 func halve(board []blend) {
+	// Halve each sugar count on the board, rounding down to whole units.
 	// TODO
 }
 ]]></answerpreload>
@@ -140,7 +143,7 @@ halve(nil)]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 22.2: Yield of Dreams!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>After the last match, an announcer counts players off the field one at a time, from the highest number down to 1. The big screen stops the count as soon as it has enough names. The screen shows the first number under the floor it was given, and it shows <code>0</code> when no player is under the floor. When nobody is on the field, the announcer counts nobody off.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>An announcer counts players off the field, but the screen may stop listening early. Build the countdown and the screen&#x27;s search.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/iter#Seq">iter.Seq</a>. Read the type line and its two sentences. What does the iterator pass to yield? What does yield return? When must the iterator stop early?</li><li><a href="https://pkg.go.dev/iter">iter</a>, the Iterators section near the top. Which two events stop an iterator? What happens if it calls yield again?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is an <code>Iterator</code> with <code>hasNext</code> and <code>next</code>, where the consumer holds the loop and pulls each element. Go puts the loop on the other side, and the linked page says which side that is. The other reflex is building the whole sequence up front and handing back a list.</p><pre>Iterator&lt;Integer&gt; it = countdown(5);
 while (it.hasNext()) {
@@ -166,10 +169,12 @@ while (it.hasNext()) {
 import "iter"
 
 func countdown(n int) iter.Seq[int] {
+	// Offer player numbers from n down to 1, stopping when the listener is done.
 	// TODO
 }
 
 func firstUnder(seq iter.Seq[int], floor int) int {
+	// Stop at the first number below floor and return it; return 0 if none qualifies.
 	// TODO
 }
 ]]></answerpreload>
@@ -284,7 +289,7 @@ fmt.Println(firstUnder(counted, 3), handed)]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 22.3: Collect Yourself!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>The stadium's lost property office has a bin of items but no inventory. Staff need the labels in ascending order and the total number of items, duplicates included. They also need to visit the labels handed in more than a given number of times without receiving the full list. <code>over</code> hands out those labels in the same ascending order as <code>labels</code> and stops as soon as the caller stops.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A stadium lost-property office needs an inventory and a way to visit frequently returned labels. Support both complete lists and callers that stop early.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/maps#Keys">maps.Keys</a>. Read the signature and both sentences. What type does it return? In what order does it produce keys?</li><li><a href="https://pkg.go.dev/slices#Collect">slices.Collect</a>. Read both sentences. What argument does it accept? What does it return for an empty sequence?</li><li><a href="https://pkg.go.dev/slices#Sort">slices.Sort</a>. Read the first sentence and signature. Which slice is sorted? What does the call return?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>keySet</code>, which hands back a collection with a size that you can walk twice. The second reflex is trusting the order the map hands you, an order Java's own <code>HashMap</code> never promised either. Read the return type on each linked page before you assume any of the three is a list.</p><pre>List&lt;String&gt; labels = new ArrayList&lt;&gt;(counts.keySet());
 Collections.sort(labels);</pre></details>
@@ -317,22 +322,28 @@ type bin struct {
 }
 
 func newBin() *bin {
+	// Open an empty inventory.
 	// TODO
 }
 
 func (b *bin) hand(item string) {
+	// Record one more item with this label.
 	// TODO
 }
 
 func (b *bin) labels() []string {
+	// Return each distinct label in ascending Go string order.
 	// TODO
 }
 
 func (b *bin) total() int {
+	// Count all items, including repeated labels.
 	// TODO
 }
 
 func (b *bin) over(n int) iter.Seq[string] {
+	// Offer labels held more than n times, in the same order as labels.
+	// Stop when the caller has enough.
 	// TODO
 }
 ]]></answerpreload>
@@ -437,13 +448,13 @@ for label := range b.over(1) {
         </testcase>
         <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
             <testcode><text><![CDATA[b := newBin()
-fmt.Println(b.labels() == nil, b.total(), len(b.labels()))
+fmt.Println(b.total(), len(b.labels()))
 for range b.over(0) {
 	fmt.Println("the bin is not empty")
 }
 fmt.Println("bin empty")]]></text></testcode>
             <stdin><text></text></stdin>
-            <expected><text>true 0 0
+            <expected><text>0 0
 bin empty</text></expected>
             <extra><text></text></extra>
             <display><text>HIDE</text></display>
@@ -475,7 +486,7 @@ boot
 </question>
 <question type="coderunner">
     <name><text>WAT 22.4: Cosplaying the Chain!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A costume hire shop asks its program for prices from a list of costumes. An AI returned Go code that imitates a Java stream. Every test passes, but each enquiry copies the full list before reading one price.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>An AI made a costume-price enquiry copy the full stock list repeatedly. Rewrite it with ordinary loops while preserving results and leaving stock unchanged.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/slices#DeleteFunc">slices.DeleteFunc</a>. Read all three sentences. Which slice does it modify? What remains beyond the new length?</li><li><a href="https://pkg.go.dev/slices#Clone">slices.Clone</a>. Read all four sentences. What does Clone return? Why does the AI call it before DeleteFunc?</li><li><a href="https://pkg.go.dev/slices">slices</a>, the Index near the top. Is there an entry that converts every element to a different type? What does the answer tell you about where to write the conversion?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a stream chain, where each stage hands a fresh collection to the next and no stage touches the source. The AI's code keeps that shape, one named helper per verb, so it reads as familiar and safe. Check each of those calls against the linked docs before you trust the resemblance.</p><pre>return list.stream()
         .filter(h -&gt; h.cost() &lt;= budget)

@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 20.1: Switch on Type!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A lost property counter accepts any item that a passenger hands over, including nothing. The clerk gives every item a name and keeps the counter open when an unfamiliar item arrives. The clerk names nothing at all <code>empty hands</code>. The clerk names any item he does not recognise, including a number with a decimal part, <code>unclaimed</code>. When the clerk counts coins and the item is not coins, the count is <code>0</code>, the answer is <code>false</code>, and the counter stays open.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A lost-property clerk accepts familiar and unfamiliar items without closing the counter. Describe each item and safely identify coins.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Type_switches">Type switches</a>. Read the two paragraphs after the grammar block. What can a case use instead of a type? When does that case match?</li><li><a href="https://go.dev/ref/spec#Type_assertions">Type assertions</a>. Which assertion form stops the run when the stored value has a different type? What does the other form return?</li><li><a href="https://go.dev/ref/spec#Interface_types">Interface types</a>. Find the empty interface. Which predeclared one-word name can replace it?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a null check followed by a chain of <code>instanceof</code> tests. One Go statement does both jobs, and Go has no catch clause for a conversion that fails.</p><pre>if (item == null) return "empty hands";
 if (item instanceof Integer n) return n + " coins";</pre></details>
@@ -26,10 +26,13 @@ if (item instanceof Integer n) return n + " coins";</pre></details>
 import "fmt"
 
 func describe(item any) string {
+	// int: "N coins"; string: "a note reading TEXT".
+	// No item: "empty hands"; anything else: "unclaimed".
 	// TODO
 }
 
 func coins(item any) (int, bool) {
+	// Return the int coin count and true, or 0 and false for any other item.
 	// TODO
 }
 ]]></answerpreload>
@@ -113,7 +116,7 @@ fmt.Println(coins(nil))]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 20.2: Sealed With a Marker!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A depot seal marks the types of cargo that the Ōtaki depot accepts. A rival crate has copied that seal, while a sack of onions carries none. Give the crate the seal it claims and give the sack only its weight. The depot then carries whatever shows the seal, so it takes the rival crate and turns away the sack. Every item reports its weight in grams, and the weight of a load is the sum of those weights.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A depot carries cargo bearing its seal, including a rival crate that copied it. Give the accepted cargo its seal and weigh each load.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Interface_types">Interface types</a>. Under Basic interfaces, which types belong to an interface's type set when it lists two methods? Under General interfaces, which interfaces can be variable types? Can an interface that lists types be the element type of <code>[]Parcel</code>?</li><li><a href="https://go.dev/ref/spec#Uniqueness_of_identifiers">Uniqueness of identifiers</a>. Read both rules. When does Go treat identically spelled method names as different names?</li><li><a href="https://go.dev/ref/spec#Type_assertions">Type assertions</a>. Read the first paragraph. Before checking the stored value, what does <code>x.(T)</code> require of <code>x</code> itself?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>sealed interface Parcel permits Letter, Box</code>, and the Java compiler refuses any type absent from that list. Go keeps no such list. A marker method seals nothing while every type sits in one file, as they all do here.</p><pre>sealed interface Parcel permits Letter, Box {}
 record Letter(int grams) implements Parcel {}</pre></details>
@@ -135,7 +138,7 @@ record Letter(int grams) implements Parcel {}</pre></details>
     <answerpreload><![CDATA[package main
 
 type Parcel interface {
-	// TODO
+	// TODO: weight() int and sealed().
 }
 
 type Letter struct {
@@ -154,13 +157,16 @@ type Sack struct {
 	Grams int
 }
 
-// TODO: give each type the methods it should have.
+// TODO: all four types report their Grams through weight.
+// Letter, Box, and Crate carry sealed; Sack does not.
 
 func carried(item any) bool {
+	// Does this item satisfy the depot's Parcel contract?
 	// TODO
 }
 
 func load(items []Parcel) int {
+	// Return the combined weight in grams.
 	// TODO
 }
 ]]></answerpreload>
@@ -268,7 +274,7 @@ func load(items []Parcel) int {
 </question>
 <question type="coderunner">
     <name><text>WAT 20.3: Silent Default, Loud Error!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A fare barrier calculates the price for each supported ticket type. The Johnsonville barrier knows two ticket types but was built before the day pass existed. It must refuse any ticket that it cannot price and explain why. Tickets reach the barrier either as the ticket itself or as a pointer to it. A Single or a Return earns the same price either way. The refusal keeps <code>ErrUnpriced</code> reachable inside it, so <code>unpriced</code> still finds <code>ErrUnpriced</code> however many more layers a caller adds.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A fare barrier recognises single and return tickets but predates day passes. Price supported tickets and preserve the reason for every refusal.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Type_switches">Type switches</a>. Find the sentence beginning "Cases then match". What value is compared with each case? Does a pointer match a case that names the pointed-to value's type?</li><li><a href="https://pkg.go.dev/errors#Is">errors.Is</a>. Read the paragraph about the error chain. How far does <code>Is</code> search? Does another error with the same message count as a match?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is a switch expression over a sealed interface. The Java compiler refuses to build until every permitted type has an arm. Go runs no such check, so a type with no case reaches <code>default</code> and the build still succeeds.</p><pre>return switch (ticket) {
     case Single s -&gt; 350;
@@ -295,10 +301,10 @@ import (
 	"fmt"
 )
 
-// TODO: declare ErrUnpriced.
+// TODO: ErrUnpriced has the text "no fare for this ticket".
 
 type Ticket interface {
-	// TODO
+	// TODO: holder() string.
 }
 
 type Single struct {
@@ -313,13 +319,16 @@ type DayPass struct {
 	Name string
 }
 
-// TODO: give each ticket its holder method.
+// TODO: each ticket's holder method returns its Name.
 
 func fare(t Ticket) (int, error) {
+	// Single costs 350; Return costs 620, supplied as values or non-nil pointers.
+	// Other tickets return 0 and ErrUnpriced with "HOLDER: " added.
 	// TODO
 }
 
 func unpriced(err error) bool {
+	// Does this error contain ErrUnpriced, however many notes were added?
 	// TODO
 }
 ]]></answerpreload>

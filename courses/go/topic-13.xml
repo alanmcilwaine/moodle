@@ -2,7 +2,7 @@
 <quiz>
 <question type="coderunner">
     <name><text>WAT 13.1: No Implements Needed!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A pond warden keeps a list of anything that can quack, including mallards and a wind-up toy. Some entries in the list are empty. Empty entries stay silent. The chorus lists one call per quacker present, in list order, and skips the gaps. Do this without registering types or writing adapters.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A pond warden wants a chorus from ducks and wind-up toys, with empty places staying silent. Connect them without registering types or writing adapters.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://go.dev/ref/spec#Interface_types">Interface types</a>. Read the first paragraph. What puts a type in an interface's type set? What value does an interface variable have before assignment? In the <code>File</code> example, what appears between the braces? In the <code>Locker</code> declaration, what appears before those braces?</li><li><a href="https://go.dev/ref/spec#Interface_types">The same section</a>, the paragraph beginning "More than one type may implement an interface". Can <code>S1</code> and <code>S2</code> have other methods? Where does the example use the word <code>implements</code>?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>implements Quacker</code> on the duck, plus a <code>ToyAdapter</code> so the toy counts too. Go has no <code>implements</code> keyword. The tests build a <code>[]Quacker</code> straight from a <code>Duck</code> and a <code>Toy</code>.</p><pre>class Duck implements Quacker { ... }
 class ToyAdapter implements Quacker {
@@ -29,9 +29,11 @@ type Duck struct{}
 
 type Toy struct{}
 
-// TODO: declare Quacker, then give Duck and Toy a Quack method.
+// TODO: Quacker requires Quack() string.
+// Duck says "quack"; Toy says "squeak".
 
 func chorus(pond []Quacker) []string {
+	// Return one call per quacker in pond order, skipping empty entries.
 	// TODO
 }
 ]]></answerpreload>
@@ -118,7 +120,7 @@ fmt.Println(chorus(pond))]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 13.2: Small Interface, Big Abstraction!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A weather station can accept readings from several kinds of instrument. Its display averages their readings, and its log prints each reading beside the instrument's name. The porch dial has no nameplate, and the hall nameplate takes no readings. An empty display averages to <code>0</code>. The log prints each reading with <code>%v</code>, so a whole-number reading of 998 prints as <code>998</code>.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A weather station averages readings and labels log entries. Some devices can take readings or provide names without doing both.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/io#Reader">io.Reader</a>. Count the declared methods and read the first documentation sentence. What does <code>Reader</code> wrap? Which method gives the interface its name?</li><li><a href="https://pkg.go.dev/io#ReadWriter">io.ReadWriter</a>. How does <code>ReadWriter</code> include both <code>Read</code> and <code>Write</code> without repeating their signatures?</li><li><a href="https://go.dev/ref/spec#Implementing_an_interface">Implementing an interface</a>. Read the two bullet points. When can a value of one interface type be assigned to another interface type?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is one fat <code>Instrument</code> interface beside the hardware, so a dial that only samples needs stub methods. In Go each consumer declares only the methods it calls. A Java Strategy needs an interface and a class per policy, and that consumer interface is the whole pattern.</p><pre>interface Instrument {
     double sample();
@@ -177,13 +179,15 @@ type Nameplate struct {
 
 func (n Nameplate) Name() string { return n.Label }
 
-// TODO: declare Sampler, Namer, and Instrument.
+// TODO: Sampler takes a Sample; Namer provides a Name; Instrument does both.
 
 func mean(ss []Sampler) float64 {
+	// Average these samples; an empty display reads 0.
 	// TODO
 }
 
 func entry(in Instrument) string {
+	// Return "NAME: READING", using default Go formatting for the reading.
 	// TODO
 }
 ]]></answerpreload>
@@ -308,7 +312,7 @@ fmt.Println(entry(in), n.Name(), s.Sample(), mean(nil), plate.Name())]]></text><
 </question>
 <question type="coderunner">
     <name><text>WAT 13.3: The Stringer Quartet!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>An orchestra programme identifies each player by instrument and seat. The quartet's printer must write "viola" wherever a viola seat appears. The box office still counts those seats as plain numbers.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>An orchestra programme prints instrument names beside its players. Give seats and players readable forms while keeping seats usable as numbers.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/fmt#Stringer">fmt.Stringer</a>. Read the interface and documentation. Which method must a type provide? Which formats make <code>fmt</code> call it?</li><li><a href="https://pkg.go.dev/fmt#hdr-Printing">fmt, the Printing section of the overview</a>. Find the numbered rules that <code>fmt</code> applies before printing an operand. Which of <code>%v</code>, <code>%s</code>, <code>%q</code>, <code>%d</code>, and <code>%T</code> reach the rule for a <code>String</code> method?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>@Override public String toString()</code>, which every Java print path honours. The second reflex is expecting <code>String.format("%d", seat)</code> to throw when handed an object. Go's <code>fmt</code> decides verb by verb whether to call your method.</p><pre>@Override
 public String toString() { return name + " (" + seat + ")"; }</pre></details>
@@ -345,7 +349,9 @@ type Player struct {
 	Seat Seat
 }
 
-// TODO: give Seat and Player a String method.
+// TODO: Seat.String() names first violin, second violin, viola, or cello.
+// An unfamiliar seat reads "seat N".
+// TODO: Player.String() reads "NAME (SEAT)".
 ]]></answerpreload>
     <useace>1</useace>
     <resultcolumns></resultcolumns>
@@ -436,14 +442,9 @@ seat 7 Bo (seat 7)</text></expected>
         <testcase testtype="0" useasexample="0" hiderestiffail="0" mark="1.0000000">
             <testcode><text><![CDATA[quartet := []Player{{"Cy", FirstViolin}, {"Di", SecondViolin}, {"Ana", Viola}, {"Bo", Cello}}
 fmt.Println(quartet)
-type desk struct {
-	Seat  Seat
-	spare Seat
-}
-fmt.Println(desk{Viola, Cello})]]></text></testcode>
+]]></text></testcode>
             <stdin><text></text></stdin>
-            <expected><text>[Cy (first violin) Di (second violin) Ana (viola) Bo (cello)]
-{viola 3}</text></expected>
+            <expected><text>[Cy (first violin) Di (second violin) Ana (viola) Bo (cello)]</text></expected>
             <extra><text></text></extra>
             <display><text>HIDE</text></display>
         </testcase>
@@ -451,7 +452,7 @@ fmt.Println(desk{Viola, Cello})]]></text></testcode>
 </question>
 <question type="coderunner">
     <name><text>WAT 13.4: The Impl Impostor!</text></name>
-    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>A store interface lists the operations that other code can use. An AI produced a five-method <code>Store</code> interface and a <code>StoreImpl</code>, although the only reader calls one method. Every test passes. Name the one-method interface <code>Getter</code> and make <code>render</code> accept it. Keep every store method reachable from the value <code>NewStore</code> returns.</p></div>
+    <questiontext format="html"><text><![CDATA[<div style="border-left:4px solid #2c3e50; padding:0.5em 1em; margin-bottom:1em; background:#eef1f4;"><b>Goal</b><p>An AI gave a store&#x27;s reader a five-method interface when it needs only one. Narrow the reader&#x27;s dependency while preserving the store&#x27;s operations.</p></div>
 <div style="border-left:4px solid #b8860b; padding:0.5em 1em; margin-bottom:1em; background:#fdf8ec;"><b>Read</b><ul><li><a href="https://pkg.go.dev/io">io</a>. Read the first two overview sentences. Which package declares the interfaces? Where do their implementations live?</li><li><a href="https://pkg.go.dev/io">The same page</a>, the Index. Open <code>Reader</code>, <code>ReadWriter</code>, and <code>ReadWriteCloser</code>. How many methods does each declare? How does each interface get its name? Does any type use the word <code>Impl</code>?</li></ul></div>
 <details><summary style="cursor:pointer; font-weight:bold; padding:0.3em 0;">Coming from Java</summary><p>The reflex is <code>StoreService</code> beside <code>StoreServiceImpl</code> in one package, with every public method mirrored in the interface. A factory returns the interface, so the interface belongs to the package that implements it. Every consumer then depends on all five methods.</p><pre>public interface StoreService { String get(String k); void put(String k, String v); ... }
 public class StoreServiceImpl implements StoreService { ... }</pre></details>
@@ -490,7 +491,7 @@ type StoreImpl struct {
 	data map[string]string
 }
 
-// NewStore returns an empty Store.
+// NewStore must return an empty concrete store with every operation accessible.
 func NewStore() Store {
 	return &StoreImpl{data: map[string]string{}}
 }
@@ -512,7 +513,8 @@ func (s *StoreImpl) Keys() []string {
 
 func (s *StoreImpl) Len() int { return len(s.data) }
 
-// render returns one line per key, as key=value.
+// render must accept a one-method Getter interface and return key=value lines.
+// Keep the requested key order.
 func render(s Store, keys []string) []string {
 	var lines []string
 	for _, k := range keys {
